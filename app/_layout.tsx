@@ -67,10 +67,6 @@ function RootLayoutNav() {
   const isInLogin = segments[0] === "(auth)";
 
   useEffect(() => {
-    console.log(segments[0]);
-  }, [segments]);
-
-  useEffect(() => {
     if (!isLoaded) return;
 
     console.log('User changed: ', isSignedIn);
