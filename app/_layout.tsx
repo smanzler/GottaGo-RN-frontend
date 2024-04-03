@@ -60,27 +60,32 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const segments = useSegments();
   const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();
-  const segments = useSegments();
 
+  const isInLogin = segments[0] === "(auth)";
+
+  useEffect(() => {
+    console.log(segments[0]);
+  }, [segments]);
 
   useEffect(() => {
     if (!isLoaded) return;
 
     console.log('User changed: ', isSignedIn);
 
-    if (isSignedIn) {
+    if (isSignedIn && isInLogin) {
       router.back();
     } else if (!isSignedIn) {
-      router.push('/(modals)/login');
+      router.push('/(auth)/login');
     }
   }, [isSignedIn]);
 
   return (
     <Stack>
       <Stack.Screen
-        name="(modals)/login"
+        name="(auth)/login"
         options={{
           presentation: 'modal',
           title: 'Log in or sign up',

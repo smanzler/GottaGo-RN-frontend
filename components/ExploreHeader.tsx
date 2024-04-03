@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import Colors from "@/constants/Colors";
 
 const categories = [
@@ -50,8 +51,22 @@ const categories = [
 
 
 const ExploreHeader = () => {
-    const itemsRef = useRef<Array<TouchableOpacity>>([]);
+    const scrollRef = useRef<ScrollView>(null);
+    const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
     const [ activeIndex, setActiveIndex ] = useState(0);
+
+    const selectCategory = (index: number) => {
+        const selected = itemsRef.current[index];
+        setActiveIndex(index);
+
+        selected?.measure((x) => {
+            scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
+        })
+
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -73,6 +88,7 @@ const ExploreHeader = () => {
                     </View>
 
                     <ScrollView 
+                        ref={scrollRef}
                         horizontal 
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
@@ -83,9 +99,12 @@ const ExploreHeader = () => {
                     >
                         {categories.map((item, index) => (
                             <TouchableOpacity 
+                                onPress={() => selectCategory(index)}
                                 key={index}
+                                ref={(el) => itemsRef.current[index] = el}
+                                style={activeIndex === index ? styles.categoriesBtnActive : styles.categoriesBtn}
                             >
-                                <MaterialIcons name={item.icon as any} size={24}/>
+                                <MaterialIcons name={item.icon as any} size={24} color={activeIndex === index ? '#000' : Colors.grey}/>
                                 <Text>{item.name}</Text>
                             </TouchableOpacity>
                         ))}
@@ -156,7 +175,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderBottomColor: '#000',
         paddingBottom: 8,
-        borderBottomWidth: 2,
+        borderBottomWidth: 3,
     },
 })
 
