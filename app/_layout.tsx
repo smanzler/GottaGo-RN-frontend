@@ -68,23 +68,14 @@ function RootLayoutNav() {
   useEffect(() => {
     if (!isLoaded) return;
 
-    const inTabsGroup = segments[0] === '(auth)';
-
     console.log('User changed: ', isSignedIn);
 
-    if (isSignedIn && !inTabsGroup) {
-      router.push('/(tabs)/');
+    if (isSignedIn) {
+      router.back();
     } else if (!isSignedIn) {
       router.push('/(modals)/login');
     }
   }, [isSignedIn]);
-
-  // Automatically open login if user is not authenticated
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.push('/(modals)/login');
-    }
-  }, [isLoaded]);
 
   return (
     <Stack>

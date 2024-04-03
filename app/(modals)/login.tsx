@@ -98,13 +98,13 @@ const Page = () => {
           }}
         />
         <Text style={styles.seperator}>or</Text>
-        {/* <View
+        <View
           style={{
             flex: 1,
             borderBottomColor: 'black',
             borderBottomWidth: StyleSheet.hairlineWidth,
           }}
-        /> */}
+        />
       </View>
 
       <View style={{ gap: 20 }}>
