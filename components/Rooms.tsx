@@ -5,6 +5,7 @@ import { Link } from "expo-router";
 import { room } from "@/interfaces/room";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
+import Colors from "@/constants/Colors";
 
 interface Props {
     rooms: any[];
@@ -29,12 +30,12 @@ const Rooms = ({ rooms: items, category }: Props) => {
             <TouchableOpacity>
                 <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
                     <Image source={{uri: item.medium_url}} style={styles.image}/>
-                    <TouchableOpacity style={{position: 'absolute', right: 30, top: 30}}>
+                    <TouchableOpacity style={{ position: 'absolute', top: 30, right: 30 }}>
                         <Ionicons name="heart-outline" size={24} color={'#000'} />
                     </TouchableOpacity>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
+                        <Text style={{ maxWidth: '80%', fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <Ionicons name="star" size={16} />
                             <Text style={{ fontFamily: 'mon-sb' }}>{item.review_scores_rating / 20}</Text>
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 300,
         borderRadius: 10,
-    }
+    },
 })
 
 export default Rooms;
