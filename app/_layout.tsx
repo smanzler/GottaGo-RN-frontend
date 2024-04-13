@@ -1,31 +1,11 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
-import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import ModalHeaderText from '@/components/ModalHeaderText';
 import { TouchableOpacity } from 'react-native';
 
-const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
-// Cache the Clerk JWT
-const tokenCache = {
-  async getToken(key: string) {
-    try {
-      return SecureStore.getItemAsync(key);
-    } catch (err) {
-      return null;
-    }
-  },
-  async saveToken(key: string, value: string) {
-    try {
-      return SecureStore.setItemAsync(key, value);
-    } catch (err) {
-      return;
-    }
-  },
-};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -53,30 +33,29 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY!} tokenCache={tokenCache}>
-      <RootLayoutNav />
-    </ClerkProvider>
+    <RootLayoutNav />
   );
 }
 
 function RootLayoutNav() {
   const segments = useSegments();
-  const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();
 
   const isInLogin = segments[0] === "(auth)";
 
-  useEffect(() => {
-    if (!isLoaded) return;
 
-    console.log('User changed: ', isSignedIn);
 
-    if (isSignedIn && isInLogin) {
-      router.back();
-    } else if (!isSignedIn) {
-      router.push('/(auth)/login');
-    }
-  }, [isSignedIn]);
+  // useEffect(() => {
+  //   if (!isLoaded) return;
+
+  //   console.log('User changed: ', isSignedIn);
+
+  //   if (isSignedIn && isInLogin) {
+  //     router.back();
+  //   } else if (!isSignedIn) {
+  //     router.push('/(auth)/login');
+  //   }
+  // }, [isSignedIn]);
 
   return (
     <Stack>

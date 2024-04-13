@@ -1,40 +1,38 @@
 import Colors from '@/constants/Colors';
-import { useOAuth, useSignIn } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { View, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
 
+import * as SecureStore from 'expo-secure-store';
 import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
 import { defaultStyles } from '@/constants/Styles';
 import { useState } from 'react';
+import { userLogin } from '../api/userApi';
 
-enum Strategy {
-  Google = 'oauth_google',
-  Apple = 'oauth_apple',
-  Facebook = 'oauth_facebook',
-}
 const Page = () => {
   useWarmUpBrowser();
-
-  const { signIn, setActive, isLoaded } = useSignIn();
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const onSignInPress = async () => {
-    if (!isLoaded) {
+    if (loading === true) {
       return;
     }
     setLoading(true);
     try {
-      const completeSignIn = await signIn.create({
-        identifier: emailAddress,
-        password,
+      const result = await userLogin({
+        email: emailAddress,
+        password: password,
+        twoFactorCode: "string",
+        twoFactorRecoveryCode: "string",
       });
+      if (result.status === 200) {
+        await SecureStore.setItemAsync('AccessToken', result.data.accessToken);
+        return;
+      }
 
-      // This indicates the user is signed in
-      await setActive({ session: completeSignIn.createdSessionId });
     } catch (err: any) {
       alert(err.errors[0].message);
     } finally {
@@ -42,31 +40,15 @@ const Page = () => {
     }
   };
 
-  // const router = useRouter();
-  // const { startOAuthFlow: googleAuth } = useOAuth({ strategy: 'oauth_google' });
-  // const { startOAuthFlow: appleAuth } = useOAuth({ strategy: 'oauth_apple' });
-  // const { startOAuthFlow: facebookAuth } = useOAuth({ strategy: 'oauth_facebook' });
-
-  // const onSelectAuth = async (strategy: Strategy) => {
-  //   const selectedAuth = {
-  //     [Strategy.Google]: googleAuth,
-  //     [Strategy.Apple]: appleAuth,
-  //     [Strategy.Facebook]: facebookAuth,
-  //   }[strategy];
-
-  //   try {
-  //     const { createdSessionId, setActive } = await selectedAuth();
-  //     console.log("SessionID: " + createdSessionId);
-
-  //     if (createdSessionId) {
-  //       console.log("yo");
-  //       setActive!({ session: createdSessionId });
-  //       router.back();
-  //     }
-  //   } catch (err: any) {
-  //     console.log('OAuth error'+ err);
-  //   }
-  // };
+  const handleEmailChange = () => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  
+    if (emailRegex.test(emailAddress)) {
+        console.log("Valid email:", emailAddress);
+    } else {
+        console.log("Invalid email:", emailAddress);
+    }
+}
 
   return (
     <View style={styles.container}>
@@ -74,7 +56,7 @@ const Page = () => {
         autoCapitalize="none"
         placeholder="Email"
         value={emailAddress}
-        onChangeText={setEmailAddress}
+        onChangeText={handleEmailChange}
         style={[defaultStyles.inputField, { marginBottom: 10 }]}
       />
       <TextInput
