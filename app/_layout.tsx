@@ -1,10 +1,14 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+
+import * as SecureStore from 'expo-secure-store';
 import Colors from '@/constants/Colors';
 import ModalHeaderText from '@/components/ModalHeaderText';
 import { TouchableOpacity } from 'react-native';
+import { checkToken } from './api/userApi';
+import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -33,29 +37,32 @@ export default function RootLayout() {
   }
 
   return (
-    <RootLayoutNav />
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
   );
 }
 
 function RootLayoutNav() {
-  const segments = useSegments();
   const router = useRouter();
+  const { login } = useContext(AuthContext);
 
-  const isInLogin = segments[0] === "(auth)";
+  useEffect(() => {
+    router.push('/(tabs)');
 
+    checkToken()
+        .then((tokenInStore) => {
+            console.log("checking token");
+            if (!tokenInStore) {
+              console.log('pushing to login');
+              router.push('/(auth)/login');
+            } else {
+              console.log("logging in")
+              login();
+            }
+        });
+}, []);
 
-
-  // useEffect(() => {
-  //   if (!isLoaded) return;
-
-  //   console.log('User changed: ', isSignedIn);
-
-  //   if (isSignedIn && isInLogin) {
-  //     router.back();
-  //   } else if (!isSignedIn) {
-  //     router.push('/(auth)/login');
-  //   }
-  // }, [isSignedIn]);
 
   return (
     <Stack>

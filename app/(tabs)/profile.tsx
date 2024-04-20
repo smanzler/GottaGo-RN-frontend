@@ -1,21 +1,46 @@
-import { View, Text, Button } from 'react-native'
-import React from 'react'
-import { useAuth } from '@clerk/clerk-expo'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useContext, useState } from 'react';
 import { Link } from 'expo-router';
+import { AuthContext } from '../contexts/AuthContext';
+import { userSignOut } from '../api/userApi';
+import Loading from '@/components/Loading';
 
 const Page = () => {
-const { signOut, isSignedIn } = useAuth();
+    const { isLoggedIn, logout } = useContext(AuthContext);
+    const [ loading, setLoading ] = useState(false);
+
+    const handleLogOut = async () => {
+        if (loading) return;
+
+        setLoading(true);
+
+        logout(); 
+        await userSignOut();
+
+        setLoading(false);
+    }
 
     return (
-        <View>
-            <Button title='Log out' onPress={() => signOut()}/>
-            { !isSignedIn && (
-                <Link href={'/(auth)/login'}>
-                    <Text>Login</Text>
-                </Link>
-            )}
+        <View style={styles.container}>
+            
+                {!isLoggedIn ?  
+                    <Link href={'/(auth)/login'}>
+                        <Text>Login</Text>
+                    </Link>
+                    :
+                    <TouchableOpacity onPress={handleLogOut}>
+                        <Text>Logout</Text>
+                    </TouchableOpacity>
+                }
+            {loading && <Loading />}
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    }
+})
 
 export default Page;

@@ -1,9 +1,12 @@
 import axios from "axios";
 
 const ApiManager = axios.create({
-    baseURL: "https://localhost:7066/",
+    baseURL: "https://tfinderapi.azurewebsites.net/",
     responseType: 'json',
     withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    }
 });
 
 export default ApiManager;
