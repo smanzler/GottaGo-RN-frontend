@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tabs } from 'expo-router';
 import Colors from '@/constants/Colors';
-import { FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Layout = () => {
   return (
@@ -32,11 +32,11 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen 
-        name="trips"
+        name="create"
         options={{
-          tabBarLabel: 'Trips',
+          tabBarLabel: 'Create',
           tabBarIcon: ({color, size}) => (
-            <FontAwesome5 name="airbnb" color={color} size={size}/>
+            <AntDesign name="plussquareo" color={color} size={size}/>
           )
         }}
       />

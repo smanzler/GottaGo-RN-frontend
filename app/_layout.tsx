@@ -48,20 +48,8 @@ function RootLayoutNav() {
   const { login } = useContext(AuthContext);
 
   useEffect(() => {
-    router.push('/(tabs)');
-
     checkToken()
-        .then((tokenInStore) => {
-            console.log("checking token");
-            if (!tokenInStore) {
-              console.log('pushing to login');
-              router.push('/(auth)/login');
-            } else {
-              console.log("logging in")
-              login();
-            }
-        });
-}, []);
+  }, []);
 
 
   return (
@@ -71,6 +59,21 @@ function RootLayoutNav() {
         options={{
           presentation: 'modal',
           title: 'Log in or sign up',
+          headerTitleStyle: {
+            fontFamily: 'mon-sb',
+          },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="(auth)/register"
+        options={{
+          presentation: 'modal',
+          title: 'Register',
           headerTitleStyle: {
             fontFamily: 'mon-sb',
           },

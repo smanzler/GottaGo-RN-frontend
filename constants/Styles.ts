@@ -6,6 +6,11 @@ export const defaultStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    header: {
+        fontFamily: 'mon-sb',
+        fontSize: 28,
+        marginBottom: 10,
+    },
     inputField: {
         height: 44,
         borderWidth: 1,

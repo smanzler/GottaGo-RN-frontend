@@ -11,7 +11,19 @@ interface LoginResponse {
     refreshToken: string,
 }
 
-interface ErrorResponse {
+interface RegisterErrorResponse {
+    type: string,
+    title: string,
+    status: number,
+    error: {
+        PasswordRequiresNonAlphanumeric: string[] | null,
+        PasswordRequiresDigit: string[] | null,
+        PasswordRequiresUpper: string[] | null,
+        DuplicateUserName: string[] | null,
+    }
+}
+
+interface LoginErrorResponse {
     type: string,
     title: string,
     status: number,
@@ -25,13 +37,34 @@ type Login = {
     twoFactorRecoveryCode?: string;
 }
 
+type Register = {
+    email: string;
+    password: string;
+}
+
 export const userLogin = async (data: Login, login: () => void): Promise<AxiosResponse<LoginResponse, any>> => {
     try {
         const result: AxiosResponse<LoginResponse> = await ApiManager.post("/login", data);
         login();
         return result;
     } catch (error) {
-        if (axios.isAxiosError<ErrorResponse>(error)) {
+        if (axios.isAxiosError<LoginErrorResponse>(error)) {
+            console.error("Error: ", error); 
+            throw error;
+        } else {
+            console.error("An unexpected non-Axios error occurred:", error);
+            throw new Error('An unexpected error occurred during login');
+        }
+    }
+}
+
+export const userRegister = async (data: Register): Promise<AxiosResponse<any, any>> => {
+    try {
+        const result: AxiosResponse<any> = await ApiManager.post("/register", data);
+        console.log(result)
+        return result;
+    } catch (error) {
+        if (axios.isAxiosError<RegisterErrorResponse>(error)) {
             console.error("Error: ", error); 
             throw error;
         } else {

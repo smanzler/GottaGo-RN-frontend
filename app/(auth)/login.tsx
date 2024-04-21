@@ -61,6 +61,7 @@ const Page = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={defaultStyles.header}>Log in</Text>
       <TextInput
         autoCapitalize="none"
         placeholder="Email"
@@ -128,8 +129,6 @@ const Page = () => {
   );
 };
 
-export default Page;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 26,
   },
-
+  
   seperatorView: {
     flexDirection: 'row',
     gap: 10,
@@ -166,3 +165,5 @@ const styles = StyleSheet.create({
     fontFamily: 'mon-sb',
   },
 });
+
+export default Page;

@@ -4,7 +4,7 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 const Loading = () => {
   return (
     <View style={styles.overlay} pointerEvents='none'>
-        <ActivityIndicator/>
+        <ActivityIndicator size='large' />
     </View>
   );
 };
