@@ -1,6 +1,6 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
 import * as SecureStore from 'expo-secure-store';
@@ -8,7 +8,9 @@ import Colors from '@/constants/Colors';
 import ModalHeaderText from '@/components/ModalHeaderText';
 import { TouchableOpacity } from 'react-native';
 import { checkToken } from './api/userApi';
-import { AuthContext, AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Session } from '@supabase/supabase-js';
+import { supabase } from '@/utils/supabase';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -45,12 +47,17 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const router = useRouter();
-  const { login } = useContext(AuthContext);
+
+  const { session, loading } = useAuth();
 
   useEffect(() => {
-    checkToken()
-  }, []);
-
+    if (!session && !loading) {
+      router.push('/(auth)/login')
+    } else {
+      console.log(session);
+    }
+  }, [loading])
+   
 
   return (
     <Stack>

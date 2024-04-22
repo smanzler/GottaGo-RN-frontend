@@ -1,21 +1,21 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import React, { useContext, useState } from 'react';
-import { Link } from 'expo-router';
-import { AuthContext } from '../contexts/AuthContext';
+import { Link, router } from 'expo-router';
+import { useAuth } from '../contexts/AuthContext';
 import { userSignOut } from '../api/userApi';
 import Loading from '@/components/Loading';
+import { defaultStyles } from '@/constants/Styles';
+import { supabase } from '@/utils/supabase';
 
 const Page = () => {
-    const { isLoggedIn, logout } = useContext(AuthContext);
-    const [ loading, setLoading ] = useState(false);
+    const { session } = useAuth();
 
-    const handleLogOut = async () => {
-        if (loading) return;
+    const [loading, setLoading] = useState(false)
 
+    const handleLogout = async () => {
         setLoading(true);
 
-        logout(); 
-        await userSignOut();
+        await supabase.auth.signOut();
 
         setLoading(false);
     }
@@ -23,23 +23,26 @@ const Page = () => {
     return (
         <View style={styles.container}>
             
-                {!isLoggedIn ?  
-                    <Link href={'/(auth)/login'}>
-                        <Text>Login</Text>
-                    </Link>
+                {!session ? 
+                    <>
+                        <Text style={defaultStyles.h2}>In Order to see your profile, you need to Log in</Text>
+                        <TouchableOpacity style={defaultStyles.btn} onPress={() => router.navigate('/(auth)/login')}>
+                                <Text style={defaultStyles.btnText}>Log in</Text>
+                        </TouchableOpacity>
+                    </>
                     :
-                    <TouchableOpacity onPress={handleLogOut}>
-                        <Text>Logout</Text>
+                    <TouchableOpacity style={defaultStyles.btn} onPress={handleLogout} disabled={loading} >
+                        <Text style={defaultStyles.btnText}>{loading ? "Loggin you out..." : "Logout"}</Text>
                     </TouchableOpacity>
                 }
-            {loading && <Loading />}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        padding: 26,
     }
 })
 

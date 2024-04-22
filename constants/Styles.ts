@@ -11,6 +11,11 @@ export const defaultStyles = StyleSheet.create({
         fontSize: 28,
         marginBottom: 10,
     },
+    h2: {
+        fontFamily: 'mon',
+        fontSize: 18,
+        marginBottom: 50,
+    },
     inputField: {
         height: 44,
         borderWidth: 1,

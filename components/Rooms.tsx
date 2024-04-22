@@ -17,7 +17,6 @@ const Rooms = ({ rooms: items, category }: Props) => {
     const listRef = useRef<FlatList>(null);
 
     useEffect(() => {
-        console.log('reload rooms', items.length)
         setLoading(true);
 
         setTimeout(() => {

@@ -63,7 +63,6 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
         setActiveIndex(index);
 
         selected?.measure((x) => {
-            console.log(x);
             scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true})
         });
 
