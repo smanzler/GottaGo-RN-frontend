@@ -1,4 +1,4 @@
-import { supabase } from '@/utils/supabase';
+import { supabase } from '@/src/utils/supabase';
 import { Session } from '@supabase/supabase-js';
 import React, { createContext, useState, ReactNode, PropsWithChildren, useEffect, useContext } from 'react';
 
@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setSession(session);
       
       if (session) {
+        console.log("session")
         const { data } = await supabase
         .from('profiles')
         .select('*')
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     })
-  })
+  }, [])
 
   return (
     <AuthContext.Provider value={{ session, profile, loading }}>

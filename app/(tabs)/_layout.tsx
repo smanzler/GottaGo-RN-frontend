@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs } from 'expo-router';
-import Colors from '@/constants/Colors';
+import Colors from '@/src/constants/Colors';
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Layout = () => {

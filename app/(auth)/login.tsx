@@ -1,12 +1,12 @@
-import Colors from '@/constants/Colors';
+import Colors from '@/src/constants/Colors';
 import { View, StyleSheet, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
-import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
-import { defaultStyles } from '@/constants/Styles';
+import { useWarmUpBrowser } from '@/src/hooks/useWarmUpBrowser';
+import { defaultStyles } from '@/src/constants/Styles';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { } from '../contexts/AuthContext';
-import { supabase } from '@/utils/supabase';
+import { } from '../../src/providers/AuthProvider';
+import { supabase } from '@/src/utils/supabase';
 import { Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -105,22 +105,22 @@ const Page = () => {
                 </View>
 
                 <View style={{ gap: 20 }}>
-                    <TouchableOpacity style={styles.btnOutline}>
+                    <TouchableOpacity style={styles.btnOutline} onPress={() => alert("clown")}>
                         <Ionicons name="mail-outline" size={24} style={defaultStyles.btnIcon} />
                         <Text style={styles.btnOutlineText}>Continue with Phone</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.btnOutline}>
+                    <TouchableOpacity style={styles.btnOutline} onPress={() => alert("clown")}>
                         <Ionicons name="logo-apple" size={24} style={defaultStyles.btnIcon} />
                         <Text style={styles.btnOutlineText}>Continue with Apple</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.btnOutline}>
+                    <TouchableOpacity style={styles.btnOutline} onPress={() => alert("clown")}>
                         <Ionicons name="logo-google" size={24} style={defaultStyles.btnIcon} />
                         <Text style={styles.btnOutlineText}>Continue with Google</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.btnOutline}>
+                    <TouchableOpacity style={styles.btnOutline} onPress={() => alert("clown")}>
                         <Ionicons name="logo-facebook" size={24} style={defaultStyles.btnIcon} />
                         <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
                     </TouchableOpacity>

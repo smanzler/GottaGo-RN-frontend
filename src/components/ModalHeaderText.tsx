@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
-import Colors from '@/constants/Colors';
+import Colors from '@/src/constants/Colors';
 
 const ModalHeaderText = () => {
   const [active, setActive] = useState(0);

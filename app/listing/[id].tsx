@@ -3,7 +3,7 @@ import React from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import roomsData from '@/assets/data/airbnb-listings.json';
 import Animated, { SlideInDown } from 'react-native-reanimated';
-import { defaultStyles } from '@/constants/Styles';
+import { defaultStyles } from '@/src/constants/Styles';
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');

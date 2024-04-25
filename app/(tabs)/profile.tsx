@@ -1,11 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { Link, router } from 'expo-router';
-import { useAuth } from '../contexts/AuthContext';
-import { userSignOut } from '../api/userApi';
-import Loading from '@/components/Loading';
-import { defaultStyles } from '@/constants/Styles';
-import { supabase } from '@/utils/supabase';
+import { useAuth } from '../../src/providers/AuthProvider';
+import Loading from '@/src/components/Loading';
+import { defaultStyles } from '@/src/constants/Styles';
+import { supabase } from '@/src/utils/supabase';
 
 const Page = () => {
     const { session } = useAuth();

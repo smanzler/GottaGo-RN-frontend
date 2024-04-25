@@ -1,11 +1,11 @@
 import { View, Text, FlatList, ListRenderItem, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { defaultStyles } from "@/constants/Styles";
+import { defaultStyles } from "@/src/constants/Styles";
 import { Link } from "expo-router";
-import { room } from "@/interfaces/room";
+import { room } from "@/src/interfaces/room";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 
 interface Props {
     rooms: any[];

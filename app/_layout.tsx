@@ -3,14 +3,11 @@ import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
-import * as SecureStore from 'expo-secure-store';
-import Colors from '@/constants/Colors';
-import ModalHeaderText from '@/components/ModalHeaderText';
+import Colors from '@/src/constants/Colors';
+import ModalHeaderText from '@/src/components/ModalHeaderText';
 import { TouchableOpacity } from 'react-native';
-import { checkToken } from './api/userApi';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { Session } from '@supabase/supabase-js';
-import { supabase } from '@/utils/supabase';
+import { AuthProvider, useAuth } from '../src/providers/AuthProvider';
+import QueryProvider from '../src/providers/QueryProvider';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -40,7 +37,9 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <QueryProvider>
+        <RootLayoutNav />
+      </QueryProvider>
     </AuthProvider>
   );
 }
@@ -48,11 +47,13 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const router = useRouter();
 
+  console.log('yo')
+
   const { session, loading } = useAuth();
 
   useEffect(() => {
     if (!session && !loading) {
-      router.push('/(auth)/login')
+      router.replace('/(auth)/login')
     } else {
       console.log(session);
     }
@@ -66,21 +67,6 @@ function RootLayoutNav() {
         options={{
           presentation: 'modal',
           title: 'Log in or sign up',
-          headerTitleStyle: {
-            fontFamily: 'mon-sb',
-          },
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="(auth)/register"
-        options={{
-          presentation: 'modal',
-          title: 'Register',
           headerTitleStyle: {
             fontFamily: 'mon-sb',
           },
