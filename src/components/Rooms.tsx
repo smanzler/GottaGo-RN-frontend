@@ -2,19 +2,26 @@ import { View, Text, FlatList, ListRenderItem, StyleSheet, Image, TouchableOpaci
 import React, { useEffect, useRef, useState } from "react";
 import { defaultStyles } from "@/src/constants/Styles";
 import { Link } from "expo-router";
-import { room } from "@/src/interfaces/room";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/src/constants/Colors";
+import { useRooms } from "../api/rooms";
+import { Room } from "../interfaces/Room";
 
 interface Props {
-    rooms: any[];
     category: string;
 }
 
-const Rooms = ({ rooms: items, category }: Props) => {
+const Rooms = ({ category }: Props) => {
     const [ loading, setLoading ] = useState(false);
     const listRef = useRef<FlatList>(null);
+
+    const { 
+        data: items, 
+        error, 
+        isLoading 
+    } = useRooms();
+
 
     useEffect(() => {
         setLoading(true);
@@ -24,11 +31,11 @@ const Rooms = ({ rooms: items, category }: Props) => {
         }, 200)
     }, [category])
 
-    const renderRow: ListRenderItem<room> = ({ item }) => (
+    const renderRow: ListRenderItem<Room> = ({ item }) => (
         <Link href={`/listing/${item.id}`} asChild>
             <TouchableOpacity>
                 <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
-                    <Image source={{uri: item.medium_url}} style={styles.image}/>
+                    <Image style={styles.image}/>
                     <TouchableOpacity style={{ position: 'absolute', top: 30, right: 30 }}>
                         <Ionicons name="heart-outline" size={24} color={'#000'} />
                     </TouchableOpacity>
@@ -37,7 +44,7 @@ const Rooms = ({ rooms: items, category }: Props) => {
                         <Text style={{ maxWidth: '80%', fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <Ionicons name="star" size={16} />
-                            <Text style={{ fontFamily: 'mon-sb' }}>{item.review_scores_rating / 20}</Text>
+                            <Text style={{ fontFamily: 'mon-sb' }}>{item.rating}</Text>
                         </View>
                     </View>
                 </Animated.View>
@@ -64,6 +71,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 300,
         borderRadius: 10,
+        backgroundColor: 'grey',
     },
 })
 

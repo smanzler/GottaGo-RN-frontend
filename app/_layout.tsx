@@ -53,7 +53,7 @@ function RootLayoutNav() {
 
   useEffect(() => {
     if (!session && !loading) {
-      router.replace('/(auth)/login')
+      router.navigate('/(auth)/login')
     } else {
       console.log(session);
     }
