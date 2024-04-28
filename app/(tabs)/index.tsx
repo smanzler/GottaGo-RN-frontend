@@ -4,8 +4,6 @@ import { Link, Stack } from 'expo-router';
 
 import ExploreHeader from '@/src/components/ExploreHeader';
 import Rooms from '@/src/components/Rooms';
-import roomsData from '@/assets/data/airbnb-listings.json';
-import roomsGeoData from '@/assets/data/airbnb-listings.geo.json';
 import RoomsMap from '@/src/components/RoomsMap';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/src/utils/supabase';
@@ -13,8 +11,9 @@ import { useRooms } from '@/src/api/rooms';
 
 const Page = () => {
     const [ category, setCategory ] = useState('Gas Station');
-    const items = useMemo(() => roomsData as any, [])
 
+    const { data: rooms } = useRooms();
+    
     const onDataChanged = (category: string) => {
         setCategory(category);
     }
@@ -26,9 +25,9 @@ const Page = () => {
                     header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
                 }}
             />
-            {/* <RoomsMap rooms={rooms} /> */}
+            <RoomsMap rooms={rooms} />
 
-            <Rooms category={category} />
+            {/* <Rooms category={category} /> */}
         </View>
     )
 };

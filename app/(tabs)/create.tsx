@@ -1,25 +1,57 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
-import React, { useContext, useState } from 'react';
-import { Link, router } from 'expo-router';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Link, useRouter } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
 import Loading from '@/src/components/Loading';
 import { defaultStyles } from '@/src/constants/Styles';
 import { supabase } from '@/src/utils/supabase';
-import MapView from 'react-native-maps';
+import MapView, { LatLng, LongPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useInsertRoom } from '@/src/api/rooms';
+import { useLocation } from '@/src/hooks/useLocation';
 
 const Page = () => {
     const { session } = useAuth();
 
-    const [title, setTitle] = useState("")
+    const router = useRouter();
+
+    const mapViewRef = useRef<MapView>(null);
+
+    const [name, setName] = useState("")
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false)
     const [createLoading, setCreateLoading] = useState(false);
 
-    // const { mutation } = useInsertRoom();
+    const [marker, setMarker] = useState<LatLng>()
+
+    const { mutate: insertRoom } = useInsertRoom();
+
+    useEffect(() => {
+        useLocation(mapViewRef)
+    }, [])
+
+    const resetFields = () => {
+        setName("")
+        setDescription("")
+
+        setMarker(undefined);
+    }
+
+    const onLongMapPress = (event: LongPressEvent) => {
+        setMarker(event.nativeEvent.coordinate)
+    }
 
     const onCreatePress = () => {
+        setCreateLoading(true);
 
+        insertRoom({name, description, longitude: marker?.longitude, latitude: marker?.latitude }, {
+            onSuccess: () => {
+                resetFields();
+            },
+            onSettled: () => {
+                setCreateLoading(false);
+                router.replace('/(tabs)/');
+            }
+        })
     }
 
     return (
@@ -42,20 +74,29 @@ const Page = () => {
                 } */}
 
                 <>
+                    <Text style={[defaultStyles.h2, {marginBottom: 20}]}>Press and hold to place a marker</Text>
+
                     <View style={styles.mapContainer}>
 
                         <MapView
-                            style={styles.mapView}
-
-                        />
+                            ref={mapViewRef}
+                            style={styles.mapView}              
+                            provider={PROVIDER_GOOGLE}
+                            showsUserLocation={true}
+                            followsUserLocation={true}
+                            showsMyLocationButton={true}
+                            onLongPress={onLongMapPress}
+                        >
+                            {marker && <Marker coordinate={marker}/>}
+                        </MapView>
                     </View>
 
-                    <Text style={[defaultStyles.h2, {marginBottom: 0}]}>Title</Text>
+                    <Text style={[defaultStyles.h2, {marginBottom: 0}]}>Name</Text>
 
                     <TextInput
                         placeholder=""
-                        value={title}
-                        onChangeText={setTitle}
+                        value={name}
+                        onChangeText={setName}
                         style={[defaultStyles.inputField, { marginBottom: 30 }]}
                     />
 
