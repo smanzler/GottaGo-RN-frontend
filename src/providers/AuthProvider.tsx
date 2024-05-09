@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setSession(session);
       
       if (session) {
-        console.log("session")
         const { data } = await supabase
         .from('profiles')
         .select('*')

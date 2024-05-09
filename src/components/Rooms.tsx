@@ -5,23 +5,16 @@ import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/src/constants/Colors";
-import { useRooms } from "../api/rooms";
 import { Room } from "../interfaces/Room";
 
 interface Props {
     category: string;
+    rooms: any[];
+    listRef: any;
 }
 
-const Rooms = ({ category }: Props) => {
+const Rooms = ({ category, rooms, listRef }: Props) => {
     const [ loading, setLoading ] = useState(false);
-    const listRef = useRef<FlatList>(null);
-
-    const { 
-        data: items, 
-        error, 
-        isLoading 
-    } = useRooms();
-
 
     useEffect(() => {
         setLoading(true);
@@ -57,7 +50,7 @@ const Rooms = ({ category }: Props) => {
             <FlatList 
                 renderItem={renderRow}
                 ref={listRef}
-                data={loading ? [] : items}
+                data={rooms}
             />
         </View>
     )

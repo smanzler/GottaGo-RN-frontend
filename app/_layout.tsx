@@ -8,6 +8,7 @@ import ModalHeaderText from '@/src/components/ModalHeaderText';
 import { TouchableOpacity } from 'react-native';
 import { AuthProvider, useAuth } from '../src/providers/AuthProvider';
 import QueryProvider from '../src/providers/QueryProvider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -38,7 +39,9 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <QueryProvider>
-        <RootLayoutNav />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <RootLayoutNav />
+        </GestureHandlerRootView>
       </QueryProvider>
     </AuthProvider>
   );
@@ -47,15 +50,11 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const router = useRouter();
 
-  console.log('yo')
-
   const { session, loading } = useAuth();
 
   useEffect(() => {
     if (!session && !loading) {
       router.navigate('/(auth)/login')
-    } else {
-      console.log(session);
     }
   }, [loading])
    
