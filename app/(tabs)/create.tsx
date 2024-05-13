@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useRouter } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
@@ -8,6 +8,11 @@ import { supabase } from '@/src/utils/supabase';
 import MapView, { LatLng, LongPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useInsertRoom } from '@/src/api/rooms';
 import { useLocation } from '@/src/hooks/useLocation';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import { randomUUID } from 'expo-crypto'
+import { decode } from 'base64-arraybuffer';
+import Colors from '@/src/constants/Colors';
 
 const Page = () => {
     const { session } = useAuth();
@@ -18,6 +23,7 @@ const Page = () => {
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("");
+    const [image, setImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false)
     const [createLoading, setCreateLoading] = useState(false);
 
@@ -30,11 +36,43 @@ const Page = () => {
     }, [])
 
     const resetFields = () => {
-        setName("")
-        setDescription("")
+        setName("");
+        setDescription("");
+        setImage(null);
 
         setMarker(undefined);
     }
+
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0,
+        })
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    }
+
+    const uploadImage = async () => {
+        if (!image?.startsWith('file://')) {
+          return;
+        }
+      
+        const base64 = await FileSystem.readAsStringAsync(image, {
+          encoding: 'base64',
+        });
+        const filePath = `${randomUUID()}.png`;
+        const contentType = 'image/png';
+        const { data, error } = await supabase.storage
+          .from('product-images')
+          .upload(filePath, decode(base64), { contentType });
+      
+        if (data) {
+          return data.path;
+        }
+      };
 
     const onLongMapPress = (event: LongPressEvent) => {
         setMarker(event.nativeEvent.coordinate)
@@ -59,20 +97,14 @@ const Page = () => {
             style={styles.container}
             automaticallyAdjustKeyboardInsets={true}
         >
-            
-                {/* {!session ? 
-                    <>
-                        <Text style={defaultStyles.h2}>In Order to create, you need to Log in</Text>
-                        <TouchableOpacity style={defaultStyles.btn} onPress={() => router.navigate('/(auth)/login')}>
-                                <Text style={defaultStyles.btnText}>Log in</Text>
-                        </TouchableOpacity>
-                    </>
-                    :
-                    <>
-                      
-                    </>
-                } */}
-
+            {!session ? 
+                <>
+                    <Text style={defaultStyles.h2}>In Order to create, you need to Log in</Text>
+                    <TouchableOpacity style={defaultStyles.btn} onPress={() => router.navigate('/(auth)/login')}>
+                            <Text style={defaultStyles.btnText}>Log in</Text>
+                    </TouchableOpacity>
+                </>
+                :
                 <>
                     <Text style={[defaultStyles.h2, {marginBottom: 20}]}>Press and hold to place a marker</Text>
 
@@ -80,16 +112,23 @@ const Page = () => {
 
                         <MapView
                             ref={mapViewRef}
-                            style={styles.mapView}              
+                            style={styles.mapView}
                             provider={PROVIDER_GOOGLE}
                             showsUserLocation={true}
-                            followsUserLocation={true}
                             showsMyLocationButton={true}
                             onLongPress={onLongMapPress}
                         >
                             {marker && <Marker coordinate={marker}/>}
                         </MapView>
                     </View>
+
+                    <View style={{width: 100, aspectRatio: 1, backgroundColor: Colors.grey, borderRadius: 30}}>
+                        {image && <Image style={{flex: 1}} source={{uri: image}}/>}
+                    </View>
+
+                    <TouchableOpacity style={{marginBottom: 30}} onPress={pickImage}>
+                        <Text>Add photo</Text>
+                    </TouchableOpacity>
 
                     <Text style={[defaultStyles.h2, {marginBottom: 0}]}>Name</Text>
 
@@ -119,6 +158,7 @@ const Page = () => {
 
                     <View style={{ height: 300 }} />
                 </>
+            }
         </ScrollView>
     )
 }

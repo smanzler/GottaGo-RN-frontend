@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ListRenderItem, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, ListRenderItem, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { defaultStyles } from "@/src/constants/Styles";
 import { Link } from "expo-router";
@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/src/constants/Colors";
 import { Room } from "../interfaces/Room";
+import { FlatList } from "react-native-gesture-handler";
 
 interface Props {
     category: string;

@@ -79,7 +79,6 @@ const RoomsMap = ({rooms}: Props) => {
                 style={styles.map}
                 provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
-                followsUserLocation={true}
                 showsMyLocationButton={true}
             >
                 {rooms.map((room) => (
