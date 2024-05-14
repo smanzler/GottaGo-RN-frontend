@@ -33,7 +33,7 @@ const Page = () => {
                     header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
                 }}
             />
-            <RoomsMap rooms={rooms || []} />
+            <RoomsMap rooms={rooms || undefined} />
 
             <RoomsBottomSheet 
                 rooms={rooms || []} 

@@ -5,7 +5,6 @@ import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/src/constants/Colors";
-import { Room } from "../interfaces/Room";
 import { FlatList } from "react-native-gesture-handler";
 
 interface Props {
@@ -24,7 +23,7 @@ const Rooms = ({ category, rooms }: Props) => {
         }, 200)
     }, [category])
 
-    const renderRow: ListRenderItem<Room> = ({ item }) => (
+    const renderRow: ListRenderItem<any> = ({ item }) => (
         <Link href={`/listing/${item.id}`} asChild>
             <TouchableOpacity>
                 <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>

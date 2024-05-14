@@ -3,32 +3,32 @@ import React, { useEffect, useRef, useState } from 'react';
 import MapView, { Camera, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { StyleSheet } from 'react-native';
 import * as Location from 'expo-location'
+import RoomMarker from './RoomMarker'
 import { useLocation } from '../hooks/useLocation';
 import { TouchableOpacity } from 'react-native';
 import { getRoomsInView } from '../api/rooms';
 import { FontAwesome6 } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 interface Props {
-    rooms: any[];
+    rooms: any[] | undefined;
 }
 
 const RoomsMap = ({rooms}: Props) => {
+    const [selected, setSelected] = useState<number | undefined>(undefined);
     const mapViewRef = useRef<MapView>(null);
+
+    let widths: { value: number; }[] = [];
 
     useEffect(() => {
         useLocation(mapViewRef)
     }, []);
 
-    const onMarkerPress = (longitude: any, latitude: any) => {
-        const region = {
-            longitude,
-            latitude,
-            longitudeDelta: 0.003,
-            latitudeDelta: 0.003,
-        } as Region;
+    const onMapPress = (event: any) => {
+        if (event.nativeEvent.action === 'marker-press') return;
 
-        mapViewRef.current?.animateToRegion(region, 300);
+        setSelected(undefined)
     }
 
     // const [timer, setTimer] = useState<NodeJS.Timeout>();
@@ -81,22 +81,10 @@ const RoomsMap = ({rooms}: Props) => {
                 style={styles.map}
                 showsUserLocation={true}
                 showsMyLocationButton={true}
+                onPress={onMapPress}
             >
-                {rooms.map((room) => (
-                    <Marker
-                        key={room.id}
-                        onPress={() => onMarkerPress(room.long, room.lat)}
-                        coordinate={{
-                            latitude: room.lat,
-                            longitude: room.long
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={styles.marker}
-                        >
-                            <Text>{room.rating ? `★${room.rating}` : "★0"}</Text>
-                        </TouchableOpacity>
-                    </Marker>
+                {rooms && rooms.map((room) => (
+                    <RoomMarker key={room.id} room={room} mapViewRef={mapViewRef} selected={selected === room.id}/>
                 ))}
 
             </MapView>
@@ -119,6 +107,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'gray',
         borderRadius: 20,
+        width: 45
+    },
+    markerSelected: {
+        backgroundColor: '#fff',
+        padding: 5,
+        paddingHorizontal: 8,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 20,
+        
     },
     loading: {
         position: 'absolute',
