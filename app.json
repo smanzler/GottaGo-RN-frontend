@@ -16,7 +16,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sigh10.airbnb"
     },
     "android": {
       "adaptiveIcon": {
@@ -45,5 +46,8 @@
         "projectId": "e7c0c1c1-7053-4608-870a-469eba06a52a"
       }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "ios_app_id": "ca-app-pub-7128214963424433~4184828336"
   }
 }

@@ -12,13 +12,12 @@ export const useLocation = async (mapViewRef: React.RefObject<MapView>) => {
 
     let location = await Location.getLastKnownPositionAsync({});
 
-    const camera = {
-        center: {
-            latitude: location?.coords.latitude,
-            longitude: location?.coords.longitude,
-        },
-        zoom: 18
-    } as Camera;
+    const region = {
+        longitude: location?.coords.longitude,
+        latitude: location?.coords.latitude,
+        latitudeDelta: 0.03,
+        longitudeDelta: 0.03,
+    } as Region;
 
-    mapViewRef.current?.setCamera(camera)
+    mapViewRef.current?.animateToRegion(region, 500)
 }

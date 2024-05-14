@@ -11,10 +11,9 @@ import { FlatList } from "react-native-gesture-handler";
 interface Props {
     category: string;
     rooms: any[];
-    listRef: any;
 }
 
-const Rooms = ({ category, rooms, listRef }: Props) => {
+const Rooms = ({ category, rooms }: Props) => {
     const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
@@ -50,7 +49,6 @@ const Rooms = ({ category, rooms, listRef }: Props) => {
         <View style={defaultStyles.container}>
             <FlatList 
                 renderItem={renderRow}
-                ref={listRef}
                 data={rooms}
             />
         </View>

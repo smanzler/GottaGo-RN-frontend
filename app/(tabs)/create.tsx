@@ -113,7 +113,6 @@ const Page = () => {
                         <MapView
                             ref={mapViewRef}
                             style={styles.mapView}
-                            provider={PROVIDER_GOOGLE}
                             showsUserLocation={true}
                             showsMyLocationButton={true}
                             onLongPress={onLongMapPress}

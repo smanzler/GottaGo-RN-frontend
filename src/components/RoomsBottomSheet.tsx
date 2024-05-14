@@ -7,20 +7,17 @@ import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 interface Props {
     rooms: any[];
     category: string;
-    listRef: any;
-    sheetRef: React.RefObject<BottomSheetMethods>
 }
 
-const RoomsBottomSheet = ({ rooms, category,listRef, sheetRef }: Props) => {
+const RoomsBottomSheet = ({ rooms, category }: Props) => {
     const snapPoints = useMemo(() => ['10%', '100%'], [])
 
     return (
         <BottomSheet
-            ref={sheetRef}
             snapPoints={snapPoints}
         >
             <View style={{ flex: 1, paddingTop: 20 }}>
-                <Rooms rooms={rooms} category={category} listRef={listRef}/>
+                <Rooms rooms={rooms} category={category}/>
             </View>
         </BottomSheet>
     )

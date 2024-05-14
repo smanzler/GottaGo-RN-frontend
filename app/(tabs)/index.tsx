@@ -38,8 +38,6 @@ const Page = () => {
             <RoomsBottomSheet 
                 rooms={rooms || []} 
                 category={category} 
-                listRef={listRef} 
-                sheetRef={sheetRef}
             />
         </View>
     )

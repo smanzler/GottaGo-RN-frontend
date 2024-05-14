@@ -1,19 +1,19 @@
 import { View, Text, ActivityIndicator } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import MapView, { Camera, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Camera, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { StyleSheet } from 'react-native';
 import * as Location from 'expo-location'
 import { useLocation } from '../hooks/useLocation';
 import { TouchableOpacity } from 'react-native';
 import { getRoomsInView } from '../api/rooms';
+import { FontAwesome6 } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
 
 interface Props {
     rooms: any[];
 }
 
 const RoomsMap = ({rooms}: Props) => {
-    const [loading, setLoading] = useState(false);
-
     const mapViewRef = useRef<MapView>(null);
 
     useEffect(() => {
@@ -21,15 +21,14 @@ const RoomsMap = ({rooms}: Props) => {
     }, []);
 
     const onMarkerPress = (longitude: any, latitude: any) => {
-        const camera = {
-            center: {
-                latitude,
-                longitude,
-            },
-            zoom: 18,
-        } as Camera;
+        const region = {
+            longitude,
+            latitude,
+            longitudeDelta: 0.003,
+            latitudeDelta: 0.003,
+        } as Region;
 
-        mapViewRef.current?.animateCamera(camera);
+        mapViewRef.current?.animateToRegion(region, 300);
     }
 
     // const [timer, setTimer] = useState<NodeJS.Timeout>();
@@ -73,11 +72,13 @@ const RoomsMap = ({rooms}: Props) => {
 
     return (
         <View style={styles.container}>
-            {loading && <ActivityIndicator style={styles.loading} size={'large'} />}
+            <TouchableOpacity style={styles.locationBtn} onPress={() => useLocation(mapViewRef)}>
+                <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
+            </TouchableOpacity>
+
             <MapView
                 ref={mapViewRef}
                 style={styles.map}
-                provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
                 showsMyLocationButton={true}
             >
@@ -93,7 +94,7 @@ const RoomsMap = ({rooms}: Props) => {
                         <TouchableOpacity
                             style={styles.marker}
                         >
-                            <Text>{room.rating ? `★${room.rating}` : "0 ★"}</Text>
+                            <Text>{room.rating ? `★${room.rating}` : "★0"}</Text>
                         </TouchableOpacity>
                     </Marker>
                 ))}
@@ -125,6 +126,19 @@ const styles = StyleSheet.create({
         right: 0,
         top: 10,
         zIndex: 1,
+    },
+    locationBtn: {
+        position: 'absolute',
+        right: 10,
+        top: 10,
+        backgroundColor: '#fff',
+        width: 50,
+        aspectRatio: 1,
+        zIndex: 1,
+        padding: 13,
+        borderWidth: 1,
+        borderColor: Colors.grey,
+        borderRadius: 24,
     }
 });
 
