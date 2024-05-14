@@ -19,8 +19,6 @@ const RoomsMap = ({rooms}: Props) => {
     const [selected, setSelected] = useState<number | undefined>(undefined);
     const mapViewRef = useRef<MapView>(null);
 
-    let widths: { value: number; }[] = [];
-
     useEffect(() => {
         useLocation(mapViewRef)
     }, []);
@@ -84,7 +82,7 @@ const RoomsMap = ({rooms}: Props) => {
                 onPress={onMapPress}
             >
                 {rooms && rooms.map((room) => (
-                    <RoomMarker key={room.id} room={room} mapViewRef={mapViewRef} selected={selected === room.id}/>
+                    <RoomMarker key={room.id} room={room} mapViewRef={mapViewRef} selected={selected === room.id} setSelected={setSelected}/>
                 ))}
 
             </MapView>

@@ -1,21 +1,36 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 import { Marker } from 'react-native-maps';
-import Animated from 'react-native-reanimated';
+import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 
 interface Props {
     room: any;
-    selected: boolean; 
     mapViewRef: any;
+    selected: boolean; 
+    setSelected: Dispatch<SetStateAction<number | undefined>>;
 }
 
-const RoomMarker = ({room, selected, mapViewRef}: Props) => {
+const RoomMarker = ({room, mapViewRef, selected, setSelected}: Props) => {
 
-    const onMarkerPress = (longitude: any, latitude: any, id: number) => {
+    const width = useSharedValue(50);
+    const height = useSharedValue(30);
+
+    useEffect(() => {
+        if (selected) {
+            width.value = withSpring(100);
+            height.value = withSpring(100);
+        } else {
+            width.value = withSpring(50);
+            height.value = withSpring(30)
+        }
+    }, [selected])
+
+    const onMarkerPress = () => {
+        setSelected(room.id)
 
         mapViewRef.current?.animateToRegion({
-            longitude,
-            latitude,
+            longitude: room.long,
+            latitude: room.lat,
             longitudeDelta: 0.003,
             latitudeDelta: 0.003,
         }, 300);
@@ -23,14 +38,14 @@ const RoomMarker = ({room, selected, mapViewRef}: Props) => {
 
     return (
         <Marker
-            onPress={() => onMarkerPress(room.long, room.lat, room.id)}
+            onPress={() => onMarkerPress()}
             coordinate={{
                 latitude: room.lat,
                 longitude: room.long
             }}
         >
             <Animated.View
-                style={selected !== room.id  ? styles.marker : [styles.markerSelected, {width: length}]}
+                style={[styles.marker, {width, height}]}
             >
                 <TouchableOpacity
                     style={{ flex: 1 }}
@@ -50,7 +65,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'gray',
         borderRadius: 20,
-        width: 45
     },
     markerSelected: {
         backgroundColor: '#fff',
@@ -58,8 +72,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         borderWidth: 1,
         borderColor: 'gray',
-        borderRadius: 20,
-        
+        borderRadius: 20,  
     },
 })
 

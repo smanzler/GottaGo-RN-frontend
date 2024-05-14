@@ -10,6 +10,7 @@ import { useInsertRoom } from '@/src/api/rooms';
 import { useLocation } from '@/src/hooks/useLocation';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator'
 import { randomUUID } from 'expo-crypto'
 import { decode } from 'base64-arraybuffer';
 import Colors from '@/src/constants/Colors';
@@ -59,29 +60,40 @@ const Page = () => {
         if (!image?.startsWith('file://')) {
           return;
         }
-      
+        
+        const imageResize = await ImageManipulator.manipulateAsync(
+            image,
+            [{ resize: { width: 300, height: 300 } }],
+            { base64: true, format: ImageManipulator.SaveFormat.PNG}
+        )
+
         const base64 = await FileSystem.readAsStringAsync(image, {
           encoding: 'base64',
         });
-        const filePath = `${randomUUID()}.png`;
-        const contentType = 'image/png';
-        const { data, error } = await supabase.storage
-          .from('product-images')
-          .upload(filePath, decode(base64), { contentType });
+
+        console.log(imageResize)
+        console.log(base64)
+        // const filePath = `${randomUUID()}.png`;
+        // const contentType = 'image/png';
+        // const { data, error } = await supabase.storage
+        //   .from('product-images')
+        //   .upload(filePath, decode(base64), { contentType });
       
-        if (data) {
-          return data.path;
-        }
+        // if (data) {
+        //   return data.path;
+        // }
       };
 
     const onLongMapPress = (event: LongPressEvent) => {
         setMarker(event.nativeEvent.coordinate)
     }
 
-    const onCreatePress = () => {
+    const onCreatePress = async () => {
         setCreateLoading(true);
 
-        insertRoom({name, description, longitude: marker?.longitude, latitude: marker?.latitude }, {
+        const imagePath = await uploadImage();
+
+        insertRoom({name, description, longitude: marker?.longitude, latitude: marker?.latitude, image: imagePath }, {
             onSuccess: () => {
                 resetFields();
             },
@@ -121,12 +133,18 @@ const Page = () => {
                         </MapView>
                     </View>
 
-                    <View style={{width: 100, aspectRatio: 1, backgroundColor: Colors.grey, borderRadius: 30}}>
-                        {image && <Image style={{flex: 1}} source={{uri: image}}/>}
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <View style={{width: 100, aspectRatio: 1, backgroundColor: Colors.grey, borderRadius: 15, overflow: 'hidden'}}>
+                            {image && <Image style={{flex: 1}} source={{uri: image}}/>}
+                        </View>
+
+                        <TouchableOpacity style={{marginBottom: 30, }} onPress={pickImage}>
+                            <Text>Add photo</Text>
+                        </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity style={{marginBottom: 30}} onPress={pickImage}>
-                        <Text>Add photo</Text>
+                    <TouchableOpacity onPress={uploadImage}>
+                        <Text>Upload</Text>
                     </TouchableOpacity>
 
                     <Text style={[defaultStyles.h2, {marginBottom: 0}]}>Name</Text>
