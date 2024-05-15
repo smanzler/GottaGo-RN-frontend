@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/src/constants/Colors";
 import { FlatList } from "react-native-gesture-handler";
+import RemoteImage from "./RemoteImage";
 
 interface Props {
     category: string;
@@ -27,17 +28,22 @@ const Rooms = ({ category, rooms }: Props) => {
         <Link href={`/listing/${item.id}`} asChild>
             <TouchableOpacity>
                 <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
-                    <Image style={styles.image}/>
-                    <TouchableOpacity style={{ position: 'absolute', top: 30, right: 30 }}>
-                        <Ionicons name="heart-outline" size={24} color={'#000'} />
-                    </TouchableOpacity>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ maxWidth: '80%', fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Ionicons name="star" size={16} />
-                            <Text style={{ fontFamily: 'mon-sb' }}>{item.rating}</Text>
+                    <View style={styles.image}>
+                        <RemoteImage path={item.image} style={{width: '100%', height: '100%'}}/>
+                        <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}>
+                            <Ionicons name="heart-outline" size={24} color={'#000'} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.text}>
+                        <View style={styles.header}>
+                            <Text style={{ fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Ionicons name="star" size={16} />
+                                <Text style={{ fontFamily: 'mon-sb' }}>{item.rating}</Text>
+                            </View>
                         </View>
+
+                        <Text style={styles.description}>{item.description}</Text>
                     </View>
                 </Animated.View>
             </TouchableOpacity>
@@ -56,13 +62,33 @@ const Rooms = ({ category, rooms }: Props) => {
 
 const styles = StyleSheet.create({
     rooms: {
-        padding: 16,
+        padding: 10,
+        flexDirection: 'row'
     },
     image: {
-        width: '100%',
-        height: 300,
+        width: 100,
+        height: 100,
         borderRadius: 10,
         backgroundColor: 'grey',
+        overflow: 'hidden'
+    },
+    text: {
+        flex: 1,
+        padding: 10
+    },
+    header: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+    },
+    name: {
+        fontSize: 16, 
+        fontFamily: 'mon-sb',
+    },
+    description: {
+        overflow: 'hidden'
+    },
+    rating: {
+        fontFamily: 'mon-sb'
     },
 })
 

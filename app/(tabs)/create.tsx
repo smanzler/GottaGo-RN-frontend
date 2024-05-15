@@ -48,7 +48,7 @@ const Page = () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 0,
         })
         if (!result.canceled) {
@@ -61,27 +61,27 @@ const Page = () => {
           return;
         }
         
-        const imageResize = await ImageManipulator.manipulateAsync(
+        const base64 = await ImageManipulator.manipulateAsync(
             image,
             [{ resize: { width: 300, height: 300 } }],
             { base64: true, format: ImageManipulator.SaveFormat.PNG}
         )
 
-        const base64 = await FileSystem.readAsStringAsync(image, {
-          encoding: 'base64',
-        });
+        const filePath = `${randomUUID()}.png`;
+        const contentType = 'image/png';
 
-        console.log(imageResize)
-        console.log(base64)
-        // const filePath = `${randomUUID()}.png`;
-        // const contentType = 'image/png';
-        // const { data, error } = await supabase.storage
-        //   .from('product-images')
-        //   .upload(filePath, decode(base64), { contentType });
-      
-        // if (data) {
-        //   return data.path;
-        // }
+        if (!base64.base64) return;
+
+        const { data, error } = await supabase.storage
+          .from('rooms')
+          .upload(filePath, decode(base64.base64), { contentType });
+        
+
+        if (error) console.log(error);
+        if (data) console.log(data);
+        if (data) {
+          return data.path;
+        }
       };
 
     const onLongMapPress = (event: LongPressEvent) => {

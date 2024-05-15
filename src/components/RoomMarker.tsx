@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { Dispatch, SetStateAction, useEffect } from 'react'
 import { Marker } from 'react-native-maps';
-import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
 interface Props {
     room: any;
@@ -15,15 +15,12 @@ const RoomMarker = ({room, mapViewRef, selected, setSelected}: Props) => {
     const width = useSharedValue(50);
     const height = useSharedValue(30);
 
-    useEffect(() => {
-        if (selected) {
-            width.value = withSpring(100);
-            height.value = withSpring(100);
-        } else {
-            width.value = withSpring(50);
-            height.value = withSpring(30)
-        }
-    }, [selected])
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+          width: selected ? withSpring(100) : withSpring(50),
+          height: selected ? withSpring(100) : withTiming(30),
+        };
+      }, [selected]);
 
     const onMarkerPress = () => {
         setSelected(room.id)
@@ -43,14 +40,17 @@ const RoomMarker = ({room, mapViewRef, selected, setSelected}: Props) => {
                 latitude: room.lat,
                 longitude: room.long
             }}
+            style={{
+                overflow: 'visible'
+            }}
         >
             <Animated.View
-                style={[styles.marker, {width, height}]}
+                style={[styles.marker, animatedStyle]}
             >
                 <TouchableOpacity
                     style={{ flex: 1 }}
-                    >
-                    <Text>{room.rating ? `★${room.rating}` : "★0"}</Text>
+                >
+                    <Text>{`★ ${room.rating || 0}`}</Text>
                 </TouchableOpacity>
             </Animated.View>
         </Marker>

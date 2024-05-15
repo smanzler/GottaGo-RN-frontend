@@ -20,13 +20,13 @@ const RoomsMap = ({rooms}: Props) => {
     const mapViewRef = useRef<MapView>(null);
 
     useEffect(() => {
-        useLocation(mapViewRef)
+        useLocation(mapViewRef);
     }, []);
 
     const onMapPress = (event: any) => {
         if (event.nativeEvent.action === 'marker-press') return;
 
-        setSelected(undefined)
+        setSelected(undefined);
     }
 
     // const [timer, setTimer] = useState<NodeJS.Timeout>();

@@ -1,18 +1,17 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 import { defaultStyles } from '@/src/constants/Styles';
 import { useRoom } from '@/src/api/rooms';
+import RemoteImage from '@/src/components/RemoteImage';
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
 
-const Page = () => {
+const RoomPage = () => {
     const { id: idString } = useLocalSearchParams<{id: string}>();
     const id = parseFloat(idString);
-
-    console.log(id);
 
     const {
         data: room,
@@ -23,7 +22,7 @@ const Page = () => {
     return (
         <View style={styles.container}>
             <Animated.ScrollView>
-                <Animated.Image style={styles.image} />
+                <RemoteImage path={room ? room.image : null} style={styles.image} />
             </Animated.ScrollView>
 
             <Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(200)}>
@@ -46,4 +45,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Page;
+export default RoomPage;

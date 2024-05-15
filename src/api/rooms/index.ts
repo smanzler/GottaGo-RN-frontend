@@ -54,7 +54,7 @@ export const useInsertRoom = () => {
     return useMutation({
         async mutationFn(data: any) {
             console.log('creating room', data);
-            const { error, data: newRoom } = await supabase
+            const { error } = await supabase
                 .from('rooms')
                 .insert({
                     name: data.name,
@@ -65,9 +65,9 @@ export const useInsertRoom = () => {
                 })
                 .single();
 
-            if (error) throw new Error(error.message);
-
-            return newRoom;
+            if (error) {
+                throw new Error(error.message);
+            }
         }
     })
 }
