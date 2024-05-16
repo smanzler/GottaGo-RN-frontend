@@ -7,9 +7,10 @@ import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 interface Props {
     rooms: any[];
     category: string;
+    refetch: any;
 }
 
-const RoomsBottomSheet = ({ rooms, category }: Props) => {
+const RoomsBottomSheet = ({ rooms, category, refetch }: Props) => {
     const snapPoints = useMemo(() => ['10%', '100%'], [])
 
     return (
@@ -17,7 +18,7 @@ const RoomsBottomSheet = ({ rooms, category }: Props) => {
             snapPoints={snapPoints}
         >
             <View style={{ flex: 1, paddingTop: 20 }}>
-                <Rooms rooms={rooms} category={category}/>
+                <Rooms rooms={rooms} category={category} refetch={refetch} />
             </View>
         </BottomSheet>
     )

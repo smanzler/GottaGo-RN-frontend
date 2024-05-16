@@ -1,6 +1,6 @@
-import { View, Text, ScrollView, StyleSheet, FlatList } from 'react-native'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, Stack } from 'expo-router';
+import { View, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, Stack, router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
 
 import ExploreHeader from '@/src/components/ExploreHeader';
 import Rooms from '@/src/components/Rooms';
@@ -16,11 +16,25 @@ const Page = () => {
     const listRef = useRef<FlatList>(null);
     const sheetRef = useRef<BottomSheet>(null);
 
+    const param = useLocalSearchParams();
+
+    useEffect(() => {
+        if (param.refetch && param.refetch.length > 0) {
+            refetch();
+            router.setParams({refetch: ''})
+        }
+    }, [param])
+
     const {
         data: rooms,
         error,
         isLoading,
+        refetch,
     } = useRooms();
+
+    const refetchRooms = () => {
+        refetch();
+    }
     
     const onDataChanged = (category: string) => {
         setCategory(category);
@@ -38,6 +52,7 @@ const Page = () => {
             <RoomsBottomSheet 
                 rooms={rooms || []} 
                 category={category} 
+                refetch={refetchRooms}
             />
         </View>
     )

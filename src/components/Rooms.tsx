@@ -1,4 +1,4 @@
-import { View, Text, ListRenderItem, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, ListRenderItem, StyleSheet, Image, TouchableOpacity, RefreshControl } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { defaultStyles } from "@/src/constants/Styles";
 import { Link } from "expo-router";
@@ -11,10 +11,12 @@ import RemoteImage from "./RemoteImage";
 interface Props {
     category: string;
     rooms: any[];
+    refetch: any;
 }
 
-const Rooms = ({ category, rooms }: Props) => {
+const Rooms = ({ category, rooms, refetch }: Props) => {
     const [ loading, setLoading ] = useState(false);
+    const [ refreshing, setRefreshing ] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -24,8 +26,16 @@ const Rooms = ({ category, rooms }: Props) => {
         }, 200)
     }, [category])
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+
+        await refetch();
+
+        setRefreshing(false);
+    }
+
     const renderRow: ListRenderItem<any> = ({ item }) => (
-        <Link href={`/listing/${item.id}`} asChild>
+        <Link href={`/room/${item.id}`} asChild>
             <TouchableOpacity>
                 <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
                     <View style={styles.image}>
@@ -34,6 +44,7 @@ const Rooms = ({ category, rooms }: Props) => {
                             <Ionicons name="heart-outline" size={24} color={'#000'} />
                         </TouchableOpacity>
                     </View>
+
                     <View style={styles.text}>
                         <View style={styles.header}>
                             <Text style={{ fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
@@ -55,6 +66,13 @@ const Rooms = ({ category, rooms }: Props) => {
             <FlatList 
                 renderItem={renderRow}
                 data={rooms}
+                keyExtractor={(item) => item.id}
+                refreshControl={
+                    <RefreshControl 
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             />
         </View>
     )

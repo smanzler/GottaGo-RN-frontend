@@ -56,7 +56,7 @@ function RootLayoutNav() {
     if (!session && !loading) {
       router.navigate('/(auth)/login')
     }
-  }, [loading])
+  }, [session, loading])
    
 
   return (
@@ -77,7 +77,7 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="listing/[id]" options={{ headerBackTitleVisible: false, headerTitle: '', headerTransparent: true }} />
+      <Stack.Screen name="room/[id]" options={{ headerBackTitleVisible: false, headerTitle: '', headerTransparent: true }} />
       <Stack.Screen
         name="(modals)/booking"
         options={{

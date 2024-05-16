@@ -1,7 +1,7 @@
 import { ActivityIndicator, Image } from 'react-native';
 import React, { ComponentProps, useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/src/utils/supabase';
-import fallback from '../../assets/images/fallback.png'
+const fallback = require('../../assets/images/fallback.png');
 
 type RemoteImageProps = {
   path?: string | null;

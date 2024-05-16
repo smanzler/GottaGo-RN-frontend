@@ -76,9 +76,6 @@ const Page = () => {
           .from('rooms')
           .upload(filePath, decode(base64.base64), { contentType });
         
-
-        if (error) console.log(error);
-        if (data) console.log(data);
         if (data) {
           return data.path;
         }
@@ -99,7 +96,7 @@ const Page = () => {
             },
             onSettled: () => {
                 setCreateLoading(false);
-                router.replace('/(tabs)/');
+                router.replace({ pathname: '/(tabs)/', params: { refetch: 't' }});
             }
         })
     }
