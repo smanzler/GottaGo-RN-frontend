@@ -77,7 +77,28 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="room/index" options={{ headerBackTitleVisible: false, headerTitle: '', headerTransparent: true }} />
+      <Stack.Screen 
+        name="room/index" 
+        options={{ 
+          headerBackTitleVisible: false, 
+          headerTitle: '', 
+          headerTransparent: true, 
+          presentation: 'modal',
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{
+                backgroundColor: '#fff',
+                borderColor: Colors.grey,
+                borderRadius: 20,
+                borderWidth: 1,
+                padding: 4,
+              }}>
+              <Ionicons name="close-outline" size={22} />
+            </TouchableOpacity>
+          )
+        }} 
+      />
       <Stack.Screen
         name="(modals)/booking"
         options={{

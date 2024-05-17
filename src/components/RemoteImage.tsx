@@ -2,16 +2,17 @@ import { ActivityIndicator, Image } from 'react-native';
 import React, { ComponentProps, useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/src/utils/supabase';
 import { useImage } from '../api/rooms';
+import Animated from 'react-native-reanimated';
 const fallback = require('../../assets/images/fallback.png');
 
 type RemoteImageProps = {
-  path?: string | null;
-} & Omit<ComponentProps<typeof Image>, 'source'>;
+  path?: string | undefined;
+} & Omit<ComponentProps<typeof Animated.Image>, 'source'>;
 
 const RemoteImage = ({ path, ...imageProps }: RemoteImageProps) => {
   const { data: image } = useImage(path)
-  
-  return <Image source={image ? { uri: image } : fallback} {...imageProps} />;
+
+  return <Animated.Image source={image ? { uri: image } : fallback} {...imageProps} />;
 };
 
 export default RemoteImage;
