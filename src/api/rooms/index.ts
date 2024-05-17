@@ -9,20 +9,20 @@ export const useRooms = () => {
         queryKey: ['rooms'],
         queryFn: async () => {
             console.log('getting rooms')
-            
+
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 alert('Permission to access location was denied');
                 return;
             }
-        
+
             let location = await Location.getLastKnownPositionAsync({});
 
             const { data, error } = await supabase.rpc('nearby_rooms', {
                 long: location?.coords.longitude,
                 lat: location?.coords.latitude,
             })
-        
+
             if (error) throw new Error(error.message);
 
             return data;
@@ -88,4 +88,49 @@ export const getRoomsInView = async (
     if (error) throw new Error(error.message);
 
     return data;
+}
+
+export const useImage = (id: string | null | undefined) => {
+    return useQuery({
+        queryKey: ['image', id],
+        queryFn: async () => {
+            if (!id) return null;
+            
+            const { data, error } = await supabase.storage
+                .from('rooms')
+                .download(id);
+
+            if (error) {
+                console.log(error);
+            }
+
+            if (data) {
+                try {
+                    const result = await readFileAsDataURL(data);
+                    return result;
+                } catch (error) {
+                    console.error('Failed to read file:', error);
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+    });
+}
+
+async function readFileAsDataURL(data: any) {
+    return new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.readAsDataURL(data);
+
+        fr.onload = () => {
+            resolve(fr.result);
+        };
+
+        fr.onerror = (error) => {
+            console.error(error);
+            reject(null);
+        };
+    });
 }

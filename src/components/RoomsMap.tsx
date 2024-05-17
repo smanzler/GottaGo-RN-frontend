@@ -29,6 +29,12 @@ const RoomsMap = ({rooms}: Props) => {
         setSelected(undefined);
     }
 
+    const onLocationPress = () => {
+        useLocation(mapViewRef);
+        
+        setSelected(undefined)
+    }
+
     // const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     // const handleRegionChangeComplete = () => {
@@ -70,7 +76,7 @@ const RoomsMap = ({rooms}: Props) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.locationBtn} onPress={() => useLocation(mapViewRef)}>
+            <TouchableOpacity style={styles.locationBtn} onPress={onLocationPress}>
                 <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
             </TouchableOpacity>
 

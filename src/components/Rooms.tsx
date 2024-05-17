@@ -35,7 +35,7 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
     }
 
     const renderRow: ListRenderItem<any> = ({ item }) => (
-        <Link href={`/room/${item.id}`} asChild>
+        <Link href={{pathname: 'room/', params: item}} asChild>
             <TouchableOpacity>
                 <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
                     <View style={styles.image}>
@@ -49,8 +49,7 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
                         <View style={styles.header}>
                             <Text style={{ fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
                             <View style={{ flexDirection: 'row' }}>
-                                <Ionicons name="star" size={16} />
-                                <Text style={{ fontFamily: 'mon-sb' }}>{item.rating}</Text>
+                                <Text style={{ fontFamily: 'mon-sb' }}>★ {item.rating || 0}</Text>
                             </View>
                         </View>
 

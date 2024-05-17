@@ -77,7 +77,7 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="room/[id]" options={{ headerBackTitleVisible: false, headerTitle: '', headerTransparent: true }} />
+      <Stack.Screen name="room/index" options={{ headerBackTitleVisible: false, headerTitle: '', headerTransparent: true }} />
       <Stack.Screen
         name="(modals)/booking"
         options={{

@@ -6,21 +6,22 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } fr
 interface Props {
     room: any;
     mapViewRef: any;
-    selected: boolean; 
+    selected: boolean;
     setSelected: Dispatch<SetStateAction<number | undefined>>;
 }
 
-const RoomMarker = ({room, mapViewRef, selected, setSelected}: Props) => {
+const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
 
-    const width = useSharedValue(50);
-    const height = useSharedValue(30);
+    const animatedStyle = useAnimatedStyle(() => ({
+        width: withTiming(selected ? 100 : 50),
+        height: withTiming(selected ? 100 : 30),
+        marginBottom: withTiming(selected ? 50 : 0),
+    }));
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-          width: selected ? withSpring(100) : withSpring(50),
-          height: selected ? withSpring(100) : withTiming(30),
-        };
-      }, [selected]);
+    const textAnimatedStyle = useAnimatedStyle(() => ({
+        top: withTiming(selected ? 70 : 0),
+        left: withTiming(selected ? 60 : 0),
+    }))
 
     const onMarkerPress = () => {
         setSelected(room.id)
@@ -50,7 +51,9 @@ const RoomMarker = ({room, mapViewRef, selected, setSelected}: Props) => {
                 <TouchableOpacity
                     style={{ flex: 1 }}
                 >
-                    <Text>{`★ ${room.rating || 0}`}</Text>
+                    <Animated.View style={[styles.text, textAnimatedStyle]}>
+                        <Text style={{ fontFamily: 'mon-sb'}} >{`★ ${room.rating || 0}`}</Text>
+                    </Animated.View>
                 </TouchableOpacity>
             </Animated.View>
         </Marker>
@@ -60,20 +63,24 @@ const RoomMarker = ({room, mapViewRef, selected, setSelected}: Props) => {
 const styles = StyleSheet.create({
     marker: {
         backgroundColor: 'white',
-        padding: 5,
-        paddingHorizontal: 8,
-        borderWidth: 1,
-        borderColor: 'gray',
         borderRadius: 20,
+        elevation: 4,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        }
     },
-    markerSelected: {
-        backgroundColor: '#fff',
-        padding: 5,
-        paddingHorizontal: 8,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 20,  
-    },
+    text: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        right: 0,
+        bottom: 0,
+    }
 })
 
 export default RoomMarker;
