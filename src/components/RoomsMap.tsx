@@ -141,6 +141,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.grey,
         borderRadius: 24,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        }
     }
 });
 

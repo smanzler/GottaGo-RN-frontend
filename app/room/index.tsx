@@ -6,11 +6,11 @@ import { defaultStyles } from '@/src/constants/Styles';
 import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
 
-const IMG_HEIGHT = 300;
+const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');
 
 const RoomPage = () => {
-    const room = useLocalSearchParams<{id: string, image: string, created_at: string}>();
+    const room = useLocalSearchParams<{id: string, name: string, image: string, description: string, created_at: string, created_by: string}>();
 
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollOffset = useScrollViewOffset(scrollRef);
@@ -39,8 +39,9 @@ const RoomPage = () => {
         <View style={styles.container}>
             <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
                 <RemoteImage path={room.image ? room.image : undefined} style={[styles.image, imageAnimatedStyle]} />
-                <View style={{height: 3000, backgroundColor: '#fff'}}>
-                    <Text>Parallax</Text>
+                <View style={{height: 3000, backgroundColor: '#fff', padding: 20}}>
+                    <Text style={styles.h1}>{room.name}</Text>
+                    <Text style={styles.h2}>{room.description}</Text>
                 </View>
             </Animated.ScrollView>
         </View>
@@ -56,6 +57,14 @@ const styles = StyleSheet.create({
         height: IMG_HEIGHT,
         width,
         backgroundColor: 'grey'
+    },
+    h1: {
+        fontFamily: 'mon-b',
+        fontSize: 40,
+    },
+    h2: {
+        fontFamily: 'mon-sb',
+        marginTop: 10,
     }
 
 })

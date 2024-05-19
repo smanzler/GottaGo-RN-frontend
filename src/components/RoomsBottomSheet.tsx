@@ -11,7 +11,7 @@ interface Props {
 }
 
 const RoomsBottomSheet = ({ rooms, category, refetch }: Props) => {
-    const snapPoints = useMemo(() => ['5%', '100%'], [])
+    const snapPoints = useMemo(() => ['7%', '100%'], [])
 
     return (
         <BottomSheet

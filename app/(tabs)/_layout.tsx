@@ -34,6 +34,8 @@ const Layout = () => {
       <Tabs.Screen 
         name="create"
         options={{
+          headerTitle: 'Create New Room',
+          headerTitleStyle: {fontFamily: 'mon-sb'},
           tabBarLabel: 'Create',
           tabBarIcon: ({color, size}) => (
             <AntDesign name="plussquareo" color={color} size={size}/>
