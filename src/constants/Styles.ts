@@ -40,6 +40,14 @@ export const defaultStyles = StyleSheet.create({
         position: 'absolute',
         left: 16,
     },
+    bubbles: {
+        width: 150,
+        aspectRatio: 1,
+        borderRadius: 15,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     footer: {
         position: 'absolute',
         height: 100,

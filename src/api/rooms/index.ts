@@ -53,7 +53,6 @@ export const useInsertRoom = () => {
 
     return useMutation({
         async mutationFn(data: any) {
-            console.log('creating room', data);
             const { error } = await supabase
                 .from('rooms')
                 .insert({
@@ -62,6 +61,7 @@ export const useInsertRoom = () => {
                     image: data.image,
                     created_by: session?.user.id,
                     location: `POINT(${data.longitude} ${data.latitude})`,
+                    rating: data.rating,
                 })
                 .single();
 

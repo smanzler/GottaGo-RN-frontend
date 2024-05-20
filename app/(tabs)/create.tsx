@@ -14,7 +14,7 @@ import * as ImageManipulator from 'expo-image-manipulator'
 import { randomUUID } from 'expo-crypto'
 import { decode } from 'base64-arraybuffer';
 import Colors from '@/src/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import ExitButtom from '@/src/components/ExitButtom';
 const fallback = require('../../assets/images/fallback.png');
 
@@ -24,11 +24,13 @@ const Page = () => {
     const router = useRouter();
 
     const mapViewRef = useRef<MapView>(null);
+    const modalMapViewRef = useRef<MapView>(null);
 
     const [modalVisible, setModalVisible] = useState<boolean>(false);
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("");
+    const [rating, setRating] = useState(0);
     const [image, setImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false)
     const [createLoading, setCreateLoading] = useState(false);
@@ -58,6 +60,7 @@ const Page = () => {
         setName("");
         setDescription("");
         setImage(null);
+        setRating(0);
 
         setMarker(undefined);
     }
@@ -66,8 +69,11 @@ const Page = () => {
         if (name === '') {
             Alert.alert('Error', 'Please add a name before creating')
             return false;
-        } else if (description === '') {
-            Alert.alert('Error', 'Please add a description before creating')
+        } else if (!marker) {
+            Alert.alert('Error', 'Please add a marker before creating')
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -115,7 +121,7 @@ const Page = () => {
 
         const imagePath = await uploadImage();
 
-        insertRoom({ name, description, longitude: marker?.longitude, latitude: marker?.latitude, image: imagePath }, {
+        insertRoom({ name, description, rating, longitude: marker?.longitude, latitude: marker?.latitude, image: imagePath }, {
             onSuccess: () => {
                 resetFields();
                 router.replace({ pathname: '/(tabs)/', params: { refetch: 't' } });
@@ -159,28 +165,28 @@ const Page = () => {
                     <View style={styles.bubblesContainer}>
                         <View style={{ alignItems: 'center' }}>
                             <Text style={{ fontFamily: 'mon-sb' }}>Location</Text>
-                            <TouchableOpacity style={styles.bubbles} onPress={openModal}>
-                                    <MapView
-                                        ref={mapViewRef}
-                                        style={styles.mapView}
-                                        pointerEvents='none'
-                                        showsUserLocation={true}
-                                        showsMyLocationButton={true}
-                                    >
-                                        {marker && <Marker coordinate={marker} />}
-                                    </MapView>
+                            <TouchableOpacity style={defaultStyles.bubbles} onPress={openModal}>
+                                <MapView
+                                    ref={mapViewRef}
+                                    style={styles.mapView}
+                                    pointerEvents='none'
+                                    showsUserLocation={true}
+                                    showsMyLocationButton={true}
+                                >
+                                    {marker && <Marker coordinate={marker} />}
+                                </MapView>
                             </TouchableOpacity>
                         </View>
 
                         <View style={{ alignItems: 'center', }}>
                             <Text style={{ fontFamily: 'mon-sb' }}>Photo</Text>
-                            <TouchableOpacity style={styles.bubbles} onPress={pickImage}>
+                            <TouchableOpacity style={defaultStyles.bubbles} onPress={pickImage}>
                                 <Image style={{ flex: 1, aspectRatio: 1 }} source={image ? { uri: image } : fallback} />
                             </TouchableOpacity>
                         </View>
                     </View>
 
-                    <Text style={[defaultStyles.h2, { marginBottom: 0 }]}>Name</Text>
+                    <Text style={[defaultStyles.h2, { marginBottom: 0, fontFamily: 'mon-sb' }]}>Name</Text>
 
                     <TextInput
                         placeholder=""
@@ -189,7 +195,7 @@ const Page = () => {
                         style={[defaultStyles.inputField, { marginBottom: 30 }]}
                     />
 
-                    <Text style={[defaultStyles.h2, { marginBottom: 0 }]}>Description</Text>
+                    <Text style={[defaultStyles.h2, { marginBottom: 0, fontFamily: 'mon-sb' }]}>Additional Information</Text>
 
                     <TextInput
                         placeholder=""
@@ -197,6 +203,20 @@ const Page = () => {
                         onChangeText={setDescription}
                         style={[defaultStyles.inputField, { marginBottom: 30 }]}
                     />
+
+                    <Text style={[defaultStyles.h2, { marginBottom: 0, fontFamily: 'mon-sb', textAlign: 'center' }]}>Rating</Text>
+
+                    <View style={styles.starContainer}>
+                        {Array.from({length: 5}, (_, index) => (
+                            <TouchableOpacity key={index} onPress={() => setRating(index + 1)}>
+                                <Ionicons
+                                    name={index < rating ? 'star' : 'star-outline'}
+                                    size={40}
+                                    color={index < rating ? 'gold' : 'black'}
+                                />
+                            </TouchableOpacity>
+                        ))}
+                    </View>
 
                     <TouchableOpacity
                         style={[defaultStyles.btn, { marginTop: 10 }]}
@@ -212,8 +232,12 @@ const Page = () => {
                         visible={modalVisible}
                         animationType='fade'
                     >
-                        <ExitButtom onPress={closeModal} />
+                        <ExitButtom onPress={closeModal} style={{ position: 'absolute', top: 30, left: 20 }} />
+                        <TouchableOpacity style={styles.locationBtn} onPress={() => useLocation(modalMapViewRef)}>
+                            <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
+                        </TouchableOpacity>
                         <MapView
+                            ref={modalMapViewRef}
                             style={styles.modalMapView}
                             showsUserLocation={true}
                             showsMyLocationButton={true}
@@ -242,18 +266,36 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
-    bubbles: {
-        width: 150,
-        aspectRatio: 1,
-        borderRadius: 15,
-        overflow: 'hidden',
-        alignItems: 'center',
-        justifyContent: 'center'
+    starContainer: {
+        flexDirection: 'row',
+        marginBottom: 30,
+        justifyContent: 'center',
     },
     bubblesContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 30,
+    },
+    locationBtn: {
+        position: 'absolute',
+        right: 20,
+        bottom: 30,
+        backgroundColor: '#fff',
+        width: 50,
+        aspectRatio: 1,
+        zIndex: 1,
+        padding: 13,
+        borderWidth: 1,
+        borderColor: Colors.grey,
+        borderRadius: 24,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        }
     }
 })
 

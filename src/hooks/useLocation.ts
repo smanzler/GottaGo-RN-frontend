@@ -10,7 +10,7 @@ export const useLocation = async (mapViewRef: React.RefObject<MapView>) => {
         return;
     }
 
-    let location = await Location.getLastKnownPositionAsync({});
+    let location = await Location.getCurrentPositionAsync({});
 
     const region = {
         longitude: location?.coords.longitude,
