@@ -9,6 +9,7 @@ import { TouchableOpacity } from 'react-native';
 import { AuthProvider, useAuth } from '../src/providers/AuthProvider';
 import QueryProvider from '../src/providers/QueryProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ExitButtom from '@/src/components/ExitButtom';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -85,17 +86,9 @@ function RootLayoutNav() {
           headerTransparent: true, 
           presentation: 'modal',
           headerLeft: () => (
-            <TouchableOpacity
+            <ExitButtom
               onPress={() => router.back()}
-              style={{
-                backgroundColor: '#fff',
-                borderColor: Colors.grey,
-                borderRadius: 20,
-                borderWidth: 1,
-                padding: 4,
-              }}>
-              <Ionicons name="close-outline" size={22} />
-            </TouchableOpacity>
+            />
           )
         }} 
       />
@@ -106,28 +99,6 @@ function RootLayoutNav() {
           animation: 'fade',
           headerTransparent: true,
           headerTitle: (props) => <ModalHeaderText />,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={{
-                backgroundColor: '#fff',
-                borderColor: Colors.grey,
-                borderRadius: 20,
-                borderWidth: 1,
-                padding: 4,
-              }}>
-              <Ionicons name="close-outline" size={22} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen
-        name='(modals)/createMap'
-        options={{
-          presentation: 'fullScreenModal',
-          animation: 'fade',
-          headerTransparent: true,
-          headerTitle: '',
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => router.back()}

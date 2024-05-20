@@ -113,15 +113,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         width: 45
     },
-    markerSelected: {
-        backgroundColor: '#fff',
-        padding: 5,
-        paddingHorizontal: 8,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 20,
-        
-    },
     loading: {
         position: 'absolute',
         left: 0,

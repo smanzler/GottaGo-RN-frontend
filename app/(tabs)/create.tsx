@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image, Alert, Modal } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useRouter } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
 import Loading from '@/src/components/Loading';
 import { defaultStyles } from '@/src/constants/Styles';
 import { supabase } from '@/src/utils/supabase';
-import MapView, { LatLng, LongPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Camera, LatLng, LongPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useInsertRoom } from '@/src/api/rooms';
 import { useLocation } from '@/src/hooks/useLocation';
 import * as FileSystem from 'expo-file-system';
@@ -14,6 +14,8 @@ import * as ImageManipulator from 'expo-image-manipulator'
 import { randomUUID } from 'expo-crypto'
 import { decode } from 'base64-arraybuffer';
 import Colors from '@/src/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
+import ExitButtom from '@/src/components/ExitButtom';
 const fallback = require('../../assets/images/fallback.png');
 
 const Page = () => {
@@ -23,19 +25,34 @@ const Page = () => {
 
     const mapViewRef = useRef<MapView>(null);
 
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+
     const [name, setName] = useState("")
     const [description, setDescription] = useState("");
     const [image, setImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false)
     const [createLoading, setCreateLoading] = useState(false);
 
+    const [initialCamera, setInitialCamera] = useState<Camera>();
+
     const [marker, setMarker] = useState<LatLng>()
 
     const { mutate: insertRoom } = useInsertRoom();
 
     useEffect(() => {
-        useLocation(mapViewRef)
+        useLocation(mapViewRef);
     }, [])
+
+    useEffect(() => {
+        if (marker) {
+            mapViewRef.current?.animateToRegion({
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            });
+        }
+    }, [marker])
 
     const resetFields = () => {
         setName("");
@@ -109,6 +126,20 @@ const Page = () => {
         })
     }
 
+    const onLongMapPress = (event: LongPressEvent) => {
+        setMarker(event.nativeEvent.coordinate)
+    }
+
+    const openModal = async () => {
+        const camera = await mapViewRef.current?.getCamera();
+        setInitialCamera(camera);
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
     return (
         <ScrollView
             style={styles.container}
@@ -128,17 +159,17 @@ const Page = () => {
                     <View style={styles.bubblesContainer}>
                         <View style={{ alignItems: 'center' }}>
                             <Text style={{ fontFamily: 'mon-sb' }}>Location</Text>
-                            <View style={styles.bubbles}>
-                                <MapView
-                                    ref={mapViewRef}
-                                    style={styles.mapView}
-                                    showsUserLocation={true}
-                                    showsMyLocationButton={true}
-                                    onPress={() => router.push('(modals)/createMap')}
-                                >
-                                    {marker && <Marker coordinate={marker} />}
-                                </MapView>
-                            </View>
+                            <TouchableOpacity style={styles.bubbles} onPress={openModal}>
+                                    <MapView
+                                        ref={mapViewRef}
+                                        style={styles.mapView}
+                                        pointerEvents='none'
+                                        showsUserLocation={true}
+                                        showsMyLocationButton={true}
+                                    >
+                                        {marker && <Marker coordinate={marker} />}
+                                    </MapView>
+                            </TouchableOpacity>
                         </View>
 
                         <View style={{ alignItems: 'center', }}>
@@ -176,6 +207,22 @@ const Page = () => {
                     </TouchableOpacity>
 
                     <View style={{ height: 300 }} />
+
+                    <Modal
+                        visible={modalVisible}
+                        animationType='fade'
+                    >
+                        <ExitButtom onPress={closeModal} />
+                        <MapView
+                            style={styles.modalMapView}
+                            showsUserLocation={true}
+                            showsMyLocationButton={true}
+                            onLongPress={onLongMapPress}
+                            initialCamera={initialCamera}
+                        >
+                            {marker && <Marker draggable coordinate={marker} />}
+                        </MapView>
+                    </Modal>
                 </>
             }
         </ScrollView>
@@ -190,6 +237,10 @@ const styles = StyleSheet.create({
     mapView: {
         width: 200,
         height: 200,
+    },
+    modalMapView: {
+        width: '100%',
+        height: '100%',
     },
     bubbles: {
         width: 150,

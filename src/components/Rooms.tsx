@@ -40,9 +40,9 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
                 <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
                     <View style={styles.image}>
                         <RemoteImage path={item.image} style={{width: '100%', height: '100%'}} />
-                        <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}>
+                        {/* <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}>
                             <Ionicons name="heart-outline" size={24} color={'#000'} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
 
                     <View style={styles.text}>
