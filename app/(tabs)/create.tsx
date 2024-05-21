@@ -189,7 +189,8 @@ const Page = () => {
                     <Text style={[defaultStyles.h2, { marginBottom: 0, fontFamily: 'mon-sb' }]}>Name</Text>
 
                     <TextInput
-                        placeholder=""
+                        placeholder="Don't add 'bathroom' to the name"
+                        placeholderTextColor='grey'
                         value={name}
                         onChangeText={setName}
                         style={[defaultStyles.inputField, { marginBottom: 30 }]}
@@ -198,7 +199,8 @@ const Page = () => {
                     <Text style={[defaultStyles.h2, { marginBottom: 0, fontFamily: 'mon-sb' }]}>Additional Information</Text>
 
                     <TextInput
-                        placeholder=""
+                        placeholder="e.g. 'Smells'"
+                        placeholderTextColor='grey'
                         value={description}
                         onChangeText={setDescription}
                         style={[defaultStyles.inputField, { marginBottom: 30 }]}
@@ -233,7 +235,7 @@ const Page = () => {
                         animationType='fade'
                     >
                         <ExitButtom onPress={closeModal} style={{ position: 'absolute', top: 30, left: 20 }} />
-                        <TouchableOpacity style={styles.locationBtn} onPress={() => useLocation(modalMapViewRef)}>
+                        <TouchableOpacity style={styles.locationBtn} onPress={() => useLocation(modalMapViewRef, true)}>
                             <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
                         </TouchableOpacity>
                         <MapView

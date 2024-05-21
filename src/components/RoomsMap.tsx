@@ -30,7 +30,7 @@ const RoomsMap = ({rooms}: Props) => {
     }
 
     const onLocationPress = () => {
-        useLocation(mapViewRef);
+        useLocation(mapViewRef, true);
         
         setSelected(undefined)
     }

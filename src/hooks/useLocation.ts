@@ -3,14 +3,14 @@ import { Camera, Region } from 'react-native-maps';
 import * as Location from 'expo-location'
 import React from 'react';
 
-export const useLocation = async (mapViewRef: React.RefObject<MapView>) => {
+export const useLocation = async (mapViewRef: React.RefObject<MapView>, useLastKnown?: boolean | undefined) => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
         alert('Permission to access location was denied');
         return;
     }
 
-    let location = await Location.getCurrentPositionAsync({});
+    let location = useLastKnown ? await Location.getLastKnownPositionAsync({}) : await Location.getCurrentPositionAsync({});
 
     const region = {
         longitude: location?.coords.longitude,

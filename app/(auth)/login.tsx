@@ -58,12 +58,14 @@ const Page = () => {
                 <TextInput
                     autoCapitalize="none"
                     placeholder="Email"
+                    placeholderTextColor='grey'
                     value={emailAddress}
                     onChangeText={setEmailAddress}
                     style={[defaultStyles.inputField, { marginBottom: 10 }]}
                 />
                 <TextInput
                     placeholder="Password"
+                    placeholderTextColor='grey'
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry

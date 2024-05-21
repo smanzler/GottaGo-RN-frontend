@@ -47,13 +47,18 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
 
                     <View style={styles.text}>
                         <View style={styles.header}>
-                            <Text style={{ fontSize: 16, fontFamily: 'mon-sb' }}>{item.name}</Text>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontFamily: 'mon-sb' }}>★ {item.rating || 0}</Text>
-                            </View>
+                            <Text style={styles.name}>{item.name}</Text>
+                            <Text style={styles.distance}>{new Intl.NumberFormat('en-US', {
+                                style: 'unit',
+                                unit: 'meter',
+                                unitDisplay: 'narrow',
+                                maximumFractionDigits: 1,
+                            }).format(item.dist_meters)}</Text>
                         </View>
-
-                        <Text style={styles.description}>{item.description}</Text>
+                        <View style={styles.bottomContainer}>
+                            <Text style={styles.description}>{item.description}</Text>
+                            <Text style={styles.rating}>★ {item.rating || 0}</Text>
+                        </View>
                     </View>
                 </Animated.View>
             </TouchableOpacity>
@@ -82,6 +87,11 @@ const styles = StyleSheet.create({
         padding: 10,
         flexDirection: 'row'
     },
+    bottomContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
     image: {
         width: 100,
         height: 100,
@@ -102,10 +112,16 @@ const styles = StyleSheet.create({
         fontFamily: 'mon-sb',
     },
     description: {
-        overflow: 'hidden'
+        fontFamily: 'mon',
+        maxHeight: 40,
+        overflow: 'hidden',
+    },
+    distance: {
+        fontFamily: 'mon',
     },
     rating: {
-        fontFamily: 'mon-sb'
+        fontFamily: 'mon-sb',
+        textAlignVertical: 'bottom',
     },
 })
 
