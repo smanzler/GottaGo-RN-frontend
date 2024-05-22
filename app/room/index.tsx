@@ -3,8 +3,9 @@ import React, { useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
 import { defaultStyles } from '@/src/constants/Styles';
-import { useComments, useRoom } from '@/src/api/rooms';
+import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
+import { useComments } from '@/src/api/comments';
 
 const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');

@@ -48,24 +48,6 @@ export const useRoom = (id: number) => {
     });
 }
 
-export const useComments = (id: number) => {
-    return useQuery({
-        queryKey: ['comments', id],
-        queryFn: async () => {
-            console.log(`getting comments ${id}`)
-            const { data, error } = await supabase
-                .from('comments')
-                .select('*')
-                .eq('id', id)
-                .single();
-
-            if (error) throw new Error(error.message);
-
-            return data;
-        }
-    });
-}
-
 export const useInsertRoom = () => {
     const { session } = useAuth();
 
@@ -108,9 +90,9 @@ export const getRoomsInView = async (
     return data;
 }
 
-export const useImage = (id: string | null | undefined) => {
+export const useRoomImage = (id: string | null | undefined) => {
     return useQuery({
-        queryKey: ['image', id],
+        queryKey: ['room_image', id],
         queryFn: async () => {
             if (!id) return null;
             
