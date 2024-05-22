@@ -53,7 +53,7 @@ export const useInsertRoom = () => {
 
     return useMutation({
         async mutationFn(data: any) {
-            const { error } = await supabase
+            const { data: newRoom, error } = await supabase
                 .from('rooms')
                 .insert({
                     name: data.name,
@@ -61,12 +61,29 @@ export const useInsertRoom = () => {
                     image: data.image,
                     created_by: session?.user.id,
                     location: `POINT(${data.longitude} ${data.latitude})`,
-                    rating: data.rating,
                 })
-                .single();
+                .select('id');
 
             if (error) {
                 throw new Error(error.message);
+            } else if (!newRoom[0]) {
+                return;
+            }
+
+            console.log(newRoom[0].id)
+
+            const { error: ratingError  } = await supabase
+                .from('ratings')
+                .insert({
+                    created_by: session?.user.id,
+                    room_id: newRoom[0].id,
+                    rating: data.rating,
+                })
+                .single();
+            
+
+            if (ratingError) {
+                throw new Error(ratingError.message);
             }
         }
     })

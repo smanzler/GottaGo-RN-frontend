@@ -11,6 +11,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { randomUUID } from 'expo-crypto';
 import { decode } from 'base64-arraybuffer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import RemoteImage from '@/src/components/RemoteImage';
 
 const fallback = require('@/assets/images/fallback.png')
 
@@ -18,7 +19,6 @@ const Page = () => {
     const { session, profile } = useAuth();
 
     const [loading, setLoading] = useState(false);
-    const [image, setImage] = useState<string | null>(null);
 
     useEffect(() => {
         console.log(profile)
@@ -49,7 +49,7 @@ const Page = () => {
                     </TouchableOpacity>
 
                     <View style={styles.profilePicture}>
-                        <Image style={{ flex: 1, aspectRatio: 1 }} source={image ? { uri: image } : fallback} />
+                        <RemoteImage style={{ flex: 1, aspectRatio: 1 }} path={`${profile.id}.png`} />
                     </View>
 
                     <TouchableOpacity style={defaultStyles.btn} onPress={handleLogout} disabled={loading} >
