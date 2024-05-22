@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
 import { defaultStyles } from '@/src/constants/Styles';
-import { useRoom } from '@/src/api/rooms';
+import { useComments, useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
 
 const IMG_HEIGHT = 200;
@@ -11,6 +11,12 @@ const { width } = Dimensions.get('window');
 
 const RoomPage = () => {
     const room = useLocalSearchParams<{id: string, name: string, image: string, description: string, created_at: string, created_by: string}>();
+    const idParse = parseFloat(room.id ? room.id : '')
+    const data = useComments(idParse);
+
+    useEffect(() => {
+        console.log(data);
+    }, [data])
 
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollOffset = useScrollViewOffset(scrollRef);

@@ -15,7 +15,7 @@ import { randomUUID } from 'expo-crypto'
 import { decode } from 'base64-arraybuffer';
 import Colors from '@/src/constants/Colors';
 import { FontAwesome6, Ionicons } from '@expo/vector-icons';
-import ExitButtom from '@/src/components/ExitButtom';
+import ExitButtom from '@/src/components/ExitButton';
 const fallback = require('../../assets/images/fallback.png');
 
 const Page = () => {
@@ -235,7 +235,7 @@ const Page = () => {
                         animationType='fade'
                     >
                         <ExitButtom onPress={closeModal} style={{ position: 'absolute', top: 30, left: 20 }} />
-                        <TouchableOpacity style={styles.locationBtn} onPress={() => useLocation(modalMapViewRef, true)}>
+                        <TouchableOpacity style={[defaultStyles.circleBtn, styles.locationBtn]} onPress={() => useLocation(modalMapViewRef, true)}>
                             <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
                         </TouchableOpacity>
                         <MapView
@@ -282,22 +282,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
         bottom: 30,
-        backgroundColor: '#fff',
-        width: 50,
-        aspectRatio: 1,
-        zIndex: 1,
-        padding: 13,
-        borderWidth: 1,
-        borderColor: Colors.grey,
-        borderRadius: 24,
-
-        shadowColor: '#000',
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-        shadowOffset: {
-            width: 2,
-            height: 2,
-        }
     }
 })
 

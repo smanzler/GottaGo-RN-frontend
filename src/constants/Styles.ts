@@ -48,6 +48,27 @@ export const defaultStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    circleBtn: {
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: '#fff',
+        borderColor: Colors.grey,
+        borderRadius: 30,
+        width: 50,
+        aspectRatio: 1,
+        borderWidth: 1,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        },
+
+        zIndex: 1,
+    },
     footer: {
         position: 'absolute',
         height: 100,

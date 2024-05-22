@@ -48,6 +48,24 @@ export const useRoom = (id: number) => {
     });
 }
 
+export const useComments = (id: number) => {
+    return useQuery({
+        queryKey: ['comments', id],
+        queryFn: async () => {
+            console.log(`getting comments ${id}`)
+            const { data, error } = await supabase
+                .from('comments')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error) throw new Error(error.message);
+
+            return data;
+        }
+    });
+}
+
 export const useInsertRoom = () => {
     const { session } = useAuth();
 

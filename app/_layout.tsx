@@ -9,7 +9,7 @@ import { TouchableOpacity } from 'react-native';
 import { AuthProvider, useAuth } from '../src/providers/AuthProvider';
 import QueryProvider from '../src/providers/QueryProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import ExitButtom from '@/src/components/ExitButtom';
+import ExitButton from '@/src/components/ExitButton';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -86,7 +86,7 @@ function RootLayoutNav() {
           headerTransparent: true, 
           presentation: 'modal',
           headerLeft: () => (
-            <ExitButtom
+            <ExitButton
               onPress={() => router.back()}
             />
           )
@@ -111,6 +111,20 @@ function RootLayoutNav() {
               }}>
               <Ionicons name="close-outline" size={22} />
             </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="(modals)/edit"
+        options={{
+          headerTitle: 'Edit profile',
+          headerTitleStyle: { fontFamily: 'mon-sb' },
+          presentation: 'modal',
+          headerTransparent: true,
+          headerLeft: () => (
+            <ExitButton
+              onPress={() => router.back()}
+            />
           ),
         }}
       />

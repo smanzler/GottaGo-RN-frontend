@@ -10,6 +10,7 @@ import { getRoomsInView } from '../api/rooms';
 import { FontAwesome6 } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { defaultStyles } from '../constants/Styles';
 
 interface Props {
     rooms: any[] | undefined;
@@ -76,7 +77,7 @@ const RoomsMap = ({rooms}: Props) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.locationBtn} onPress={onLocationPress}>
+            <TouchableOpacity style={[defaultStyles.circleBtn, styles.locationBtn]} onPress={onLocationPress}>
                 <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
             </TouchableOpacity>
 
@@ -124,22 +125,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 10,
         top: 10,
-        backgroundColor: '#fff',
-        width: 50,
-        aspectRatio: 1,
-        zIndex: 1,
-        padding: 13,
-        borderWidth: 1,
-        borderColor: Colors.grey,
-        borderRadius: 24,
-
-        shadowColor: '#000',
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-        shadowOffset: {
-            width: 2,
-            height: 2,
-        }
     }
 });
 
