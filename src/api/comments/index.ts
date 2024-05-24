@@ -16,7 +16,8 @@ export const useComments = (id: number) => {
                     ratings (
                         rating
                     )
-                `);
+                `)
+                .eq('room_id', id)
 
             if (error) throw new Error(error.message);
 
