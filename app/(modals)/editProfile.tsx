@@ -9,18 +9,25 @@ import { defaultStyles } from '@/src/constants/Styles';
 import { TextInput } from 'react-native';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { ScrollView } from 'react-native-gesture-handler';
+import { router } from 'expo-router';
+import RemoteImage from '@/src/components/RemoteImage';
 
 const Edit = () => {
 
-    const { profile } = useAuth();
+    const { profile, fetchProfile } = useAuth();
 
     const [image, setImage] = useState<string | null>(null);
     const [username, setUsername] = useState('');
 
-    const saveProfilePicture = async () => {
-        await pickImage();
+    const [refetchImage, setRefetchImage] = useState(() => {});
 
+    const saveProfile = async () => {
         await uploadImage();
+
+        await fetchProfile();
+
+
+        router.back();
     }
 
     const pickImage = async () => {
@@ -40,21 +47,27 @@ const Edit = () => {
             return;
         }
 
+        console.log("uploading");
+
         const { base64 } = await ImageManipulator.manipulateAsync(
             image,
             [{ resize: { width: 300, height: 300 } }],
             { base64: true, format: ImageManipulator.SaveFormat.PNG }
         )
 
-        const filePath = `${randomUUID()}.png`;
+        const filePath = `${profile.id}.png`;
         const contentType = 'image/png';
 
         if (!base64) return;
 
-        const { data } = await supabase.storage
-            .from('rooms')
+        console.log("base is good")
+
+        const { data, error } = await supabase.storage
+            .from('avatars')
             .upload(filePath, decode(base64), { contentType, upsert: true });
 
+        if (error) console.log(error);
+        
         if (data) {
             return data.path;
         }
@@ -63,7 +76,18 @@ const Edit = () => {
     return (
         <ScrollView style={{flex: 1, marginTop: 100, padding: 26}}>
             <TouchableOpacity style={[defaultStyles.bubbles, styles.image]} onPress={pickImage}>
-                {image && <Image source={{ uri: image }} style={{width: '100%', aspectRatio: 1}}/>}
+                {image ? 
+                    <Image 
+                        source={{ uri: image }} 
+                        style={{width: '100%', aspectRatio: 1}}
+                    /> 
+                    : 
+                    <RemoteImage 
+                        style={{ flex: 1, aspectRatio: 1 }} 
+                        path={`${profile.id}.png`} 
+                        setRefetch={setRefetchImage}
+                        profile
+                    />}
             </TouchableOpacity>
 
             <TextInput
@@ -76,14 +100,12 @@ const Edit = () => {
                 />
 
 
-            <TouchableOpacity style={defaultStyles.btn} >
+            <TouchableOpacity style={defaultStyles.btn} onPress={saveProfile}>
                 <Text style={defaultStyles.btnText}>Save</Text>
             </TouchableOpacity>
         </ScrollView>
     )
 }
-
-export default Edit
 
 const styles = StyleSheet.create({
     image: {
@@ -92,3 +114,5 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     }
 })
+
+export default Edit

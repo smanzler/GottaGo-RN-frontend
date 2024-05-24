@@ -2,7 +2,7 @@ import { View, Text, ListRenderItem, StyleSheet, Image, TouchableOpacity, Refres
 import React, { useEffect, useRef, useState } from "react";
 import { defaultStyles } from "@/src/constants/Styles";
 import { Link } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/src/constants/Colors";
 import { FlatList } from "react-native-gesture-handler";
@@ -15,8 +15,8 @@ interface Props {
 }
 
 const Rooms = ({ category, rooms, refetch }: Props) => {
-    const [ loading, setLoading ] = useState(false);
-    const [ refreshing, setRefreshing ] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -34,45 +34,71 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
         setRefreshing(false);
     }
 
-    const renderRow: ListRenderItem<any> = ({ item }) => (
-        <Link href={{pathname: 'room/', params: item}} asChild>
-            <TouchableOpacity>
-                <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
-                    <View style={styles.image}>
-                        <RemoteImage path={item.image} style={{width: '100%', height: '100%'}} />
-                        {/* <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}>
-                            <Ionicons name="heart-outline" size={24} color={'#000'} />
-                        </TouchableOpacity> */}
-                    </View>
+    const renderRow: ListRenderItem<any> = ({ item }) => {
+        const roundedRating = Math.round(item.rating * 2) / 2;
 
-                    <View style={styles.text}>
-                        <View style={styles.header}>
-                            <Text style={styles.name}>{item.name}</Text>
-                            <Text style={styles.distance}>{new Intl.NumberFormat('en-US', {
-                                style: 'unit',
-                                unit: 'meter',
-                                unitDisplay: 'narrow',
-                                maximumFractionDigits: 1,
-                            }).format(item.dist_meters)}</Text>
+        return (
+            <Link href={{ pathname: 'room/', params: item }} asChild>
+                <TouchableOpacity>
+                    <Animated.View style={styles.rooms} entering={FadeInRight} exiting={FadeOutLeft}>
+                        <View style={styles.image}>
+                            <RemoteImage path={item.image} style={{ width: '100%', height: '100%' }} />
+                            {/* <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}>
+                                <Ionicons name="heart-outline" size={24} color={'#000'} />
+                            </TouchableOpacity> */}
                         </View>
-                        <View style={styles.bottomContainer}>
-                            <Text style={styles.description}>{item.description}</Text>
-                            <Text style={styles.rating}>★ {item.rating || 0}</Text>
+
+                        <View style={styles.text}>
+                            <View style={styles.header}>
+                                <Text style={styles.name}>{item.name}</Text>
+                                <Text style={styles.distance}>{new Intl.NumberFormat('en-US', {
+                                    style: 'unit',
+                                    unit: 'meter',
+                                    unitDisplay: 'narrow',
+                                    maximumFractionDigits: 1,
+                                }).format(item.dist_meters)}</Text>
+                            </View>
+                            <View style={styles.bottomContainer}>
+                                <Text style={styles.description}>{item.description}</Text>
+                                <View style={{flexDirection: 'row', gap: 2}}>
+                                    <Text style={styles.rating}> { typeof item.rating === 'number' ? item.rating.toFixed(1) : 0}</Text>
+                                    <View style={styles.stars}>
+                                        {Array.from({ length: 5 }, (_, index) => (
+                                            <View key={`${item.id}-${index}`} style={{ position: 'relative', width: 15, height: 15 }}>
+                                                <FontAwesome
+                                                    name={index + 1 <= roundedRating ? 'star' : index + 0.5 === roundedRating ? 'star-half' : 'star'}
+                                                    size={15}
+                                                    color={index + 1 <= roundedRating || index + 0.5 === roundedRating ? 'gold' : 'grey'}
+                                                />
+                                                {index + 0.5 === roundedRating &&
+                                                    <FontAwesome 
+                                                        name='star'
+                                                        size={15}
+                                                        color='grey'
+                                                        style={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}
+                                                    />
+                                                }
+                                            </View>
+                                        ))}
+                                    </View>
+                                    <Text style={styles.rating}>{`(${item.rating_count})`}</Text>
+                                </View>
+                            </View>
                         </View>
-                    </View>
-                </Animated.View>
-            </TouchableOpacity>
-        </Link>
-    );
-    
+                    </Animated.View>
+                </TouchableOpacity>
+            </Link>
+        )
+    };
+
     return (
         <View style={defaultStyles.container}>
-            <FlatList 
+            <FlatList
                 renderItem={renderRow}
                 data={rooms}
                 keyExtractor={(item) => item.id}
                 refreshControl={
-                    <RefreshControl 
+                    <RefreshControl
                         refreshing={refreshing}
                         onRefresh={onRefresh}
                     />
@@ -103,12 +129,12 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10
     },
-    header: { 
-        flexDirection: 'row', 
-        justifyContent: 'space-between', 
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     name: {
-        fontSize: 16, 
+        fontSize: 16,
         fontFamily: 'mon-sb',
     },
     description: {
@@ -123,6 +149,10 @@ const styles = StyleSheet.create({
         fontFamily: 'mon-sb',
         textAlignVertical: 'bottom',
     },
+    stars: {
+        flexDirection: 'row',
+        paddingTop: 1,
+    }
 })
 
 export default Rooms;

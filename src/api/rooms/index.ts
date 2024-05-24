@@ -66,11 +66,11 @@ export const useInsertRoom = () => {
 
             if (error) {
                 throw new Error(error.message);
-            } else if (!newRoom[0]) {
+            } 
+            
+            if (!newRoom[0]) {
                 return;
             }
-
-            console.log(newRoom[0].id)
 
             const { error: ratingError  } = await supabase
                 .from('ratings')
@@ -107,14 +107,14 @@ export const getRoomsInView = async (
     return data;
 }
 
-export const useRoomImage = (id: string | null | undefined) => {
+export const useImage = (id: string | null | undefined, profile?: boolean) => {
     return useQuery({
-        queryKey: ['room_image', id],
+        queryKey: ['image', id],
         queryFn: async () => {
             if (!id) return null;
             
             const { data, error } = await supabase.storage
-                .from('rooms')
+                .from(!profile ? 'rooms' : 'avatars')
                 .download(id);
 
             if (error) {
@@ -132,7 +132,9 @@ export const useRoomImage = (id: string | null | undefined) => {
             } else {
                 return null;
             }
-        }
+        },
+        staleTime: Infinity,
+        gcTime: 1000 * 60 * 10,
     });
 }
 

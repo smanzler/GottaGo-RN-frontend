@@ -212,9 +212,9 @@ const Page = () => {
                         {Array.from({length: 5}, (_, index) => (
                             <TouchableOpacity key={index} onPress={() => setRating(index + 1)}>
                                 <Ionicons
-                                    name={index < rating ? 'star' : 'star-outline'}
+                                    name='star'
                                     size={40}
-                                    color={index < rating ? 'gold' : 'black'}
+                                    color={index < rating ? 'gold' : 'grey'}
                                 />
                             </TouchableOpacity>
                         ))}

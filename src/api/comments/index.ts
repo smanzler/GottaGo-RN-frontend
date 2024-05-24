@@ -8,13 +8,20 @@ export const useComments = (id: number) => {
             console.log(`getting comments ${id}`)
             const { data, error } = await supabase
                 .from('comments')
-                .select('*')
-                .eq('id', id)
-                .single();
+                .select(`
+                    *,
+                    profiles (
+                        username
+                    ),
+                    ratings (
+                        rating
+                    )
+                `);
 
             if (error) throw new Error(error.message);
 
             return data;
-        }
+        },
+        retry: 1,
     });
 }

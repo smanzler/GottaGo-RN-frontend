@@ -69,6 +69,9 @@ export const defaultStyles = StyleSheet.create({
 
         zIndex: 1,
     },
+    p: {
+        fontFamily: 'mon'
+    },
     footer: {
         position: 'absolute',
         height: 100,

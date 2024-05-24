@@ -6,17 +6,18 @@ import { defaultStyles } from '@/src/constants/Styles';
 import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useComments } from '@/src/api/comments';
+import Comment from '@/src/components/Comment';
 
 const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');
 
 const RoomPage = () => {
-    const room = useLocalSearchParams<{id: string, name: string, image: string, description: string, created_at: string, created_by: string}>();
+    const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string }>();
     const idParse = parseFloat(room.id ? room.id : '')
-    const data = useComments(idParse);
+    const { data } = useComments(idParse);
 
     useEffect(() => {
-        console.log(data);
+        console.log(data)
     }, [data])
 
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -28,7 +29,7 @@ const RoomPage = () => {
                 translateY: interpolate(
                     scrollOffset.value,
                     [-IMG_HEIGHT, 0, IMG_HEIGHT],
-                    [-IMG_HEIGHT/2, 0, IMG_HEIGHT*0.75]
+                    [-IMG_HEIGHT / 2, 0, IMG_HEIGHT * 0.75]
                 )
             },
             {
@@ -46,10 +47,16 @@ const RoomPage = () => {
         <View style={styles.container}>
             <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
                 <RemoteImage path={room.image ? room.image : undefined} style={[styles.image, imageAnimatedStyle]} />
-                <View style={{height: 3000, backgroundColor: '#fff', padding: 20}}>
+                <View style={{ backgroundColor: '#fff', padding: 20 }}>
                     <Text style={styles.h1}>{room.name}</Text>
                     <Text style={styles.h2}>{room.description}</Text>
+                    <View style={styles.comments}>
+                        {data && data.length > 0 && data.map((comment: any) => (
+                            <Comment key={comment.id} comment={comment} />
+                        ))}
+                    </View>
                 </View>
+
             </Animated.ScrollView>
         </View>
     )
@@ -57,7 +64,7 @@ const RoomPage = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, 
+        flex: 1,
         backgroundColor: '#fff',
     },
     image: {
@@ -72,6 +79,12 @@ const styles = StyleSheet.create({
     h2: {
         fontFamily: 'mon-sb',
         marginTop: 10,
+    },
+    profilePic: {
+
+    },
+    comments: {
+        paddingVertical: 20
     }
 
 })

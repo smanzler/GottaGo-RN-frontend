@@ -20,10 +20,6 @@ const Page = () => {
 
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        console.log(profile)
-    }, [profile])
-
     const handleLogout = async () => {
         setLoading(true);
 
@@ -44,12 +40,16 @@ const Page = () => {
                 </>
                 :
                 <>
-                    <TouchableOpacity style={[defaultStyles.circleBtn, styles.editBtn]} onPress={() => router.push('(modals)/edit')}>
+                    <TouchableOpacity style={[defaultStyles.circleBtn, styles.editBtn]} onPress={() => router.push('(modals)/editProfile')}>
                         <MaterialCommunityIcons name='circle-edit-outline' size={24} />
                     </TouchableOpacity>
 
                     <View style={styles.profilePicture}>
-                        <RemoteImage style={{ flex: 1, aspectRatio: 1 }} path={`${profile.id}.png`} />
+                        <RemoteImage 
+                            style={{ flex: 1, aspectRatio: 1 }} 
+                            path={`${profile.id}.png`} 
+                            profile
+                        />
                     </View>
 
                     <TouchableOpacity style={defaultStyles.btn} onPress={handleLogout} disabled={loading} >

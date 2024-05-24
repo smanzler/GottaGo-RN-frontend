@@ -115,7 +115,7 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
-        name="(modals)/edit"
+        name="(modals)/editProfile"
         options={{
           headerTitle: 'Edit profile',
           headerTitleStyle: { fontFamily: 'mon-sb' },
