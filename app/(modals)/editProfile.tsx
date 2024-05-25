@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/src/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -11,6 +11,7 @@ import { useAuth } from '@/src/providers/AuthProvider';
 import { ScrollView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import RemoteImage from '@/src/components/RemoteImage';
+import { useImage } from '@/src/api/rooms';
 
 const Edit = () => {
 
@@ -19,13 +20,14 @@ const Edit = () => {
     const [image, setImage] = useState<string | null>(null);
     const [username, setUsername] = useState('');
 
-    const [refetchImage, setRefetchImage] = useState(() => {});
+    const { refetch } = useImage(`${profile.id}.png`, profile)
 
     const saveProfile = async () => {
         await uploadImage();
 
         await fetchProfile();
 
+        await refetch();
 
         router.back();
     }
@@ -36,11 +38,46 @@ const Edit = () => {
             allowsEditing: true,
             aspect: [1, 1],
             quality: 0,
-        })
+        });
+
         if (!result.canceled) {
             setImage(result.assets[0].uri);
         }
-    }
+    };
+
+    const takePhoto = async () => {
+        const result = await ImagePicker.launchCameraAsync({
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0,
+        });
+    
+        if (!result.canceled) {
+          setImage(result.assets[0].uri);
+        }
+      };
+    
+      const showImagePickerOptions = () => {
+        Alert.alert(
+          'Upload Image',
+          'Choose an option',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Choose from Library',
+              onPress: pickImage,
+            },
+            {
+              text: 'Take a Photo',
+              onPress: takePhoto,
+            },
+          ],
+          { cancelable: true, }
+        );
+      };
 
     const uploadImage = async () => {
         if (!image?.startsWith('file://')) {
@@ -67,6 +104,8 @@ const Edit = () => {
             .upload(filePath, decode(base64), { contentType, upsert: true });
 
         if (error) console.log(error);
+
+        console.log(data)
         
         if (data) {
             return data.path;
@@ -75,7 +114,7 @@ const Edit = () => {
 
     return (
         <ScrollView style={{flex: 1, marginTop: 100, padding: 26}}>
-            <TouchableOpacity style={[defaultStyles.bubbles, styles.image]} onPress={pickImage}>
+            <TouchableOpacity style={[defaultStyles.bubbles, styles.image]} onPress={showImagePickerOptions}>
                 {image ? 
                     <Image 
                         source={{ uri: image }} 
@@ -85,7 +124,6 @@ const Edit = () => {
                     <RemoteImage 
                         style={{ flex: 1, aspectRatio: 1 }} 
                         path={`${profile.id}.png`} 
-                        setRefetch={setRefetchImage}
                         profile
                     />}
             </TouchableOpacity>
