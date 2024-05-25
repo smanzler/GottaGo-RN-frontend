@@ -13,8 +13,9 @@ const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');
 
 const RoomPage = () => {
-    const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string }>();
-    const idParse = parseFloat(room.id ? room.id : '')
+    const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string, username: string }>();
+    const idParse = parseFloat(room.id ? room.id : '');
+    
     const { data, refetch } = useComments(idParse);
 
     const { mutateAsync: insertComment } = useInsertComment();
@@ -22,8 +23,6 @@ const RoomPage = () => {
     const [comment, setComment] = useState('');
 
     const commentRef = useRef<TextInput>(null);
-
-    const [keyboardStatus, setKeyboardStatus] = useState('');
 
     useEffect(() => {
       const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
@@ -70,7 +69,13 @@ const RoomPage = () => {
                             <RemoteImage path={room.image ? room.image : undefined} style={[styles.image]} />
                         </View>
                     </View>
-                    <Text>{keyboardStatus}</Text>
+                    <Text style={{ fontFamily: 'mon', fontSize: 18}}>Created by</Text>
+                    <View style={{flexDirection: 'row', gap: 7, marginVertical: 6}}>
+                        <View style={styles.profilePic}>
+                            <RemoteImage style={{ width: '100%', aspectRatio: 1 }} path={`${room.created_by}.png`} profile />
+                        </View>
+                        <Text style={styles.user}>{room.username}</Text>
+                    </View>
                     <Text style={styles.h2}>{room.description}</Text>
                     <View style={styles.comments}>
                         {data && data.length > 0 && data.map((comment: any) => (
@@ -121,7 +126,14 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     profilePic: {
-
+        width: 25,
+        aspectRatio: 1,
+        borderRadius: 15,
+        overflow: 'hidden'
+    },
+    user: {
+        fontFamily: 'mon-sb',
+        paddingTop: 3,
     },
     comments: {
         paddingVertical: 20,
