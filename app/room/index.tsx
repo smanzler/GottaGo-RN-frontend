@@ -1,5 +1,5 @@
-import { View, Image, Text, StyleSheet, Dimensions } from 'react-native';
-import React, { useEffect } from 'react';
+import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TextInput, InputAccessoryView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
 import { defaultStyles } from '@/src/constants/Styles';
@@ -7,6 +7,7 @@ import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useComments } from '@/src/api/comments';
 import Comment from '@/src/components/Comment';
+import { Feather } from '@expo/vector-icons';
 
 const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');
@@ -20,44 +21,48 @@ const RoomPage = () => {
         console.log(data)
     }, [data])
 
-    const scrollRef = useAnimatedRef<Animated.ScrollView>();
-    const scrollOffset = useScrollViewOffset(scrollRef);
+    const [reply, setReply] = useState<number | null>(null)
 
-    const imageAnimatedStyle = useAnimatedStyle(() => ({
-        transform: [
-            {
-                translateY: interpolate(
-                    scrollOffset.value,
-                    [-IMG_HEIGHT, 0, IMG_HEIGHT],
-                    [-IMG_HEIGHT / 2, 0, IMG_HEIGHT * 0.75]
-                )
-            },
-            {
-                scale: interpolate(
-                    scrollOffset.value,
-                    [-IMG_HEIGHT, 0, IMG_HEIGHT],
-                    [2, 1, 1]
-                )
-            }
-        ]
-    }))
+    const [comment, setComment] = useState('');
 
+    const onSend = () => {
+
+    }
 
     return (
-        <View style={styles.container}>
-            <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
-                <RemoteImage path={room.image ? room.image : undefined} style={[styles.image, imageAnimatedStyle]} />
-                <View style={{ backgroundColor: '#fff', padding: 20 }}>
-                    <Text style={styles.h1}>{room.name}</Text>
-                    <Text style={styles.h2}>{room.description}</Text>
-                    <View style={styles.comments}>
-                        {data && data.length > 0 && data.map((comment: any) => (
-                            <Comment key={comment.id} comment={comment} />
-                        ))}
+        <View style={{flex: 1}}>
+            <ScrollView style={styles.container}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 10}}>
+                    <View style={{justifyContent: 'center', maxWidth: '50%'}}>
+                        <Text style={styles.h1}>{room.name}</Text>
+                    </View>
+                    <View style={defaultStyles.bubbles}>
+                        <RemoteImage path={room.image ? room.image : undefined} style={[styles.image]} />
                     </View>
                 </View>
+                    <Text style={styles.h2}>{room.description}</Text>
+                <View style={styles.comments}>
+                    {data && data.length > 0 && data.map((comment: any) => (
+                        <Comment key={comment.id} comment={comment} />
+                    ))}
+                </View>
 
-            </Animated.ScrollView>
+            </ScrollView>
+                <InputAccessoryView style={{flex: 1}}>
+                    <TextInput
+                        placeholder="Comment"
+                        placeholderTextColor='grey'
+                        value={comment}
+                        onChangeText={setComment}
+                        style={styles.commentInput}
+                    />
+                    <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
+                        <Feather 
+                            name='send'
+                            size={24}
+                        />
+                    </TouchableOpacity>
+                </InputAccessoryView>
         </View>
     )
 }
@@ -65,16 +70,18 @@ const RoomPage = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        padding: 20,
         backgroundColor: '#fff',
     },
     image: {
-        height: IMG_HEIGHT,
-        width,
+
+        width: 150,
+        aspectRatio: 1,
         backgroundColor: 'grey'
     },
     h1: {
         fontFamily: 'mon-b',
-        fontSize: 40,
+        fontSize: 25,
     },
     h2: {
         fontFamily: 'mon-sb',
@@ -84,9 +91,27 @@ const styles = StyleSheet.create({
 
     },
     comments: {
-        paddingVertical: 20
-    }
+        paddingVertical: 20,
+    },
+    commentInput: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderTopEndRadius: 20,
+        borderTopLeftRadius: 20,
+        borderBottomWidth: 0,
+    },
+    sendBtn: {
+        position: 'absolute',
+        right: 10,
+        top: 0,
+        bottom: 0,
 
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 40,
+        maxWidth: 40,
+    }
 })
 
 export default RoomPage;

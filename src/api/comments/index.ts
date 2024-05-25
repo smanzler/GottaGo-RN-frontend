@@ -1,5 +1,6 @@
+import { useAuth } from "@/src/providers/AuthProvider";
 import { supabase } from "@/src/utils/supabase";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useComments = (id: number) => {
     return useQuery({
@@ -7,17 +8,9 @@ export const useComments = (id: number) => {
         queryFn: async () => {
             console.log(`getting comments ${id}`)
             const { data, error } = await supabase
-                .from('comments')
-                .select(`
-                    *,
-                    profiles (
-                        username
-                    ),
-                    ratings (
-                        rating
-                    )
-                `)
-                .eq('room_id', id)
+                .rpc('get_comments', {
+                    room_id_input: id
+                })
 
             if (error) throw new Error(error.message);
 

@@ -86,9 +86,9 @@ function RootLayoutNav() {
           headerTransparent: true, 
           presentation: 'modal',
           headerLeft: () => (
-            <ExitButton
-              onPress={() => router.back()}
-            />
+            <TouchableOpacity style={{width: 35, aspectRatio: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28} />
+            </TouchableOpacity>
           )
         }} 
       />
@@ -122,9 +122,9 @@ function RootLayoutNav() {
           presentation: 'modal',
           headerTransparent: true,
           headerLeft: () => (
-            <ExitButton
-              onPress={() => router.back()}
-            />
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28} />
+            </TouchableOpacity>
           ),
         }}
       />

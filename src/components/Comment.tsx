@@ -14,7 +14,7 @@ const Comment = ( comment: any ) => {
                     <View style={styles.profilePic}>
                         <RemoteImage style={{ width: '100%', aspectRatio: 1 }} path={`${comment.comment.created_by}.png`} profile />
                     </View>
-                    <Text style={styles.user}>{comment.comment.profiles.username}</Text>
+                    <Text style={styles.user}>{comment.comment.username}</Text>
                 </View>
 
                 <View style={{flexDirection: 'row'}}>
@@ -23,7 +23,7 @@ const Comment = ( comment: any ) => {
                             key={index}
                             name='star'
                             size={20}
-                            color={index < comment.comment.ratings.rating ? 'gold' : 'grey'}
+                            color={index < comment.comment.rating ? 'gold' : 'grey'}
                         />
                     ))}
                 </View>
