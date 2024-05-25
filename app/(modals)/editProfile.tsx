@@ -1,4 +1,4 @@
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActionSheetIOS, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/src/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
@@ -58,25 +58,19 @@ const Edit = () => {
       };
     
       const showImagePickerOptions = () => {
-        Alert.alert(
-          'Upload Image',
-          'Choose an option',
-          [
+        ActionSheetIOS.showActionSheetWithOptions(
             {
-              text: 'Cancel',
-              style: 'cancel',
+              options: ['Cancel', 'Choose image from library', 'Take a photo'],
+              cancelButtonIndex: 0,
             },
-            {
-              text: 'Choose from Library',
-              onPress: pickImage,
+            buttonIndex => {
+              if (buttonIndex === 1) {
+                pickImage();
+              } else if (buttonIndex === 2) {
+                takePhoto();
+              }
             },
-            {
-              text: 'Take a Photo',
-              onPress: takePhoto,
-            },
-          ],
-          { cancelable: true, }
-        );
+          );
       };
 
     const uploadImage = async () => {
