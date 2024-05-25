@@ -1,11 +1,11 @@
-import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TextInput, InputAccessoryView, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TextInput, InputAccessoryView, TouchableOpacity, Keyboard } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
 import { defaultStyles } from '@/src/constants/Styles';
 import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
-import { useComments } from '@/src/api/comments';
+import { useComments, useInsertComment } from '@/src/api/comments';
 import Comment from '@/src/components/Comment';
 import { Feather } from '@expo/vector-icons';
 
@@ -15,54 +15,86 @@ const { width } = Dimensions.get('window');
 const RoomPage = () => {
     const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string }>();
     const idParse = parseFloat(room.id ? room.id : '')
-    const { data } = useComments(idParse);
+    const { data, refetch } = useComments(idParse);
+
+    const { mutateAsync: insertComment } = useInsertComment();
+    const [reply, setReply] = useState<number | null>(null)
+    const [comment, setComment] = useState('');
+
+    const commentRef = useRef<TextInput>(null);
+
+    const [keyboardStatus, setKeyboardStatus] = useState('');
+
+    useEffect(() => {
+      const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
+        if (e.duration !== 250) {
+            setReply(null)
+        }
+      });
+  
+      return () => {
+        showSubscription.remove();
+      };
+    }, []);
+  
 
     useEffect(() => {
         console.log(data)
     }, [data])
 
-    const [reply, setReply] = useState<number | null>(null)
+    useEffect(() => {
+        console.log(reply)
+    }, [reply])
 
-    const [comment, setComment] = useState('');
+    const onSend = async () => {
+        if (comment){
+            await insertComment({ room_id: idParse, reply_id: reply, message: comment });
 
-    const onSend = () => {
+            setReply(null);
+            setComment('')
+            Keyboard.dismiss();
 
+            refetch();
+        }
     }
 
     return (
         <View style={{flex: 1}}>
-            <ScrollView style={styles.container}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 10}}>
-                    <View style={{justifyContent: 'center', maxWidth: '50%'}}>
-                        <Text style={styles.h1}>{room.name}</Text>
+            <KeyboardAvoidingView style={{flex: 1}} behavior='padding'>
+                <ScrollView style={styles.container}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 10}}>
+                        <View style={{justifyContent: 'center', maxWidth: '50%'}}>
+                            <Text style={styles.h1}>{room.name}</Text>
+                        </View>
+                        <View style={defaultStyles.bubbles}>
+                            <RemoteImage path={room.image ? room.image : undefined} style={[styles.image]} />
+                        </View>
                     </View>
-                    <View style={defaultStyles.bubbles}>
-                        <RemoteImage path={room.image ? room.image : undefined} style={[styles.image]} />
-                    </View>
-                </View>
+                    <Text>{keyboardStatus}</Text>
                     <Text style={styles.h2}>{room.description}</Text>
-                <View style={styles.comments}>
-                    {data && data.length > 0 && data.map((comment: any) => (
-                        <Comment key={comment.id} comment={comment} />
-                    ))}
-                </View>
-
-            </ScrollView>
-                <InputAccessoryView style={{flex: 1}}>
-                    <TextInput
-                        placeholder="Comment"
-                        placeholderTextColor='grey'
-                        value={comment}
-                        onChangeText={setComment}
-                        style={styles.commentInput}
+                    <View style={styles.comments}>
+                        {data && data.length > 0 && data.map((comment: any) => (
+                            <Comment key={comment.id} comment={comment} setReply={setReply} commentRef={commentRef} />
+                        ))}
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+            <InputAccessoryView style={{flex: 1}}>
+                <TextInput
+                    ref={commentRef}
+                    placeholder="Comment"
+                    placeholderTextColor='grey'
+                    value={comment}
+                    onChangeText={setComment}
+                    style={styles.commentInput}
+                />
+                <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
+                    <Feather 
+                        name='send'
+                        size={24}
                     />
-                    <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
-                        <Feather 
-                            name='send'
-                            size={24}
-                        />
-                    </TouchableOpacity>
-                </InputAccessoryView>
+                </TouchableOpacity>
+            </InputAccessoryView>
         </View>
     )
 }
@@ -71,6 +103,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        marginBottom: 30,
         backgroundColor: '#fff',
     },
     image: {

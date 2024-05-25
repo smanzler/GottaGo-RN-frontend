@@ -1,6 +1,6 @@
 import { supabase } from '@/src/utils/supabase';
 import { Session } from '@supabase/supabase-js';
-import React, { createContext, useState, ReactNode, PropsWithChildren, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback, PropsWithChildren } from 'react';
 
 interface AuthContextType {
   session: Session | null;
@@ -36,17 +36,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   useEffect(() => {
+    fetchProfile();
+  }, [session])
+
+  useEffect(() => {
     const fetchSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
 
       if (session) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        setProfile(data || null)
+        await fetchProfile();
       }
 
       setLoading(false);

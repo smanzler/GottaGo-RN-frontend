@@ -47,7 +47,7 @@ const Page = () => {
                     <View style={styles.profilePicture}>
                         <RemoteImage 
                             style={{ flex: 1, aspectRatio: 1 }} 
-                            path={`${profile.id}.png`} 
+                            path={profile ? `${profile.id}.png` : undefined} 
                             profile
                         />
                     </View>
