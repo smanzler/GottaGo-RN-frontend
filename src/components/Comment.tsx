@@ -13,8 +13,6 @@ interface Props {
 
 const Comment = ( {comment, setReply, commentRef}: Props ) => {
 
-
-
     const onReplyPress = () => {
         setReply(comment.id);
 

@@ -17,6 +17,7 @@ export const useComments = (id: number) => {
             return data;
         },
         retry: 1,
+        staleTime: 1000*60*5
     });
 }
 
@@ -80,5 +81,6 @@ export const useYourRating = (id: number) => {
             return data;
         },
         retry: 1,
+        staleTime: 1000*60*5
     });
 }

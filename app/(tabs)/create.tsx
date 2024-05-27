@@ -6,7 +6,7 @@ import Loading from '@/src/components/Loading';
 import { defaultStyles } from '@/src/constants/Styles';
 import { supabase } from '@/src/utils/supabase';
 import MapView, { Camera, LatLng, LongPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { useInsertRoom } from '@/src/api/rooms';
+import { useInsertRoom, useRooms } from '@/src/api/rooms';
 import { useLocation } from '@/src/hooks/useLocation';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -40,6 +40,8 @@ const Page = () => {
     const [marker, setMarker] = useState<LatLng>()
 
     const { mutate: insertRoom } = useInsertRoom();
+
+    const { refetch } = useRooms();
 
     useEffect(() => {
         useLocation(mapViewRef);
@@ -124,7 +126,8 @@ const Page = () => {
         insertRoom({ name, description, rating, longitude: marker?.longitude, latitude: marker?.latitude, image: imagePath }, {
             onSuccess: () => {
                 resetFields();
-                router.replace({ pathname: '/(tabs)/', params: { refetch: 't' } });
+                refetch();
+                router.replace('/(tabs)/');
             },
             onSettled: () => {
                 setCreateLoading(false);

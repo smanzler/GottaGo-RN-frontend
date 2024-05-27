@@ -18,13 +18,6 @@ const Page = () => {
 
     const param = useLocalSearchParams();
 
-    useEffect(() => {
-        if (param.refetch && param.refetch.length > 0) {
-            refetch();
-            router.setParams({refetch: ''})
-        }
-    }, [param])
-
     const {
         data: rooms,
         error,

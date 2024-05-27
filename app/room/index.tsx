@@ -19,6 +19,7 @@ const RoomPage = () => {
     
     const { data, refetch } = useComments(roomId);
     const { data: yourRating, refetch: refetchYourRating } = useYourRating(roomId);
+
     const { mutateAsync: insertComment } = useInsertComment();
     const { mutateAsync: updateRating } = useUpdateRating();
 
@@ -30,7 +31,7 @@ const RoomPage = () => {
     const commentRef = useRef<TextInput>(null);
 
     useEffect(()=>{
-        if(yourRating){
+        if (yourRating){
             setRating(yourRating.rating);
         }
     }, [yourRating])

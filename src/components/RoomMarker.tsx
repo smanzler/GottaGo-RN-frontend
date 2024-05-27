@@ -4,6 +4,7 @@ import { Marker } from 'react-native-maps';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import RemoteImage from './RemoteImage';
 import { Platform } from 'react-native';
+import MarqueeText from 'react-native-marquee'
 import { router } from 'expo-router';
 
 interface Props {
@@ -23,7 +24,7 @@ const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
 
     const ratingAnimatedStyle = useAnimatedStyle(() => ({
         top: withTiming(selected ? 73 : 0),
-        left: withTiming(selected ? 60 : 0),
+        left: withTiming(selected ? 45 : 0),
     }))
 
     const imageAnimatedStyle = useAnimatedStyle(() => ({
@@ -31,12 +32,8 @@ const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
         width: withTiming(selected ? 90 : 0),
     }))
 
-    const nameAnimatedStyle = useAnimatedStyle(() => ({
-        marginLeft: withTiming(selected ? 0 : -55)
-    }))
-
     const nameContainerAnimatedStyle = useAnimatedStyle(() => ({
-        width: withTiming(selected ? 55 : 0)
+        width: withTiming(selected ? 45 : 0)
     }))
 
     const onMarkerPress = () => {
@@ -75,12 +72,19 @@ const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
                     </Animated.View>
                     
                     <Animated.View style={[styles.name, nameContainerAnimatedStyle]}>
-                        <Animated.Text style={[nameAnimatedStyle, { fontFamily: 'mon-b'}]} >{room.name}</Animated.Text>
+                        <MarqueeText
+                            marqueeOnStart
+                            loop
+                            consecutive
+                            delay={1000}
+                        >
+                            {room.name}
+                        </MarqueeText>
                     </Animated.View>
 
                     <View style={styles.image}>
                         <Animated.View style={[imageAnimatedStyle, {borderRadius: 15, overflow: 'hidden'}]}>
-                            <RemoteImage path={room.image} style={{flex: 1}} />
+                            <RemoteImage path={room.image} style={{flex: 1, width: '100%'}} />
                         </Animated.View>
                     </View>
                 </TouchableOpacity>
