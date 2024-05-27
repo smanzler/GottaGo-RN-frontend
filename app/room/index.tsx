@@ -5,56 +5,52 @@ import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, u
 import { defaultStyles } from '@/src/constants/Styles';
 import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
-import { useComments, useInsertComment } from '@/src/api/comments';
+import { useComments, useInsertComment, useUpdateRating, useYourRating } from '@/src/api/comments';
 import Comment from '@/src/components/Comment';
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import RatingModal from '@/src/components/RatingModal';
 
 const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');
 
 const RoomPage = () => {
     const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string, username: string }>();
-    const idParse = parseFloat(room.id ? room.id : '');
+    const roomId = parseFloat(room.id ? room.id : '');
     
-    const { data, refetch } = useComments(idParse);
-
+    const { data, refetch } = useComments(roomId);
+    const { data: yourRating, refetch: refetchYourRating } = useYourRating(roomId);
     const { mutateAsync: insertComment } = useInsertComment();
+    const { mutateAsync: updateRating } = useUpdateRating();
+
     const [reply, setReply] = useState<number | null>(null)
     const [comment, setComment] = useState('');
+    const [rating, setRating] = useState(0);
+    const [modalVisible, setModalVisible] = useState(false);
 
     const commentRef = useRef<TextInput>(null);
 
-    useEffect(() => {
-      const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
-        if (e.duration !== 250) {
-            setReply(null)
+    useEffect(()=>{
+        if(yourRating){
+            setRating(yourRating.rating);
         }
-      });
-  
-      return () => {
-        showSubscription.remove();
-      };
-    }, []);
-  
-
-    useEffect(() => {
-        console.log(data)
-    }, [data])
-
-    useEffect(() => {
-        console.log(reply)
-    }, [reply])
+    }, [yourRating])
 
     const onSend = async () => {
         if (comment){
-            await insertComment({ room_id: idParse, reply_id: reply, message: comment });
+            await insertComment({ room_id: roomId, reply_id: reply, message: comment });
 
             setReply(null);
-            setComment('')
+            setComment('');
             Keyboard.dismiss();
 
             refetch();
         }
+    }
+
+    const onAddRatingPress = async () => {
+        await updateRating({rating, id: roomId})
+        await refetchYourRating();
+        setModalVisible(false)
     }
 
     return (
@@ -70,13 +66,24 @@ const RoomPage = () => {
                         </View>
                     </View>
                     <Text style={{ fontFamily: 'mon', fontSize: 18}}>Created by</Text>
-                    <View style={{flexDirection: 'row', gap: 7, marginVertical: 6}}>
+
+                    <View style={{flexDirection: 'row', gap: 7, marginTop: 6}}>
                         <View style={styles.profilePic}>
                             <RemoteImage style={{ width: '100%', aspectRatio: 1 }} path={`${room.created_by}.png`} profile />
                         </View>
                         <Text style={styles.user}>{room.username}</Text>
                     </View>
+
                     <Text style={styles.h2}>{room.description}</Text>
+
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+                        <Text style={{ fontFamily: 'mon', fontSize: 18}}>Comments</Text>
+                        <TouchableOpacity style={{flexDirection: 'row', gap: 7, alignItems: 'center'}} onPress={() => setModalVisible(true)}>
+                            <Text style={{fontFamily: 'mon', fontSize: 14}}>Add rating</Text>
+                            <FontAwesome6 name='add' size={20}/>
+                        </TouchableOpacity>
+                    </View>
+
                     <View style={styles.comments}>
                         {data && data.length > 0 && data.map((comment: any) => (
                             <Comment key={comment.id} comment={comment} setReply={setReply} commentRef={commentRef} />
@@ -84,6 +91,7 @@ const RoomPage = () => {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
+
             <InputAccessoryView style={{flex: 1}}>
                 <TextInput
                     ref={commentRef}
@@ -100,6 +108,14 @@ const RoomPage = () => {
                     />
                 </TouchableOpacity>
             </InputAccessoryView>
+
+            <RatingModal 
+                modalVisible={modalVisible} 
+                setModalVisible={setModalVisible}
+                rating={rating}
+                setRating={setRating}
+                onAddRatingPress={onAddRatingPress}
+            />
         </View>
     )
 }
@@ -123,7 +139,9 @@ const styles = StyleSheet.create({
     },
     h2: {
         fontFamily: 'mon-sb',
-        marginTop: 10,
+        marginTop: 25,
+        marginBottom: 25,
+        width: '50%',
     },
     profilePic: {
         width: 25,

@@ -41,3 +41,44 @@ export const useInsertComment = () => {
         }
     })
 }
+
+export const useUpdateRating = () => {
+    const { session } = useAuth();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            console.log('updating rating')
+            const { error } = await supabase
+                .rpc('update_rating', {
+                    room_id_input: data.id,
+                    user_id: session?.user.id,
+                    rating_input: data.rating,
+                })
+
+            if (error) throw new Error(error.message);
+        }
+    })
+}
+
+export const useYourRating = (id: number) => {
+    const { session } = useAuth();
+
+    return useQuery({
+        queryKey: ['rating', id, session?.user.id],
+        queryFn: async () => {
+            console.log(`getting rating ${id}`)
+            const { data, error } = await supabase
+                .from('ratings')
+                .select('*')
+                .eq('created_by', session?.user.id)
+                .eq('room_id', id)
+                .single();
+
+
+            if (error) throw new Error(error.message);
+
+            return data;
+        },
+        retry: 1,
+    });
+}

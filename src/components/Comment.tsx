@@ -47,8 +47,8 @@ const Comment = ( {comment, setReply, commentRef}: Props ) => {
                 <Text style={styles.comment}>{comment.message}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity style={{marginTop: 7, backgroundColor: 'pink', alignSelf: 'flex-start'}} onPress={onReplyPress}>
-                    <Text onPress={onReplyPress}style={defaultStyles.p}>Reply</Text>
+                <TouchableOpacity style={{marginTop: 7, alignSelf: 'flex-start'}} onPress={onReplyPress}>
+                    <Text onPress={onReplyPress} style={defaultStyles.p}>Reply</Text>
                 </TouchableOpacity>
             </View>
         </View>

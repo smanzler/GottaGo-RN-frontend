@@ -112,7 +112,6 @@ export const useImage = (id: string | null | undefined, profile?: boolean) => {
         queryKey: ['image', id],
         queryFn: async () => {
             if (!id) return null;
-            console.log('getting image')
             
             const { data, error } = await supabase.storage
                 .from(!profile ? 'rooms' : 'avatars')

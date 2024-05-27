@@ -7,19 +7,10 @@ const FlowingModalComponent = () => {
 
   const openModal = () => {
     setModalVisible(true);
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
   };
 
   const closeModal = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0,
-      useNativeDriver: true,
-    }).start(() => {
-      setModalVisible(false);
-    });
+    setModalVisible(false);
   };
 
   return (
@@ -31,19 +22,14 @@ const FlowingModalComponent = () => {
       <Modal
         transparent
         visible={modalVisible}
-        animationType="none"
+        animationType="fade"
         onRequestClose={closeModal}
       >
         <View style={styles.modalBackground}>
-          <Animated.View
-            style={[
-              styles.modalContainer,
-              { transform: [{ scale: scaleAnim }] },
-            ]}
-          >
+          <View style={styles.modalContainer} >
             <Text style={styles.modalText}>This is a flowing modal!</Text>
             <Button title="Close Modal" onPress={closeModal} />
-          </Animated.View>
+          </View>
         </View>
       </Modal>
     </View>
@@ -69,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   modalContainer: {
     width: '80%',
