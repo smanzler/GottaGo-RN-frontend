@@ -57,7 +57,7 @@ export const defaultStyles = StyleSheet.create({
         borderRadius: 30,
         width: 50,
         aspectRatio: 1,
-        borderWidth: 1,
+        borderWidth: StyleSheet.hairlineWidth,
 
         shadowColor: '#000',
         shadowOpacity: 0.5,
@@ -68,6 +68,22 @@ export const defaultStyles = StyleSheet.create({
         },
 
         zIndex: 1,
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 24,
+        padding: 24,
+        marginVertical: 24,
+
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        shadowOffset: {
+            width: 1,
+            height: 2,
+        },
+        alignItems: 'center'
     },
     p: {
         fontFamily: 'mon'

@@ -74,6 +74,9 @@ const Page = () => {
         } else if (!marker) {
             Alert.alert('Error', 'Please add a marker before creating')
             return false;
+        } else if (rating === 0) {
+            Alert.alert('Error', 'Please add a rating before creating')
+            return false;
         } else {
             return true;
         }

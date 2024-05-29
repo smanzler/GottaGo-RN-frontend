@@ -40,16 +40,19 @@ const Page = () => {
                 </>
                 :
                 <>
-                    <TouchableOpacity style={[defaultStyles.circleBtn, styles.editBtn]} onPress={() => router.push('(modals)/editProfile')}>
-                        <MaterialCommunityIcons name='circle-edit-outline' size={24} />
-                    </TouchableOpacity>
+                    <View style={[defaultStyles.card]}>
+                        <TouchableOpacity style={styles.editBtn} onPress={() => router.push('(modals)/editProfile')}>
+                            <MaterialCommunityIcons name='circle-edit-outline' size={24} />
+                        </TouchableOpacity>
 
-                    <View style={styles.profilePicture}>
-                        <RemoteImage 
-                            style={{ flex: 1, aspectRatio: 1 }} 
-                            path={profile ? `${profile.id}.png` : undefined} 
-                            profile
-                        />
+                        <View style={styles.profilePicture}>
+                            <RemoteImage 
+                                style={{ flex: 1, aspectRatio: 1 }} 
+                                path={profile ? `${profile.id}.png` : undefined} 
+                                profile
+                            />
+                        </View>
+                        <Text style={styles.username}>{profile.username}</Text>
                     </View>
 
                     <TouchableOpacity style={defaultStyles.btn} onPress={handleLogout} disabled={loading} >
@@ -65,6 +68,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 26,
+        backgroundColor: '#fff'
     },
     profilePicture: {
         width: 150,
@@ -74,10 +78,19 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 30,
     },
+    username: {
+        fontFamily: 'mon-sb',
+        fontSize: 24
+    },
     editBtn: {
         position: 'absolute', 
-        top: 20,
-        right: 20,
+        top: 15,
+        right: 15,
+        width: 35,
+        aspectRatio: 1,
+
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 })
 

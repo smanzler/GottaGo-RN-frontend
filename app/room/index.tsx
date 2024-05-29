@@ -28,6 +28,9 @@ const RoomPage = () => {
     const [rating, setRating] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
 
+    const [ratingLoading, setRatingLoading] = useState(false);
+    const [commentLoading, setCommentLoading] = useState(false);
+
     const commentRef = useRef<TextInput>(null);
 
     useEffect(()=>{
@@ -38,20 +41,31 @@ const RoomPage = () => {
 
     const onSend = async () => {
         if (comment){
+            setCommentLoading(true)
             await insertComment({ room_id: roomId, reply_id: reply, message: comment });
 
             setReply(null);
             setComment('');
             Keyboard.dismiss();
 
-            refetch();
+            await refetch();
+            setCommentLoading(false);
         }
     }
 
     const onAddRatingPress = async () => {
+        console.log(yourRating)
+        if (yourRating && yourRating.rating === rating) {
+            setModalVisible(false);
+            return;
+        }
+
+        setRatingLoading(true);
         await updateRating({rating, id: roomId})
         await refetchYourRating();
+        await refetch();
         setModalVisible(false)
+        setRatingLoading(false)
     }
 
     return (
@@ -85,11 +99,14 @@ const RoomPage = () => {
                         </TouchableOpacity>
                     </View>
 
+                    {commentLoading ?
+                    <Text style={styles.user}>Loading Comments...</Text>
+                    :
                     <View style={styles.comments}>
                         {data && data.length > 0 && data.map((comment: any) => (
                             <Comment key={comment.id} comment={comment} setReply={setReply} commentRef={commentRef} />
                         ))}
-                    </View>
+                    </View>}
                 </ScrollView>
             </KeyboardAvoidingView>
 
@@ -116,6 +133,7 @@ const RoomPage = () => {
                 rating={rating}
                 setRating={setRating}
                 onAddRatingPress={onAddRatingPress}
+                ratingLoading={ratingLoading}
             />
         </View>
     )

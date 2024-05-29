@@ -8,10 +8,11 @@ interface Props {
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
     rating: number;
     setRating: React.Dispatch<React.SetStateAction<number>>;
-    onAddRatingPress: () => void
+    onAddRatingPress: () => void;
+    ratingLoading: boolean;
 }
 
-const RatingModal = ({ modalVisible, setModalVisible, rating, setRating, onAddRatingPress }: Props) => {
+const RatingModal = ({ modalVisible, setModalVisible, rating, setRating, onAddRatingPress, ratingLoading }: Props) => {
 
     return (
         <Modal
@@ -40,8 +41,12 @@ const RatingModal = ({ modalVisible, setModalVisible, rating, setRating, onAddRa
                         ))}
                     </View>
 
-                    <TouchableOpacity style={{flexDirection: 'row', gap: 7, alignItems: 'center'}} onPress={onAddRatingPress}>
-                        <Text style={{fontFamily: 'mon', fontSize: 14}}>Add rating</Text>
+                    <TouchableOpacity 
+                        style={{flexDirection: 'row', gap: 7, alignItems: 'center'}} 
+                        onPress={onAddRatingPress}
+                        disabled={ratingLoading}
+                    >
+                        <Text style={{fontFamily: 'mon', fontSize: 14}}>{ratingLoading ? 'Adding rating' : 'Add rating'}</Text>
                         <FontAwesome6 name='add' size={20}/>
                     </TouchableOpacity>
                 </View>

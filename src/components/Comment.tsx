@@ -30,7 +30,7 @@ const Comment = ( {comment, setReply, commentRef}: Props ) => {
                 </View>
 
                 <View style={{flexDirection: 'row'}}>
-                    {Array.from({length: 5}, (_, index) => (
+                    {comment.rating && Array.from({length: 5}, (_, index) => (
                         <Ionicons
                             key={index}
                             name='star'
