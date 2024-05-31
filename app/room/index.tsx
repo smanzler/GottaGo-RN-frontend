@@ -17,12 +17,13 @@ const RoomPage = () => {
     const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string, username: string }>();
     const roomId = parseFloat(room.id ? room.id : '');
     
-    const { data, refetch } = useComments(roomId);
+    const { data: rawComments, refetch } = useComments(roomId);
     const { data: yourRating, refetch: refetchYourRating } = useYourRating(roomId);
 
     const { mutateAsync: insertComment } = useInsertComment();
     const { mutateAsync: updateRating } = useUpdateRating();
 
+    const [comments, setComments] = useState<any[] | null>(null);
     const [reply, setReply] = useState<number | null>(null)
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState(0);
@@ -32,6 +33,25 @@ const RoomPage = () => {
     const [commentLoading, setCommentLoading] = useState(false);
 
     const commentRef = useRef<TextInput>(null);
+
+    const buildTree: any = (comments: any[], replyId: number | null = null) => {
+        return comments
+            .filter(comment => comment.reply_id === replyId)
+            .map(comment => ({
+                ...comment,
+                replies: buildTree(comments, comment.id)
+            }));
+    };
+
+    useEffect(() => {
+        if (rawComments) {
+            setComments(buildTree(rawComments))
+        }
+    }, [rawComments])
+
+    useEffect(() => {
+        console.log(comments)
+    }, [comments])
 
     useEffect(()=>{
         if (yourRating){
@@ -103,7 +123,7 @@ const RoomPage = () => {
                     <Text style={styles.user}>Loading Comments...</Text>
                     :
                     <View style={styles.comments}>
-                        {data && data.length > 0 && data.map((comment: any) => (
+                        {comments && comments.length > 0 && comments.map((comment: any) => (
                             <Comment key={comment.id} comment={comment} setReply={setReply} commentRef={commentRef} />
                         ))}
                     </View>}
