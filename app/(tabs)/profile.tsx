@@ -53,6 +53,7 @@ const Page = () => {
                             />
                         </View>
                         <Text style={styles.username}>{profile.username}</Text>
+                        <Text style={styles.full_name}>{profile.full_name}</Text>
                     </View>
 
                     <TouchableOpacity style={defaultStyles.btn} onPress={handleLogout} disabled={loading} >
@@ -80,7 +81,12 @@ const styles = StyleSheet.create({
     },
     username: {
         fontFamily: 'mon-sb',
-        fontSize: 24
+        fontSize: 24,
+        marginBottom: 15,
+    },
+    full_name: {
+        fontFamily: 'mon',
+        fontSize: 17,
     },
     editBtn: {
         position: 'absolute', 

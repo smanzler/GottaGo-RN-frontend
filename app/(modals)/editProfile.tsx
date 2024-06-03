@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/src/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
-import { randomUUID } from 'expo-crypto';
 import { decode } from 'base64-arraybuffer';
 import { defaultStyles } from '@/src/constants/Styles';
 import { TextInput } from 'react-native';
@@ -12,18 +11,22 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useImage } from '@/src/api/rooms';
+import { useUpdateProfile } from '@/src/api/profiles';
 
 const Edit = () => {
 
     const { profile, fetchProfile } = useAuth();
 
     const [image, setImage] = useState<string | null>(null);
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(profile.username);
+    const [full_name, setFullname] = useState(profile.full_name);
 
-    const { refetch } = useImage(`${profile.id}.png`, profile)
+    const { refetch } = useImage(`${profile.id}.png`, profile);
+    const { mutateAsync: updateProfile } = useUpdateProfile();
 
     const saveProfile = async () => {
         await uploadImage();
+        await uploadProfile();
 
         await fetchProfile();
 
@@ -47,31 +50,31 @@ const Edit = () => {
 
     const takePhoto = async () => {
         const result = await ImagePicker.launchCameraAsync({
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 0,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0,
         });
-    
+
         if (!result.canceled) {
-          setImage(result.assets[0].uri);
+            setImage(result.assets[0].uri);
         }
-      };
-    
-      const showImagePickerOptions = () => {
+    };
+
+    const showImagePickerOptions = () => {
         ActionSheetIOS.showActionSheetWithOptions(
             {
-              options: ['Cancel', 'Choose image from library', 'Take a photo'],
-              cancelButtonIndex: 0,
+                options: ['Cancel', 'Choose image from library', 'Take a photo'],
+                cancelButtonIndex: 0,
             },
             buttonIndex => {
-              if (buttonIndex === 1) {
-                pickImage();
-              } else if (buttonIndex === 2) {
-                takePhoto();
-              }
+                if (buttonIndex === 1) {
+                    pickImage();
+                } else if (buttonIndex === 2) {
+                    takePhoto();
+                }
             },
-          );
-      };
+        );
+    };
 
     const uploadImage = async () => {
         if (!image?.startsWith('file://')) {
@@ -100,37 +103,55 @@ const Edit = () => {
         if (error) console.log(error);
 
         console.log(data)
-        
+
         if (data) {
             return data.path;
         }
     };
 
+    const uploadProfile = async () => {
+        if (!username && !full_name) return;
+
+        await updateProfile({username, full_name});
+    }
+
     return (
-        <ScrollView style={{flex: 1, marginTop: 100, padding: 26}}>
+        <ScrollView style={{ flex: 1, paddingTop: 100, padding: 26, backgroundColor: '#fff' }}>
             <TouchableOpacity style={[defaultStyles.bubbles, styles.image]} onPress={showImagePickerOptions}>
-                {image ? 
-                    <Image 
-                        source={{ uri: image }} 
-                        style={{width: '100%', aspectRatio: 1}}
-                    /> 
-                    : 
-                    <RemoteImage 
-                        style={{ flex: 1, aspectRatio: 1 }} 
-                        path={`${profile.id}.png`} 
+                {image ?
+                    <Image
+                        source={{ uri: image }}
+                        style={{ width: '100%', aspectRatio: 1 }}
+                    />
+                    :
+                    <RemoteImage
+                        style={{ flex: 1, aspectRatio: 1 }}
+                        path={`${profile.id}.png`}
                         profile
                     />}
             </TouchableOpacity>
 
-            <TextInput
-                    autoCapitalize="none"
-                    placeholder={profile.username || 'Username'}
-                    placeholderTextColor='grey'
-                    value={username}
-                    onChangeText={setUsername}
-                    style={[defaultStyles.inputField, { marginBottom: 10 }]}
-                />
+            <Text style={{ fontFamily: 'mon-sb' }}>Username</Text>
 
+            <TextInput
+                autoCapitalize="none"
+                placeholder={profile.username || 'Username'}
+                placeholderTextColor='grey'
+                value={username}
+                onChangeText={setUsername}
+                style={[defaultStyles.inputField, { marginBottom: 10 }]}
+            />
+
+            <Text style={{ fontFamily: 'mon-sb' }}>Full Name</Text>
+
+            <TextInput
+                autoCapitalize="none"
+                placeholder={profile.full_name || 'Full Name'}
+                placeholderTextColor='grey'
+                value={full_name}
+                onChangeText={setFullname}
+                style={[defaultStyles.inputField, { marginBottom: 10 }]}
+            />
 
             <TouchableOpacity style={defaultStyles.btn} onPress={saveProfile}>
                 <Text style={defaultStyles.btnText}>Save</Text>
@@ -141,8 +162,8 @@ const Edit = () => {
 
 const styles = StyleSheet.create({
     image: {
-        backgroundColor: 'grey', 
-        alignSelf: 'center', 
+        backgroundColor: 'grey',
+        alignSelf: 'center',
         marginBottom: 30,
     }
 })
