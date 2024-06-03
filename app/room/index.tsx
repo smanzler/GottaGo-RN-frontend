@@ -120,31 +120,34 @@ const RoomPage = () => {
                     </View>
 
                     {commentLoading ?
-                    <Text style={styles.user}>Loading Comments...</Text>
-                    :
-                    <View style={styles.comments}>
-                        {comments && comments.length > 0 && comments.map((comment: any) => (
-                            <Comment key={comment.id} comment={comment} setReply={setReply} commentRef={commentRef} />
-                        ))}
-                    </View>}
+                        <Text style={styles.user}>Loading Comments...</Text>
+                        :
+                        <View style={styles.comments}>
+                            {comments && comments.length > 0 && comments.map((comment: any) => (
+                                <Comment key={comment.id} comment={comment} setReply={setReply} commentRef={commentRef} />
+                            ))}
+                        </View>
+                    }
                 </ScrollView>
             </KeyboardAvoidingView>
 
             <InputAccessoryView style={{flex: 1}}>
-                <TextInput
-                    ref={commentRef}
-                    placeholder="Comment"
-                    placeholderTextColor='grey'
-                    value={comment}
-                    onChangeText={setComment}
-                    style={styles.commentInput}
-                />
-                <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
-                    <Feather 
-                        name='send'
-                        size={24}
+                <View style={styles.commentInput}>
+                    <TextInput
+                        ref={commentRef}
+                        placeholder="Comment"
+                        placeholderTextColor='grey'
+                        value={comment}
+                        onChangeText={setComment}
+                        style={{width: '90%'}}
                     />
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
+                        <Feather 
+                            name='send'
+                            size={24}
+                        />
+                    </TouchableOpacity>
+                </View>
             </InputAccessoryView>
 
             <RatingModal 
@@ -194,6 +197,7 @@ const styles = StyleSheet.create({
     },
     comments: {
         paddingVertical: 20,
+        marginBottom: 100,
     },
     commentInput: {
         backgroundColor: '#fff',
@@ -202,6 +206,7 @@ const styles = StyleSheet.create({
         borderTopEndRadius: 20,
         borderTopLeftRadius: 20,
         borderBottomWidth: 0,
+        flex: 1,
     },
     sendBtn: {
         position: 'absolute',
