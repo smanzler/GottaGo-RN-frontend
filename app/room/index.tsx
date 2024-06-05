@@ -1,6 +1,6 @@
 import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TextInput, InputAccessoryView, TouchableOpacity, Keyboard } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
 import { defaultStyles } from '@/src/constants/Styles';
 import { useRoom } from '@/src/api/rooms';
@@ -9,6 +9,7 @@ import { useComments, useInsertComment, useUpdateRating, useYourRating } from '@
 import Comment from '@/src/components/Comment';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import RatingModal from '@/src/components/RatingModal';
+import { useAuth } from '@/src/providers/AuthProvider';
 
 const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');
@@ -17,6 +18,8 @@ const RoomPage = () => {
     const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string, username: string }>();
     const roomId = parseFloat(room.id ? room.id : '');
     
+    const { session } = useAuth();
+
     const { data: rawComments, refetch } = useComments(roomId);
     const { data: yourRating, refetch: refetchYourRating } = useYourRating(roomId);
 
@@ -49,10 +52,6 @@ const RoomPage = () => {
         }
     }, [rawComments])
 
-    useEffect(() => {
-        console.log(comments)
-    }, [comments])
-
     useEffect(()=>{
         if (yourRating){
             setRating(yourRating.rating);
@@ -60,6 +59,10 @@ const RoomPage = () => {
     }, [yourRating])
 
     const onSend = async () => {
+        if (!session) {
+            router.push('(auth)/login')
+            return;
+        }
         if (comment){
             setCommentLoading(true)
             await insertComment({ room_id: roomId, reply_id: reply, message: comment });
@@ -73,8 +76,15 @@ const RoomPage = () => {
         }
     }
 
+    const onRatingPress = () => {
+        if (!session) {
+            router.push('(auth)/login')
+            return;
+        }
+        setModalVisible(true)
+    }
+
     const onAddRatingPress = async () => {
-        console.log(yourRating)
         if (yourRating && yourRating.rating === rating) {
             setModalVisible(false);
             return;
@@ -113,7 +123,7 @@ const RoomPage = () => {
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
                         <Text style={{ fontFamily: 'mon', fontSize: 18}}>Comments</Text>
-                        <TouchableOpacity style={{flexDirection: 'row', gap: 7, alignItems: 'center'}} onPress={() => setModalVisible(true)}>
+                        <TouchableOpacity style={{flexDirection: 'row', gap: 7, alignItems: 'center'}} onPress={onRatingPress}>
                             <Text style={{fontFamily: 'mon', fontSize: 14}}>Add rating</Text>
                             <FontAwesome6 name='add' size={20}/>
                         </TouchableOpacity>
