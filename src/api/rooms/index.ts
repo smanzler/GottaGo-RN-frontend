@@ -114,6 +114,10 @@ export const useImage = (id: string | null | undefined, profile?: boolean) => {
         queryFn: async () => {
             if (!id) return null;
             
+            if (profile){
+                console.log('getting pic')
+            }
+            
             const { data, error } = await supabase.storage
                 .from(!profile ? 'rooms' : 'avatars')
                 .download(id);

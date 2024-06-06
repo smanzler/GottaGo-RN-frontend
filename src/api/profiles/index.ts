@@ -10,7 +10,8 @@ export const useUpdateProfile = () => {
             const { error } = await supabase
                 .from('profiles')
                 .update({
-
+                    username: data.username,
+                    full_name: data.full_name,
                 })
                 .eq('id', session?.user.id)
                 .select('id');

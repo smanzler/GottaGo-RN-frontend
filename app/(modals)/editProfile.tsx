@@ -1,4 +1,4 @@
-import { ActionSheetIOS, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActionSheetIOS, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/src/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,6 +10,7 @@ import { useAuth } from '@/src/providers/AuthProvider';
 import { ScrollView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import RemoteImage from '@/src/components/RemoteImage';
+import Alert from '@/src/components/Alert';
 import { useImage } from '@/src/api/rooms';
 import { useUpdateProfile } from '@/src/api/profiles';
 
@@ -18,13 +19,24 @@ const Edit = () => {
     const { profile, fetchProfile } = useAuth();
 
     const [image, setImage] = useState<string | null>(null);
-    const [username, setUsername] = useState(profile.username);
-    const [full_name, setFullname] = useState(profile.full_name);
+    const [username, setUsername] = useState('');
+    const [full_name, setFullname] = useState('');
+
+    const [fullNameAlert, setFullNameAlert] = useState<string | null>(null);
+    const [userNameAlert, setUserNameAlert] = useState<string | null>(null);
+
+    const [loading, setLoading] = useState(false)
 
     const { refetch } = useImage(`${profile.id}.png`, profile);
     const { mutateAsync: updateProfile } = useUpdateProfile();
 
     const saveProfile = async () => {
+        setLoading(true);
+        if (await checkProfile()) {
+            setLoading(false)
+            return;
+        }
+        
         await uploadImage();
         await uploadProfile();
 
@@ -33,6 +45,7 @@ const Edit = () => {
         await refetch();
 
         router.back();
+        setLoading(false);
     }
 
     const pickImage = async () => {
@@ -96,27 +109,71 @@ const Edit = () => {
 
         console.log("base is good")
 
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
             .from('avatars')
             .upload(filePath, decode(base64), { contentType, upsert: true });
 
         if (error) console.log(error);
-
-        console.log(data)
-
-        if (data) {
-            return data.path;
-        }
     };
 
     const uploadProfile = async () => {
         if (!username && !full_name) return;
 
-        await updateProfile({username, full_name});
+        await updateProfile({
+            username: username ? username : profile.username,
+            full_name: full_name ? full_name : profile.full_name,
+        });
+    }
+
+    const checkProfile = async () => {
+        return await checkUsername() || checkFullname()
+    }
+
+    const checkFullname = () => {
+        if (!full_name) return false;
+
+        if (full_name === profile.full_name) return false;
+
+        if (!/^[a-zA-z\s]+$/.test(full_name)) {
+            setFullNameAlert('Full name must only contain letters');
+            return true;
+        }
+
+        return false;
+    }
+
+    const checkUsername = async () => {
+        if (!username) {
+            return false;
+        }
+
+        if (username === profile.username) return false;
+
+        if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(username)) {
+            setUserNameAlert('Username must begin with a letter and can only contain letters and numbers')
+            return true;
+        }
+
+        if (username.length < 5) {
+            setUserNameAlert('Username must be longer than 5 characters')
+            return true;
+        }
+
+        const { data } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('username', username);
+
+        if (data && data[0]) {
+            setUserNameAlert('This username is already being used')
+            return true;
+        }
+
+        return false;
     }
 
     return (
-        <ScrollView style={{ flex: 1, paddingTop: 100, padding: 26, backgroundColor: '#fff' }}>
+        <ScrollView style={{ flex: 1, paddingTop: 100, padding: 26, backgroundColor: '#fff' }} automaticallyAdjustKeyboardInsets>
             <TouchableOpacity style={[defaultStyles.bubbles, styles.image]} onPress={showImagePickerOptions}>
                 {image ?
                     <Image
@@ -131,6 +188,8 @@ const Edit = () => {
                     />}
             </TouchableOpacity>
 
+            {userNameAlert && <Alert text={userNameAlert} />}
+
             <Text style={{ fontFamily: 'mon-sb' }}>Username</Text>
 
             <TextInput
@@ -141,6 +200,8 @@ const Edit = () => {
                 onChangeText={setUsername}
                 style={[defaultStyles.inputField, { marginBottom: 10 }]}
             />
+
+            {fullNameAlert && <Alert text={fullNameAlert} />}
 
             <Text style={{ fontFamily: 'mon-sb' }}>Full Name</Text>
 
@@ -153,8 +214,12 @@ const Edit = () => {
                 style={[defaultStyles.inputField, { marginBottom: 10 }]}
             />
 
-            <TouchableOpacity style={defaultStyles.btn} onPress={saveProfile}>
-                <Text style={defaultStyles.btnText}>Save</Text>
+            <TouchableOpacity 
+                style={defaultStyles.btn} 
+                onPress={saveProfile}
+                disabled={loading}
+            >
+                <Text style={defaultStyles.btnText}>{loading ? 'Saving...' : 'Save'}</Text>
             </TouchableOpacity>
         </ScrollView>
     )

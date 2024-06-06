@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, router } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
@@ -12,13 +12,17 @@ import { randomUUID } from 'expo-crypto';
 import { decode } from 'base64-arraybuffer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RemoteImage from '@/src/components/RemoteImage';
+import { useImage } from '@/src/api/rooms';
 
 const fallback = require('@/assets/images/fallback.png')
 
 const Page = () => {
-    const { session, profile } = useAuth();
+    const { session, profile, fetchProfile } = useAuth();
+
+    const { refetch } = useImage(`${profile.id}.png`, profile);
 
     const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const handleLogout = async () => {
         setLoading(true);
@@ -28,8 +32,17 @@ const Page = () => {
         setLoading(false);
     }
 
+    const onRefresh = async () => {
+        setRefreshing(true); 
+
+        await refetch();
+        await fetchProfile();
+
+        setRefreshing(false);
+    }
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
 
             {!session ?
                 <>
@@ -61,7 +74,7 @@ const Page = () => {
                     </TouchableOpacity>
                 </>
             }
-        </View>
+        </ScrollView>
     )
 }
 
