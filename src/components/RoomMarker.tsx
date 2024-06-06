@@ -77,6 +77,7 @@ const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
                             loop
                             consecutive
                             delay={1000}
+                            style={{fontFamily: 'mon-sb'}}
                         >
                             {room.name}
                         </MarqueeText>
