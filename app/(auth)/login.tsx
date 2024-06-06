@@ -88,7 +88,7 @@ const Page = () => {
                     <Text style={styles.btnOutlineText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
                 </TouchableOpacity>
 
-                <View style={styles.seperatorView}>
+                {/* <View style={styles.seperatorView}>
                     <View
                         style={{
                             flex: 1,
@@ -126,7 +126,7 @@ const Page = () => {
                         <Ionicons name="logo-facebook" size={24} style={defaultStyles.btnIcon} />
                         <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
         </KeyboardAvoidingView>
     );
