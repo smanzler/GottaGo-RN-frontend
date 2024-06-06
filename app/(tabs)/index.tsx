@@ -35,11 +35,6 @@ const Page = () => {
 
     return (
         <View style={{ flex: 1, backgroundColor: 'grey'}}>
-            <Stack.Screen
-                options={{
-                    header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
-                }}
-            />
             <RoomsMap rooms={rooms || undefined} />
 
             <RoomsBottomSheet 

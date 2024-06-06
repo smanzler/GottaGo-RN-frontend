@@ -16,6 +16,8 @@ const Layout = () => {
       <Tabs.Screen 
         name="index"
         options={{
+          headerTitle: 'Find A Room',
+          headerTitleStyle: {fontFamily: 'mon-sb'},
           tabBarLabel: 'Explore',
           tabBarIcon: ({color, size}) => (
             <Ionicons name="search" color={color} size={size}/>
