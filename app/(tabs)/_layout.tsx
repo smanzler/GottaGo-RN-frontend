@@ -23,15 +23,6 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen 
-        name="wishlists"
-        options={{
-          tabBarLabel: 'Wishlists',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="heart-outline" color={color} size={size}/>
-          )
-        }}
-      />
-      <Tabs.Screen 
         name="create"
         options={{
           headerTitle: 'Create New Room',
@@ -39,15 +30,6 @@ const Layout = () => {
           tabBarLabel: 'Create',
           tabBarIcon: ({color, size}) => (
             <AntDesign name="plussquareo" color={color} size={size}/>
-          )
-        }}
-      />
-      <Tabs.Screen 
-        name="inbox"
-        options={{
-          tabBarLabel: 'Inbox',
-          tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="message-outline" color={color} size={size}/>
           )
         }}
       />
