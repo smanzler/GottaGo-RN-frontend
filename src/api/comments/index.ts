@@ -84,3 +84,21 @@ export const useYourRating = (id: number) => {
         staleTime: 1000*60*5
     });
 }
+
+export const useSendFeedback = () => {
+    const { session } = useAuth();
+
+    return useMutation({
+        async mutationFn(message: any) {
+            console.log('sending feedback')
+            const { error } = await supabase
+                .from('feedback')
+                .insert({
+                    created_by: session ? session.user.id : null,
+                    message,
+                })
+
+            if (error) throw new Error(error.message);
+        }
+    })
+}

@@ -149,7 +149,7 @@ const RoomPage = () => {
                         placeholderTextColor='grey'
                         value={comment}
                         onChangeText={setComment}
-                        style={{width: '90%'}}
+                        style={{width: '80%'}}
                     />
                     <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
                         <Feather 
@@ -212,11 +212,19 @@ const styles = StyleSheet.create({
     commentInput: {
         backgroundColor: '#fff',
         padding: 20,
-        borderWidth: StyleSheet.hairlineWidth,
         borderTopEndRadius: 20,
         borderTopLeftRadius: 20,
         borderBottomWidth: 0,
         flex: 1,
+
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        shadowOffset: {
+            width: 1,
+            height: 2,
+        },
     },
     sendBtn: {
         position: 'absolute',

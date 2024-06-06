@@ -13,6 +13,7 @@ import { decode } from 'base64-arraybuffer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useImage } from '@/src/api/rooms';
+import FeedbackForm from '@/src/components/FeedbackForm';
 
 const fallback = require('@/assets/images/fallback.png')
 
@@ -33,7 +34,7 @@ const Page = () => {
     }
 
     const onRefresh = async () => {
-        setRefreshing(true); 
+        setRefreshing(true);
 
         await refetch();
         await fetchProfile();
@@ -42,7 +43,15 @@ const Page = () => {
     }
 
     return (
-        <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+        <ScrollView
+            style={styles.container}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />}
+            automaticallyAdjustKeyboardInsets
+        >
 
             {!session ?
                 <>
@@ -59,9 +68,9 @@ const Page = () => {
                         </TouchableOpacity>
 
                         <View style={styles.profilePicture}>
-                            <RemoteImage 
-                                style={{ flex: 1, aspectRatio: 1 }} 
-                                path={profile ? `${profile.id}.png` : undefined} 
+                            <RemoteImage
+                                style={{ flex: 1, aspectRatio: 1 }}
+                                path={profile ? `${profile.id}.png` : undefined}
                                 profile
                             />
                         </View>
@@ -72,8 +81,22 @@ const Page = () => {
                     <TouchableOpacity style={defaultStyles.btn} onPress={handleLogout} disabled={loading} >
                         <Text style={defaultStyles.btnText}>{loading ? "Loggin you out..." : "Logout"}</Text>
                     </TouchableOpacity>
+
                 </>
             }
+
+            <View
+                style={{
+                    flex: 1,
+                    marginTop: 30,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: StyleSheet.hairlineWidth,
+                }}
+            />
+
+            <FeedbackForm />
+
+            <View style={{ height: 200 }} />
         </ScrollView>
     )
 }
@@ -102,7 +125,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
     },
     editBtn: {
-        position: 'absolute', 
+        position: 'absolute',
         top: 15,
         right: 15,
         width: 35,
