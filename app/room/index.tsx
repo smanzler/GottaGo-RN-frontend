@@ -1,4 +1,4 @@
-import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TextInput, InputAccessoryView, TouchableOpacity, Keyboard } from 'react-native';
+import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TextInput, InputAccessoryView, TouchableOpacity, Keyboard, Platform, Linking } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
@@ -7,17 +7,35 @@ import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useComments, useInsertComment, useUpdateRating, useYourRating } from '@/src/api/comments';
 import Comment from '@/src/components/Comment';
-import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import { Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import RatingModal from '@/src/components/RatingModal';
 import { useAuth } from '@/src/providers/AuthProvider';
 
 const IMG_HEIGHT = 200;
 const { width } = Dimensions.get('window');
 
+type Room = {
+    id: string,
+    name: string,
+    image: string,
+    description: string,
+    created_at: string,
+    created_by: string,
+    username: string,
+    rating: any,
+    rating_count: any,
+    lat: any,
+    long: any
+}
+
 const RoomPage = () => {
-    const room = useLocalSearchParams<{ id: string, name: string, image: string, description: string, created_at: string, created_by: string, username: string }>();
+    const room = useLocalSearchParams<Room>();
     const roomId = parseFloat(room.id ? room.id : '');
-    
+
+    room.rating = parseFloat(room.rating);
+
+    const roundedRating = Math.round(room.rating * 2) / 2;
+
     const { session } = useAuth();
 
     const { data: rawComments, refetch } = useComments(roomId);
@@ -52,18 +70,31 @@ const RoomPage = () => {
         }
     }, [rawComments])
 
-    useEffect(()=>{
-        if (yourRating){
+    useEffect(() => {
+        if (yourRating) {
             setRating(yourRating.rating);
         }
     }, [yourRating])
+
+    const onDirections = () => {
+        const scheme = Platform.select({ ios: 'maps://0,0?q=', android: 'geo:0,0?q=' });
+        const latLng = `${room.lat},${room.long}`;
+        const label = room.name;
+        const url = Platform.select({
+            ios: `${scheme}${label}@${latLng}`,
+            android: `${scheme}${latLng}(${label})`
+        });
+
+        if (!url) return;
+        Linking.openURL(url);
+    }
 
     const onSend = async () => {
         if (!session) {
             router.push('(auth)/login')
             return;
         }
-        if (comment){
+        if (comment) {
             setCommentLoading(true)
             await insertComment({ room_id: roomId, reply_id: reply, message: comment });
 
@@ -91,7 +122,7 @@ const RoomPage = () => {
         }
 
         setRatingLoading(true);
-        await updateRating({rating, id: roomId})
+        await updateRating({ rating, id: roomId })
         await refetchYourRating();
         await refetch();
         setModalVisible(false)
@@ -99,33 +130,67 @@ const RoomPage = () => {
     }
 
     return (
-        <View style={{flex: 1}}>
-            <KeyboardAvoidingView style={{flex: 1}} behavior='padding'>
+        <View style={{ flex: 1 }}>
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
                 <ScrollView style={styles.container}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 10}}>
-                        <View style={{justifyContent: 'center', maxWidth: '50%'}}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
+                        <View style={{ justifyContent: 'center', maxWidth: '50%' }}>
                             <Text style={styles.h1}>{room.name}</Text>
                         </View>
                         <View style={defaultStyles.bubbles}>
                             <RemoteImage path={room.image ? room.image : undefined} style={[styles.image]} />
                         </View>
                     </View>
-                    <Text style={{ fontFamily: 'mon', fontSize: 18}}>Created by</Text>
 
-                    <View style={{flexDirection: 'row', gap: 7, marginTop: 6}}>
+                    <View style={{ marginTop: 10 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Rating: </Text>
+                            <TouchableOpacity style={{ flexDirection: 'row', gap: 3 }} onPress={onDirections}>
+                                <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Directions</Text>
+                                <FontAwesome6 name='location-arrow' size={18}></FontAwesome6>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flexDirection: 'row', gap: 2, alignItems: 'center', marginBottom: 20 }}>
+                            <Text style={styles.rating}> {typeof room.rating === 'number' ? room.rating.toFixed(1) : 0}</Text>
+                            <View style={styles.stars}>
+                                {Array.from({ length: 5 }, (_, index) => (
+                                    <View key={`${roomId}-${index}`} style={{ position: 'relative', width: 24, aspectRatio: 1 }}>
+                                        <FontAwesome
+                                            name={index + 1 <= roundedRating ? 'star' : index + 0.5 === roundedRating ? 'star-half' : 'star'}
+                                            size={24}
+                                            color={index + 1 <= roundedRating || index + 0.5 === roundedRating ? 'gold' : 'grey'}
+                                        />
+                                        {index + 0.5 === roundedRating &&
+                                            <FontAwesome
+                                                name='star'
+                                                size={30}
+                                                color='grey'
+                                                style={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}
+                                            />
+                                        }
+                                    </View>
+                                ))}
+                            </View>
+                            <Text style={styles.rating}>{`(${room.rating_count})`}</Text>
+                        </View>
+                    </View>
+
+                    <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Created by:</Text>
+
+                    <View style={{ flexDirection: 'row', gap: 7, marginTop: 6 }}>
                         <View style={styles.profilePic}>
                             <RemoteImage style={{ width: '100%', aspectRatio: 1 }} path={`${room.created_by}.png`} profile />
                         </View>
                         <Text style={styles.user}>{room.username}</Text>
                     </View>
 
-                    <Text style={styles.h2}>{room.description}</Text>
+                    <Text style={[styles.h2, { width: '100%' }]}>{room.description}</Text>
 
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
-                        <Text style={{ fontFamily: 'mon', fontSize: 18}}>Comments</Text>
-                        <TouchableOpacity style={{flexDirection: 'row', gap: 7, alignItems: 'center'}} onPress={onRatingPress}>
-                            <Text style={{fontFamily: 'mon', fontSize: 14}}>Add rating</Text>
-                            <FontAwesome6 name='add' size={20}/>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+                        <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Comments</Text>
+                        <TouchableOpacity style={{ flexDirection: 'row', gap: 7, alignItems: 'center' }} onPress={onRatingPress}>
+                            <Text style={{ fontFamily: 'mon', fontSize: 14 }}>Add rating</Text>
+                            <FontAwesome6 name='add' size={20} />
                         </TouchableOpacity>
                     </View>
 
@@ -141,7 +206,7 @@ const RoomPage = () => {
                 </ScrollView>
             </KeyboardAvoidingView>
 
-            <InputAccessoryView style={{flex: 1}}>
+            <InputAccessoryView style={{ flex: 1 }}>
                 <View style={styles.commentInput}>
                     <TextInput
                         ref={commentRef}
@@ -149,10 +214,10 @@ const RoomPage = () => {
                         placeholderTextColor='grey'
                         value={comment}
                         onChangeText={setComment}
-                        style={{width: '80%'}}
+                        style={{ width: '80%' }}
                     />
                     <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
-                        <Feather 
+                        <Feather
                             name='send'
                             size={24}
                         />
@@ -160,8 +225,8 @@ const RoomPage = () => {
                 </View>
             </InputAccessoryView>
 
-            <RatingModal 
-                modalVisible={modalVisible} 
+            <RatingModal
+                modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 rating={rating}
                 setRating={setRating}
@@ -194,6 +259,15 @@ const styles = StyleSheet.create({
         marginTop: 25,
         marginBottom: 25,
         width: '50%',
+    },
+    rating: {
+        fontSize: 16,
+        fontFamily: 'mon-sb',
+        justifyContent: 'center',
+        paddingTop: 1
+    },
+    stars: {
+        flexDirection: 'row',
     },
     profilePic: {
         width: 25,
