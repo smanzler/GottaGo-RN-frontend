@@ -20,7 +20,7 @@ const fallback = require('@/assets/images/fallback.png')
 const Page = () => {
     const { session, profile, fetchProfile } = useAuth();
 
-    const { refetch } = useImage(`${profile.id}.png`, profile);
+    const { refetch } = useImage(profile ? `${profile.id}.png` : null, profile);
 
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
