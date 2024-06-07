@@ -44,6 +44,12 @@
       "eas": {
         "projectId": "bd9d3711-1863-4b63-8d1c-dd0e058b5699"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/bd9d3711-1863-4b63-8d1c-dd0e058b5699"
     }
   },
   "react-native-google-mobile-ads": {
