@@ -51,12 +51,12 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
                         <View style={styles.text}>
                             <View style={styles.header}>
                                 <Text style={styles.name}>{item.name}</Text>
-                                <Text style={styles.distance}>{new Intl.NumberFormat('en-US', {
+                                {item.dist_meters && <Text style={styles.distance}>{new Intl.NumberFormat('en-US', {
                                     style: 'unit',
                                     unit: 'meter',
                                     unitDisplay: 'narrow',
                                     maximumFractionDigits: 1,
-                                }).format(item.dist_meters)}</Text>
+                                }).format(item.dist_meters)}</Text>}
                             </View>
                             <View style={styles.bottomContainer}>
                                 <Text style={styles.description}>{item.description}</Text>

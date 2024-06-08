@@ -11,9 +11,6 @@ import { Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import RatingModal from '@/src/components/RatingModal';
 import { useAuth } from '@/src/providers/AuthProvider';
 
-const IMG_HEIGHT = 200;
-const { width } = Dimensions.get('window');
-
 type Room = {
     id: string,
     name: string,

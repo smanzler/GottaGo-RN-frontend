@@ -1,5 +1,6 @@
 import { useAuth } from "@/src/providers/AuthProvider";
 import { supabase } from "@/src/utils/supabase";
+import { PostgrestError } from "@supabase/supabase-js";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Location from 'expo-location'
 import { Region } from "react-native-maps";
@@ -11,17 +12,17 @@ export const useRooms = () => {
             console.log('getting rooms')
 
             let { status } = await Location.requestForegroundPermissionsAsync();
+            let data: any, error: PostgrestError | null ;
+
             if (status !== 'granted') {
-                alert('Permission to access location was denied');
-                return;
+                ({ data, error } = await supabase.rpc('rooms_without_location'));
+            } else {
+                let location = await Location.getLastKnownPositionAsync({});
+                ({ data, error } = await supabase.rpc('nearby_rooms', {
+                    long: location?.coords.longitude,
+                    lat: location?.coords.latitude,
+                }));
             }
-
-            let location = await Location.getLastKnownPositionAsync({});
-
-            const { data, error } = await supabase.rpc('nearby_rooms', {
-                long: location?.coords.longitude,
-                lat: location?.coords.latitude,
-            })
 
             if (error) throw new Error(error.message);
 
