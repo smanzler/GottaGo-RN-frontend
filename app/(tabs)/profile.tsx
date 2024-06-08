@@ -74,8 +74,8 @@ const Page = () => {
                                 profile
                             />
                         </View>
-                        <Text style={styles.username}>{profile.username}</Text>
-                        <Text style={styles.full_name}>{profile.full_name}</Text>
+                        <Text style={styles.username}>{profile.username && profile.username}</Text>
+                        <Text style={styles.full_name}>{profile.full_name && profile.full_name}</Text>
                     </View>
 
                     <TouchableOpacity style={defaultStyles.btn} onPress={handleLogout} disabled={loading} >
