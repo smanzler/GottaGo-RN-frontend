@@ -18,7 +18,7 @@ import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import ExitButtom from '@/src/components/ExitButton';
 const fallback = require('../../assets/images/fallback.png');
 
-const Page = () => {
+const CreatePage = () => {
     const { session } = useAuth();
 
     const router = useRouter();
@@ -291,4 +291,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Page;
+export default CreatePage;
