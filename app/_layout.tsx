@@ -78,6 +78,21 @@ function RootLayoutNav() {
           ),
         }}
       />
+      <Stack.Screen
+        name="(auth)/signup"
+        options={{
+          presentation: 'card',
+          title: 'Sign up',
+          headerTitleStyle: {
+            fontFamily: 'mon-sb',
+          },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <Stack.Screen 
         name="room/index" 
         options={{ 

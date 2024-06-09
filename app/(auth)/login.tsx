@@ -20,21 +20,6 @@ const Page = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [loginLoading, setLoginLoading] = useState<boolean>(false);
 
-    const onSignUpPress = async () => {
-        setLoading(true);
-
-        const { error, data } = await supabase.auth.signUp({
-            email: emailAddress,
-            password,
-        })
-
-        if (error) Alert.alert(error.message);
-
-        if (data.user) router.back();
-
-        setLoading(false);
-    }
-
     const onSignInPress = async () => {
         setLoginLoading(true);
 
@@ -82,7 +67,7 @@ const Page = () => {
 
                 <TouchableOpacity
                     style={styles.btnOutline}
-                    onPress={onSignUpPress}
+                    onPress={() => router.replace('/signup')}
                     disabled={loginLoading || loading}
                 >
                     <Text style={styles.btnOutlineText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
