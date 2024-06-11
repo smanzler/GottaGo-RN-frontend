@@ -8,9 +8,9 @@ import { useLocation } from '../hooks/useLocation';
 import { TouchableOpacity } from 'react-native';
 import { getRoomsInView } from '../api/rooms';
 import { FontAwesome6 } from '@expo/vector-icons';
-import Colors from '../constants/Colors';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { defaultStyles } from '../constants/Styles';
+import { useDefaultStyles } from '../constants/Styles';
+import { useSettings } from '../providers/SettingsProvider';
 
 interface Props {
     rooms: any[] | undefined;
@@ -19,6 +19,9 @@ interface Props {
 const RoomsMap = ({rooms}: Props) => {
     const [selected, setSelected] = useState<number | undefined>(undefined);
     const mapViewRef = useRef<MapView>(null);
+
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     useEffect(() => {
         useLocation(mapViewRef);

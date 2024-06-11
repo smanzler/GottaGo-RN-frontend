@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useRouter } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
 import Loading from '@/src/components/Loading';
-import { defaultStyles } from '@/src/constants/Styles';
+import { useDefaultStyles } from '@/src/constants/Styles';
 import { supabase } from '@/src/utils/supabase';
 import MapView, { Camera, LatLng, LongPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useInsertRoom, useRooms } from '@/src/api/rooms';
@@ -13,13 +13,15 @@ import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { randomUUID } from 'expo-crypto'
 import { decode } from 'base64-arraybuffer';
-import Colors from '@/src/constants/Colors';
 import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import ExitButtom from '@/src/components/ExitButton';
+import { useSettings } from '@/src/providers/SettingsProvider';
 const fallback = require('../../assets/images/fallback.png');
 
 const CreatePage = () => {
     const { session } = useAuth();
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     const router = useRouter();
 

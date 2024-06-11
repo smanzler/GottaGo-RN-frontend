@@ -1,12 +1,12 @@
 import { View, Text, ListRenderItem, StyleSheet, Image, TouchableOpacity, RefreshControl } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { defaultStyles } from "@/src/constants/Styles";
+import { useDefaultStyles } from "@/src/constants/Styles";
 import { Link } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
-import Colors from "@/src/constants/Colors";
 import { FlatList } from "react-native-gesture-handler";
 import RemoteImage from "./RemoteImage";
+import { useSettings } from "../providers/SettingsProvider";
 
 interface Props {
     category: string;
@@ -17,6 +17,9 @@ interface Props {
 const Rooms = ({ category, rooms, refetch }: Props) => {
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     useEffect(() => {
         setLoading(true);

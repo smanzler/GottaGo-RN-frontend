@@ -4,7 +4,7 @@ import { supabase } from '@/src/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { decode } from 'base64-arraybuffer';
-import { defaultStyles } from '@/src/constants/Styles';
+import { useDefaultStyles } from '@/src/constants/Styles';
 import { TextInput } from 'react-native';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,10 +13,13 @@ import RemoteImage from '@/src/components/RemoteImage';
 import Alert from '@/src/components/Alert';
 import { useImage } from '@/src/api/rooms';
 import { useUpdateProfile } from '@/src/api/profiles';
+import { useSettings } from '@/src/providers/SettingsProvider';
 
 const Edit = () => {
 
     const { profile, fetchProfile } = useAuth();
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     const [image, setImage] = useState<string | null>(null);
     const [username, setUsername] = useState('');

@@ -3,13 +3,13 @@ import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
-import Colors from '@/src/constants/Colors';
 import ModalHeaderText from '@/src/components/ModalHeaderText';
 import { TouchableOpacity } from 'react-native';
 import { AuthProvider, useAuth } from '../src/providers/AuthProvider';
 import QueryProvider from '../src/providers/QueryProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ExitButton from '@/src/components/ExitButton';
+import { SettingsProvider, useSettings } from '@/src/providers/SettingsProvider';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -40,9 +40,11 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <QueryProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <RootLayoutNav />
-        </GestureHandlerRootView>
+        <SettingsProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <RootLayoutNav />
+          </GestureHandlerRootView>
+        </SettingsProvider>
       </QueryProvider>
     </AuthProvider>
   );
@@ -50,6 +52,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const router = useRouter();
+  const { theme } = useSettings();
 
   const { session, loading } = useAuth();
 
@@ -93,6 +96,21 @@ function RootLayoutNav() {
           ),
         }}
       />
+      <Stack.Screen
+        name="(modals)/settings"
+        options={{
+          presentation: 'card',
+          title: 'Settings',
+          headerTitleStyle: {
+            fontFamily: 'mon-sb',
+          },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={28} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <Stack.Screen 
         name="room/index" 
         options={{ 
@@ -119,7 +137,7 @@ function RootLayoutNav() {
               onPress={() => router.back()}
               style={{
                 backgroundColor: '#fff',
-                borderColor: Colors.grey,
+                borderColor: theme.grey,
                 borderRadius: 20,
                 borderWidth: 1,
                 padding: 4,

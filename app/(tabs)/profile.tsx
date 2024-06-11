@@ -1,18 +1,21 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, Switch } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, router } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
-import { defaultStyles } from '@/src/constants/Styles';
+import { useDefaultStyles } from '@/src/constants/Styles';
 import { supabase } from '@/src/utils/supabase';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useImage } from '@/src/api/rooms';
 import FeedbackForm from '@/src/components/FeedbackForm';
+import { useSettings } from '@/src/providers/SettingsProvider';
 
 const fallback = require('@/assets/images/fallback.png')
 
 const ProfilePage = () => {
     const { session, profile, fetchProfile } = useAuth();
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     const { refetch } = useImage(profile ? `${profile.id}.png` : null, profile);
 
@@ -79,6 +82,10 @@ const ProfilePage = () => {
                 </>
             }
 
+            <TouchableOpacity style={[defaultStyles.btnOutline, {marginTop: 30}]} onPress={() => router.push('(modals)/settings')} disabled={loading} >
+                <Text style={defaultStyles.btnOutlineText}>Settings</Text>
+            </TouchableOpacity>
+
             <View
                 style={{
                     flex: 1,
@@ -127,6 +134,13 @@ const styles = StyleSheet.create({
 
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    settingsRow: {
+        flex: 1,
+        height: 30
+    },
+    settingsText: {
+        fontFamily: 'mon-sb',
     }
 })
 

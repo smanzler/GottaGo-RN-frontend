@@ -2,7 +2,7 @@ import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoiding
 import React, { useEffect, useRef, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
-import { defaultStyles } from '@/src/constants/Styles';
+import { useDefaultStyles } from '@/src/constants/Styles';
 import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useComments, useInsertComment, useUpdateRating, useYourRating } from '@/src/api/comments';
@@ -10,6 +10,7 @@ import Comment from '@/src/components/Comment';
 import { Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import RatingModal from '@/src/components/RatingModal';
 import { useAuth } from '@/src/providers/AuthProvider';
+import { useSettings } from '@/src/providers/SettingsProvider';
 
 type Room = {
     id: string,
@@ -34,6 +35,8 @@ const RoomPage = () => {
     const roundedRating = Math.round(room.rating * 2) / 2;
 
     const { session } = useAuth();
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     const { data: rawComments, refetch } = useComments(roomId);
     const { data: yourRating, refetch: refetchYourRating } = useYourRating(roomId);

@@ -3,8 +3,9 @@ import React from 'react'
 import RemoteImage from './RemoteImage'
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { defaultStyles } from '../constants/Styles'
+import { useDefaultStyles } from '../constants/Styles'
 import Curve from './Curve'
+import { useSettings } from '../providers/SettingsProvider'
 
 interface Props {
     comment: any;
@@ -13,6 +14,9 @@ interface Props {
 }
 
 const Comment = ({ comment, setReply, commentRef }: Props) => {
+
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     const onReplyPress = () => {
         setReply(comment.id);

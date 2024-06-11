@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
-import Colors from "./Colors";
 
-export const defaultStyles = StyleSheet.create({
+export const useDefaultStyles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -25,7 +24,7 @@ export const defaultStyles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     btn: {
-        backgroundColor: Colors.primary,
+        backgroundColor: theme.primary,
         height: 50, 
         borderRadius: 8, 
         justifyContent: 'center',
@@ -35,6 +34,22 @@ export const defaultStyles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontFamily: 'mon-b',
+    },
+    btnOutline: {
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: theme.grey,
+        height: 50,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 10,
+    },
+    btnOutlineText: {
+        color: '#000',
+        fontSize: 16,
+        fontFamily: 'mon-sb',
     },
     btnIcon: {
         position: 'absolute',
@@ -53,7 +68,7 @@ export const defaultStyles = StyleSheet.create({
         alignItems: 'center',
 
         backgroundColor: '#fff',
-        borderColor: Colors.grey,
+        borderColor: theme.grey,
         borderRadius: 30,
         width: 50,
         aspectRatio: 1,

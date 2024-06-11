@@ -1,23 +1,24 @@
-import Colors from '@/src/constants/Colors';
 import { View, StyleSheet, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 import { useWarmUpBrowser } from '@/src/hooks/useWarmUpBrowser';
-import { defaultStyles } from '@/src/constants/Styles';
+import { useDefaultStyles } from '@/src/constants/Styles';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { } from '../../src/providers/AuthProvider';
 import { supabase } from '@/src/utils/supabase';
 import { Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSettings } from '@/src/providers/SettingsProvider';
 
 const Page = () => {
     useWarmUpBrowser();
 
     const router = useRouter();
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     const [emailAddress, setEmailAddress] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
     const [loginLoading, setLoginLoading] = useState<boolean>(false);
 
     const onSignInPress = async () => {
@@ -36,7 +37,7 @@ const Page = () => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior='padding'>
+        <KeyboardAvoidingView style={styles(theme).container} behavior='padding'>
             <View style={{ flex: 1 }}>
 
                 <Text style={defaultStyles.header}>Log in</Text>
@@ -60,17 +61,17 @@ const Page = () => {
                 <TouchableOpacity
                     style={[defaultStyles.btn, { marginBottom: 10 }]}
                     onPress={onSignInPress}
-                    disabled={loginLoading || loading}
+                    disabled={loginLoading}
                 >
                     <Text style={defaultStyles.btnText}>{loginLoading ? "Logging you in..." : "Log in"}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={styles.btnOutline}
+                    style={defaultStyles.btnOutline}
                     onPress={() => router.replace('/signup')}
-                    disabled={loginLoading || loading}
+                    disabled={loginLoading}
                 >
-                    <Text style={styles.btnOutlineText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
+                    <Text style={defaultStyles.btnOutlineText}>Sign Up</Text>
                 </TouchableOpacity>
 
                 {/* <View style={styles.seperatorView}>
@@ -117,7 +118,7 @@ const Page = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
@@ -133,24 +134,8 @@ const styles = StyleSheet.create({
     },
     seperator: {
         fontFamily: 'mon-sb',
-        color: Colors.grey,
+        color: theme.grey,
         fontSize: 16,
-    },
-    btnOutline: {
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: Colors.grey,
-        height: 50,
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-    },
-    btnOutlineText: {
-        color: '#000',
-        fontSize: 16,
-        fontFamily: 'mon-sb',
     },
 });
 

@@ -1,19 +1,21 @@
-import Colors from '@/src/constants/Colors';
 import { View, StyleSheet, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 import { useWarmUpBrowser } from '@/src/hooks/useWarmUpBrowser';
-import { defaultStyles } from '@/src/constants/Styles';
+import { useDefaultStyles } from '@/src/constants/Styles';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { } from '../../src/providers/AuthProvider';
 import { supabase } from '@/src/utils/supabase';
 import { Alert } from 'react-native';
 import CustomAlert from '@/src/components/Alert';
+import { useSettings } from '@/src/providers/SettingsProvider';
 
 const Page = () => {
     useWarmUpBrowser();
 
     const router = useRouter();
+    const { theme } = useSettings();
+    const defaultStyles = useDefaultStyles(theme)
 
     const [emailAddress, setEmailAddress] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -21,7 +23,6 @@ const Page = () => {
 
     const [inputError, setInputError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
-    const [loginLoading, setLoginLoading] = useState<boolean>(false);
 
     const onSignUpPress = async () => {
         if (!emailAddress || !password || !username) {
@@ -75,7 +76,7 @@ const Page = () => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior='padding'>
+        <KeyboardAvoidingView style={styles(theme).container} behavior='padding'>
             <View style={{ flex: 1 }}>
                 {inputError && <CustomAlert text={inputError} />}
 
@@ -105,18 +106,18 @@ const Page = () => {
                     style={[defaultStyles.inputField, { marginBottom: 10 }]}
                 />
                 <TouchableOpacity
-                    style={styles.btnOutline}
+                    style={styles(theme).btnOutline}
                     onPress={onSignUpPress}
                     disabled={loading}
                 >
-                    <Text style={styles.btnOutlineText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
+                    <Text style={styles(theme).btnOutlineText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
@@ -132,13 +133,13 @@ const styles = StyleSheet.create({
     },
     seperator: {
         fontFamily: 'mon-sb',
-        color: Colors.grey,
+        color: theme.grey,
         fontSize: 16,
     },
     btnOutline: {
         backgroundColor: '#fff',
         borderWidth: 1,
-        borderColor: Colors.grey,
+        borderColor: theme.grey,
         height: 50,
         borderRadius: 8,
         alignItems: 'center',
