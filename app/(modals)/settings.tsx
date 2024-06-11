@@ -1,15 +1,40 @@
-import { StyleSheet, Switch, Text, View } from 'react-native'
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
+import { Stack, router } from 'expo-router';
+import { useUpdateSettings } from '@/src/api/settings';
 
 const Settings = () => {
-    const { filter: initialFilter } = useSettings();
+    const { filter: initialFilter, theme: initialTheme, refetch, loading } = useSettings();
+    const { mutateAsync: updateSettings } = useUpdateSettings();
 
-    const [filter, setFilter] = useState(initialFilter)
+    const [filter, setFilter] = useState(initialFilter);
+    const [theme, setTheme] = useState(initialTheme);
+
+    const onSave = async () => {
+        if (filter === initialFilter && theme === initialTheme) {
+            router.back();
+            return;
+        }
+
+        await updateSettings({ filter, dark_mode: theme })
+
+        await refetch();
+
+        router.back();
+    }
     
     return (
         <View style={styles.container}>
+            <Stack.Screen
+                options={{
+                    headerRight: () => 
+                        <TouchableOpacity onPress={onSave}>
+                            <Text style={{color: 'blue'}}>Save</Text>
+                        </TouchableOpacity>,
+                }}
+            />
             <View style={styles.row}>
                 <View style={{ flexDirection: 'row', flex: 1 }}>
                     <AntDesign name='filter' size={24} color='blue' style={{ marginRight: 10 }} />
@@ -23,6 +48,21 @@ const Settings = () => {
                 <Switch
                     value={filter}
                     onValueChange={() => setFilter(prev => !prev)}
+                />
+            </View>
+            <View style={styles.row}>
+                <View style={{ flexDirection: 'row', flex: 1 }}>
+                    <Feather name='moon' size={24} color='blue' style={{ marginRight: 10 }} />
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ fontFamily: 'mon-sb' }}>Dark Mode</Text>
+                        <Text style={{ fontFamily: 'mon' }}>
+                            Allows you to change the theme of the app. 
+                        </Text>
+                    </View>
+                </View>
+                <Switch
+                    value={theme}
+                    onValueChange={() => setTheme((prev: any) => !prev)}
                 />
             </View>
         </View>

@@ -1,6 +1,6 @@
 import { useAuth } from "@/src/providers/AuthProvider";
 import { supabase } from "@/src/utils/supabase";
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 
 export const useQuerySettings = () => {
     const { profile } = useAuth();
@@ -17,6 +17,28 @@ export const useQuerySettings = () => {
                 .single();
 
             if (error) throw new Error(error.message);
+
+            return data;
+        },
+        retry: 0,
+    })
+}
+
+export const useUpdateSettings = () => {
+    const { session } = useAuth();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            if (!session) return null;
+            const { data: updatedSettings, error } = await supabase
+                .from('settings')
+                .update(data)
+                .eq('user_id', session.user.id)
+                .select('*');
+
+            if (error) throw new Error(error.message);
+
+            console.log(data)
 
             return data;
         }
