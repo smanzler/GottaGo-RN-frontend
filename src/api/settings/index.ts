@@ -21,6 +21,8 @@ export const useQuerySettings = () => {
             return data;
         },
         retry: 0,
+        staleTime: Infinity,
+        gcTime: Infinity,
     })
 }
 

@@ -7,7 +7,7 @@ import { useRoom } from '@/src/api/rooms';
 import RemoteImage from '@/src/components/RemoteImage';
 import { useComments, useInsertComment, useUpdateRating, useYourRating } from '@/src/api/comments';
 import Comment from '@/src/components/Comment';
-import { Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
+import { Entypo, Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import RatingModal from '@/src/components/RatingModal';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
@@ -49,6 +49,7 @@ const RoomPage = () => {
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
+    const [reported, setReported] = useState(false);
 
     const [ratingLoading, setRatingLoading] = useState(false);
     const [commentLoading, setCommentLoading] = useState(false);
@@ -129,6 +130,10 @@ const RoomPage = () => {
         setRatingLoading(false)
     }
 
+    const onReport = () => {
+        
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
@@ -150,28 +155,33 @@ const RoomPage = () => {
                                 <FontAwesome6 name='location-arrow' size={18}></FontAwesome6>
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row', gap: 2, alignItems: 'center', marginBottom: 20 }}>
-                            <Text style={styles.rating}> {typeof room.rating === 'number' ? room.rating.toFixed(1) : 0}</Text>
-                            <View style={styles.stars}>
-                                {Array.from({ length: 5 }, (_, index) => (
-                                    <View key={`${roomId}-${index}`} style={{ position: 'relative', width: 24, aspectRatio: 1 }}>
-                                        <FontAwesome
-                                            name={index + 1 <= roundedRating ? 'star' : index + 0.5 === roundedRating ? 'star-half' : 'star'}
-                                            size={24}
-                                            color={index + 1 <= roundedRating || index + 0.5 === roundedRating ? 'gold' : 'grey'}
-                                        />
-                                        {index + 0.5 === roundedRating &&
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ flexDirection: 'row', gap: 2, alignItems: 'center', marginBottom: 20 }}>
+                                <Text style={styles.rating}> {typeof room.rating === 'number' ? room.rating.toFixed(1) : 0}</Text>
+                                <View style={styles.stars}>
+                                    {Array.from({ length: 5 }, (_, index) => (
+                                        <View key={`${roomId}-${index}`} style={{ position: 'relative', width: 24, aspectRatio: 1 }}>
                                             <FontAwesome
-                                                name='star'
-                                                size={30}
-                                                color='grey'
-                                                style={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}
+                                                name={index + 1 <= roundedRating ? 'star' : index + 0.5 === roundedRating ? 'star-half' : 'star'}
+                                                size={24}
+                                                color={index + 1 <= roundedRating || index + 0.5 === roundedRating ? 'gold' : 'grey'}
                                             />
-                                        }
-                                    </View>
-                                ))}
+                                            {index + 0.5 === roundedRating &&
+                                                <FontAwesome
+                                                    name='star'
+                                                    size={30}
+                                                    color='grey'
+                                                    style={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}
+                                                />
+                                            }
+                                        </View>
+                                    ))}
+                                </View>
+                                <Text style={styles.rating}>{`(${room.rating_count})`}</Text>
                             </View>
-                            <Text style={styles.rating}>{`(${room.rating_count})`}</Text>
+                            <TouchableOpacity onPress={onReport}>
+                                <Entypo name='flag' size={30} />
+                            </TouchableOpacity>
                         </View>
                     </View>
 

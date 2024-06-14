@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
 import ModalHeaderText from '@/src/components/ModalHeaderText';
-import { TouchableOpacity } from 'react-native';
+import { Settings, TouchableOpacity } from 'react-native';
 import { AuthProvider, useAuth } from '../src/providers/AuthProvider';
 import QueryProvider from '../src/providers/QueryProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -52,15 +52,22 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const router = useRouter();
-  const { theme } = useSettings();
+  const { theme, loading: settingsLoading } = useSettings();
+  const eulaCheck = Settings.get('eulaCheck');
 
   const { session, loading } = useAuth();
 
   useEffect(() => {
-    if (!session && !loading) {
-      router.navigate('/(auth)/login')
+    if (!loading && !settingsLoading) {
+      if (!session) {
+        router.navigate('/(auth)/login');
+      }
+      if (!eulaCheck) {
+        router.navigate('/(modals)/eulaCheck');
+      }
+
     }
-  }, [session, loading])
+  }, [session, loading, settingsLoading, eulaCheck])
    
 
   return (
@@ -109,6 +116,16 @@ function RootLayoutNav() {
               <Ionicons name="close-outline" size={28} />
             </TouchableOpacity>
           ),
+        }}
+      />
+      <Stack.Screen
+        name="(modals)/eulaCheck"
+        options={{
+          presentation: 'containedModal',
+          title: 'EULA Agreement',
+          headerTitleStyle: {
+            fontFamily: 'mon-sb',
+          }
         }}
       />
       <Stack.Screen 
