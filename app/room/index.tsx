@@ -1,5 +1,5 @@
 import { View, Image, Text, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TextInput, InputAccessoryView, TouchableOpacity, Keyboard, Platform, Linking } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
 import { useDefaultStyles } from '@/src/constants/Styles';
@@ -36,7 +36,8 @@ const RoomPage = () => {
 
     const { session } = useAuth();
     const { theme } = useSettings();
-    const defaultStyles = useDefaultStyles(theme)
+    const defaultStyles = useDefaultStyles(theme);
+    const styles: any = useMemo(() => createStyles(theme), [theme]);
 
     const { data: rawComments, refetch } = useComments(roomId);
     const { data: yourRating, refetch: refetchYourRating } = useYourRating(roomId);
@@ -131,11 +132,11 @@ const RoomPage = () => {
     }
 
     const onReport = () => {
-        
+
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: theme.primary }}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
                 <ScrollView style={styles.container}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
@@ -149,10 +150,10 @@ const RoomPage = () => {
 
                     <View style={{ marginTop: 10 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Rating: </Text>
+                            <Text style={{ fontFamily: 'mon', fontSize: 18, color: theme.secondary }}>Rating: </Text>
                             <TouchableOpacity style={{ flexDirection: 'row', gap: 3 }} onPress={onDirections}>
-                                <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Directions</Text>
-                                <FontAwesome6 name='location-arrow' size={18}></FontAwesome6>
+                                <Text style={{ fontFamily: 'mon', fontSize: 18, color: theme.secondary }}>Directions</Text>
+                                <FontAwesome6 name='location-arrow' size={18} color={theme.secondary}></FontAwesome6>
                             </TouchableOpacity>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -180,12 +181,12 @@ const RoomPage = () => {
                                 <Text style={styles.rating}>{`(${room.rating_count})`}</Text>
                             </View>
                             <TouchableOpacity onPress={onReport}>
-                                <Entypo name='flag' size={30} />
+                                <Entypo name='flag' size={30} color={theme.secondary}/>
                             </TouchableOpacity>
                         </View>
                     </View>
 
-                    <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Created by:</Text>
+                    <Text style={{ fontFamily: 'mon', fontSize: 18, color: theme.secondary }}>Created by:</Text>
 
                     <View style={{ flexDirection: 'row', gap: 7, marginTop: 6 }}>
                         <View style={styles.profilePic}>
@@ -197,10 +198,10 @@ const RoomPage = () => {
                     <Text style={[styles.h2, { width: '100%' }]}>{room.description}</Text>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-                        <Text style={{ fontFamily: 'mon', fontSize: 18 }}>Comments</Text>
+                        <Text style={{ fontFamily: 'mon', fontSize: 18, color: theme.secondary }}>Comments</Text>
                         <TouchableOpacity style={{ flexDirection: 'row', gap: 7, alignItems: 'center' }} onPress={onRatingPress}>
-                            <Text style={{ fontFamily: 'mon', fontSize: 14 }}>Add rating</Text>
-                            <FontAwesome6 name='add' size={20} />
+                            <Text style={{ fontFamily: 'mon', fontSize: 14, color: theme.secondary }}>Add rating</Text>
+                            <FontAwesome6 name='add' size={20} color={theme.secondary} />
                         </TouchableOpacity>
                     </View>
 
@@ -224,12 +225,13 @@ const RoomPage = () => {
                         placeholderTextColor='grey'
                         value={comment}
                         onChangeText={setComment}
-                        style={{ width: '80%' }}
+                        style={{ width: '80%', color: theme.secondary }}
                     />
                     <TouchableOpacity style={styles.sendBtn} onPress={onSend}>
                         <Feather
                             name='send'
                             size={24}
+                            color={theme.secondary}
                         />
                     </TouchableOpacity>
                 </View>
@@ -247,30 +249,32 @@ const RoomPage = () => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
         marginBottom: 30,
-        backgroundColor: '#fff',
+        backgroundColor: theme.primary,
     },
     image: {
-
         width: 150,
         aspectRatio: 1,
         backgroundColor: 'grey'
     },
     h1: {
+        color: theme.secondary,
         fontFamily: 'mon-b',
         fontSize: 25,
     },
     h2: {
+        color: theme.secondary,
         fontFamily: 'mon-sb',
         marginTop: 25,
         marginBottom: 25,
         width: '50%',
     },
     rating: {
+        color: theme.secondary,
         fontSize: 16,
         fontFamily: 'mon-sb',
         justifyContent: 'center',
@@ -286,6 +290,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     user: {
+        color: theme.secondary,
         fontFamily: 'mon-sb',
         paddingTop: 3,
     },
@@ -294,7 +299,7 @@ const styles = StyleSheet.create({
         marginBottom: 100,
     },
     commentInput: {
-        backgroundColor: '#fff',
+        backgroundColor: theme.primary,
         padding: 20,
         borderTopEndRadius: 20,
         borderTopLeftRadius: 20,
@@ -302,7 +307,7 @@ const styles = StyleSheet.create({
         flex: 1,
 
         elevation: 2,
-        shadowColor: '#000',
+        shadowColor: theme.secondary,
         shadowOpacity: 0.2,
         shadowRadius: 6,
         shadowOffset: {

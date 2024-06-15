@@ -1,7 +1,8 @@
 import { Button, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { useSettings } from '../providers/SettingsProvider';
 
 interface Props {
     modalVisible: boolean;
@@ -13,6 +14,8 @@ interface Props {
 }
 
 const RatingModal = ({ modalVisible, setModalVisible, rating, setRating, onAddRatingPress, ratingLoading }: Props) => {
+    const { theme } = useSettings();
+    const styles = useMemo(() => createStyles(theme), [theme])
 
     return (
         <Modal
@@ -24,7 +27,7 @@ const RatingModal = ({ modalVisible, setModalVisible, rating, setRating, onAddRa
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer} >
                     <TouchableOpacity style={styles.exitBtn} onPress={() => setModalVisible(false)}>
-                        <Ionicons name="close-outline" size={28} />
+                        <Ionicons name="close-outline" size={28} color={theme.secondary} />
                     </TouchableOpacity>
 
                     <Text style={styles.modalText}>Add your rating</Text>
@@ -46,8 +49,8 @@ const RatingModal = ({ modalVisible, setModalVisible, rating, setRating, onAddRa
                         onPress={onAddRatingPress}
                         disabled={ratingLoading}
                     >
-                        <Text style={{fontFamily: 'mon', fontSize: 14}}>{ratingLoading ? 'Adding rating' : 'Add rating'}</Text>
-                        <FontAwesome6 name='add' size={20}/>
+                        <Text style={{fontFamily: 'mon', fontSize: 14, color: theme.secondary}}>{ratingLoading ? 'Adding rating' : 'Add rating'}</Text>
+                        <FontAwesome6 name='add' size={20} color={theme.secondary} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -55,7 +58,7 @@ const RatingModal = ({ modalVisible, setModalVisible, rating, setRating, onAddRa
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     modalBackground: {
         flex: 1,
         justifyContent: 'center',
@@ -65,11 +68,12 @@ const styles = StyleSheet.create({
     modalContainer: {
         width: '80%',
         padding: 20,
-        backgroundColor: 'white',
+        backgroundColor: theme.tint,
         borderRadius: 10,
         alignItems: 'center',
     },
     modalText: {
+        color: theme.secondary,
         fontFamily: 'mon-sb',
         fontSize: 18,
         marginBottom: 20,

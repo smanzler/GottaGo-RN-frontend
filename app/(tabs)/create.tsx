@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image, Alert, Modal } from 'react-native';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useRouter } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
 import Loading from '@/src/components/Loading';
@@ -21,7 +21,8 @@ const fallback = require('../../assets/images/fallback.png');
 const CreatePage = () => {
     const { session } = useAuth();
     const { theme } = useSettings();
-    const defaultStyles = useDefaultStyles(theme)
+    const defaultStyles = useDefaultStyles(theme);
+    const styles = useMemo(() => createStyles(theme), [theme])
 
     const router = useRouter();
 
@@ -263,8 +264,9 @@ const CreatePage = () => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     container: {
+        backgroundColor: theme.primary,
         flex: 1,
         padding: 26,
     },

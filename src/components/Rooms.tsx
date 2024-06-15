@@ -1,5 +1,5 @@
 import { View, Text, ListRenderItem, StyleSheet, Image, TouchableOpacity, RefreshControl } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDefaultStyles } from "@/src/constants/Styles";
 import { Link } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
@@ -19,7 +19,8 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
     const [refreshing, setRefreshing] = useState(false);
 
     const { theme } = useSettings();
-    const defaultStyles = useDefaultStyles(theme)
+    const defaultStyles = useDefaultStyles(theme);
+    const styles = useMemo(() => createStyles(theme), [theme])
 
     useEffect(() => {
         setLoading(true);
@@ -111,7 +112,7 @@ const Rooms = ({ category, rooms, refetch }: Props) => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     rooms: {
         padding: 10,
         flexDirection: 'row'
@@ -137,18 +138,22 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     name: {
+        color: theme.secondary,
         fontSize: 16,
         fontFamily: 'mon-sb',
     },
     description: {
+        color: theme.secondary,
         fontFamily: 'mon',
         maxHeight: 40,
         overflow: 'hidden',
     },
     distance: {
+        color: theme.secondary,
         fontFamily: 'mon',
     },
     rating: {
+        color: theme.secondary,
         fontFamily: 'mon-sb',
         textAlignVertical: 'bottom',
     },

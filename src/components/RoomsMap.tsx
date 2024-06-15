@@ -81,7 +81,7 @@ const RoomsMap = ({rooms}: Props) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={[defaultStyles.circleBtn, styles.locationBtn]} onPress={onLocationPress}>
-                <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
+                <FontAwesome6 name='location-arrow' size={24} color={theme.secondary}></FontAwesome6>
             </TouchableOpacity>
 
             <MapView

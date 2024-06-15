@@ -1,11 +1,12 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react'
 import { Marker } from 'react-native-maps';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import RemoteImage from './RemoteImage';
 import { Platform } from 'react-native';
 import MarqueeText from 'react-native-marquee'
 import { router } from 'expo-router';
+import { useSettings } from '../providers/SettingsProvider';
 
 interface Props {
     room: any;
@@ -15,6 +16,9 @@ interface Props {
 }
 
 const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
+
+    const { theme } = useSettings();
+    const styles = useMemo(() => createStyles(theme), [theme])
 
     const markerAnimatedStyle = useAnimatedStyle(() => ({
         width: withTiming(selected ? 100 : 50),
@@ -68,7 +72,7 @@ const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
                     style={{ flex: 1 }}
                 >
                     <Animated.View style={[styles.rating, ratingAnimatedStyle]}>
-                        <Text style={{ fontFamily: 'mon-sb'}} >{`★ ${room.rating || 0}`}</Text>
+                        <Text style={{ fontFamily: 'mon-sb', color: theme.secondary}} >{`★ ${room.rating || 0}`}</Text>
                     </Animated.View>
                     
                     <Animated.View style={[styles.name, nameContainerAnimatedStyle]}>
@@ -77,7 +81,10 @@ const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
                             loop
                             consecutive
                             delay={1000}
-                            style={{fontFamily: 'mon-sb'}}
+                            style={{
+                                fontFamily: 'mon-sb', 
+                                color: theme.secondary
+                            }}
                         >
                             {room.name}
                         </MarqueeText>
@@ -94,10 +101,10 @@ const RoomMarker = ({ room, mapViewRef, selected, setSelected }: Props) => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     marker: {
         overflow: 'visible',
-        backgroundColor: 'white',
+        backgroundColor: theme.tint,
         borderRadius: 20,
         elevation: 4,
 

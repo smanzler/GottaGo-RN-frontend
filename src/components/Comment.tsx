@@ -1,5 +1,5 @@
 import { Keyboard, StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
+import React, { useMemo } from 'react'
 import RemoteImage from './RemoteImage'
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -17,6 +17,7 @@ const Comment = ({ comment, setReply, commentRef }: Props) => {
 
     const { theme } = useSettings();
     const defaultStyles = useDefaultStyles(theme)
+    const styles = useMemo(() => createStyles(theme), [theme])
 
     const onReplyPress = () => {
         setReply(comment.id);
@@ -26,7 +27,7 @@ const Comment = ({ comment, setReply, commentRef }: Props) => {
 
     return (
         <>
-            <View style={{ marginTop: 20, borderBlockColor: 'pink' }}>
+            <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', gap: 5 }}>
                     <View style={styles.profilePic}>
                         <RemoteImage style={{ width: '100%', aspectRatio: 1 }} path={`${comment.created_by}.png`} profile />
@@ -64,7 +65,7 @@ const Comment = ({ comment, setReply, commentRef }: Props) => {
                 {comment.replies && comment.replies.length > 0 && comment.replies.map((reply: any, index: number) => (
                     <View key={reply.id} style={styles.line}>
                         <Comment comment={reply} setReply={setReply} commentRef={commentRef} />
-                        <Curve />
+                        <Curve theme={theme} />
                         {index !== comment.replies.length - 1 && <View style={styles.secondLine} />}
                     </View>
                 ))}
@@ -72,7 +73,7 @@ const Comment = ({ comment, setReply, commentRef }: Props) => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     profilePic: {
         width: 25,
         aspectRatio: 1,
@@ -80,10 +81,12 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     user: {
+        color: theme.secondary,
         fontFamily: 'mon-sb',
         paddingTop: 3,
     },
     comment: {
+        color: theme.secondary,
         fontFamily: 'mon',
     },
     firstLine: {

@@ -1,5 +1,5 @@
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
@@ -11,6 +11,7 @@ const Settings = () => {
 
     const [filter, setFilter] = useState(initialFilter);
     const [theme, setTheme] = useState(initialTheme);
+    const styles: any = useMemo(() => createStyles(theme), [theme]);
 
     const onSave = async () => {
         if (filter === initialFilter && theme === initialTheme) {
@@ -39,8 +40,8 @@ const Settings = () => {
                 <View style={{ flexDirection: 'row', flex: 1 }}>
                     <AntDesign name='filter' size={24} color='blue' style={{ marginRight: 10 }} />
                     <View style={{ flex: 1 }}>
-                        <Text style={{ fontFamily: 'mon-sb' }}>Filter</Text>
-                        <Text style={{ fontFamily: 'mon' }}>
+                        <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Filter</Text>
+                        <Text style={{ fontFamily: 'mon', color: theme.secondary }}>
                             This allows you to block any explicit content on the application.
                         </Text>
                     </View>
@@ -54,8 +55,8 @@ const Settings = () => {
                 <View style={{ flexDirection: 'row', flex: 1 }}>
                     <Feather name='moon' size={24} color='blue' style={{ marginRight: 10 }} />
                     <View style={{ flex: 1 }}>
-                        <Text style={{ fontFamily: 'mon-sb' }}>Dark Mode</Text>
-                        <Text style={{ fontFamily: 'mon' }}>
+                        <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Dark Mode</Text>
+                        <Text style={{ fontFamily: 'mon', color: theme.secondary }}>
                             Allows you to change the theme of the app. 
                         </Text>
                     </View>
@@ -71,10 +72,10 @@ const Settings = () => {
 
 export default Settings
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: theme.primary,
         padding: 24,
     },
     row: {

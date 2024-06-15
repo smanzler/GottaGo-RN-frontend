@@ -2,7 +2,7 @@ import { View, StyleSheet, TextInput, Text, TouchableOpacity, KeyboardAvoidingVi
 
 import { useWarmUpBrowser } from '@/src/hooks/useWarmUpBrowser';
 import { useDefaultStyles } from '@/src/constants/Styles';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { } from '../../src/providers/AuthProvider';
 import { supabase } from '@/src/utils/supabase';
@@ -16,6 +16,7 @@ const Page = () => {
     const router = useRouter();
     const { theme } = useSettings();
     const defaultStyles = useDefaultStyles(theme)
+    const styles: any = useMemo(() => createStyles(theme), [theme]);
 
     const [emailAddress, setEmailAddress] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -37,7 +38,7 @@ const Page = () => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles(theme).container} behavior='padding'>
+        <KeyboardAvoidingView style={styles.container} behavior='padding'>
             <View style={{ flex: 1 }}>
 
                 <Text style={defaultStyles.header}>Log in</Text>
@@ -118,11 +119,11 @@ const Page = () => {
     );
 };
 
-const styles = (theme: any) => StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
-        backgroundColor: '#fff',
+        backgroundColor: theme.primary,
         padding: 26,
     },
 

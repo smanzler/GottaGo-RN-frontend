@@ -27,7 +27,7 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
     const isDark = initialTheme === 'dark';
     
     const [filter, setFilter] = useState<boolean>(true);
-    const [theme, setTheme] = useState( !isDark ? { primary:'#ba5f22', grey: '#5e5d5e', dark: '#1a1a1a' } : { primary: 'green', grey: '5e5d5e', dark: '#5e5d5e'});
+    const [theme, setTheme] = useState( !isDark ? { accent:'#ba5f22', grey: '#5e5d5e', primary: '#fff', secondary: '#1a1a1a', tint: '#878787' } : { accent: 'green', grey: '#5e5d5e', primary: '#1a1a1a', secondary: '#fff', tint: '#333333'});
 
     useEffect(() => {
         if (profile) {
@@ -37,11 +37,21 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
 
     useEffect(() => {
         if (profile && data) {
-            setTheme({
-                primary: data.theme ? '#ba5f22' : '#1a1a1a', 
-                grey: data.theme ? '#5e5d5e' : '#000',
-                dark: data.theme ? '#1a1a1a' : '#fff',
-            });
+            setTheme(
+                data.theme ? { 
+                    accent:'#ba5f22', 
+                    grey: '#5e5d5e', 
+                    primary: '#fff', 
+                    secondary: '#1a1a1a', 
+                    tint: '#878787' 
+                } : { 
+                    accent: 'green', 
+                    grey: '#5e5d5e', 
+                    primary: '#1a1a1a', 
+                    secondary: '#fff', 
+                    tint: '#333333'
+                } 
+            );
             setFilter(data.filter);
         }
     }, [profile, data]);

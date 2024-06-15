@@ -2,7 +2,7 @@ import { View, StyleSheet, TextInput, Text, TouchableOpacity, KeyboardAvoidingVi
 
 import { useWarmUpBrowser } from '@/src/hooks/useWarmUpBrowser';
 import { useDefaultStyles } from '@/src/constants/Styles';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { } from '../../src/providers/AuthProvider';
 import { supabase } from '@/src/utils/supabase';
@@ -16,6 +16,7 @@ const Page = () => {
     const router = useRouter();
     const { theme } = useSettings();
     const defaultStyles = useDefaultStyles(theme)
+    const styles: any = useMemo(() => createStyles(theme), [theme]);
 
     const [emailAddress, setEmailAddress] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -76,7 +77,7 @@ const Page = () => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles(theme).container} behavior='padding'>
+        <KeyboardAvoidingView style={styles.container} behavior='padding'>
             <View style={{ flex: 1 }}>
                 {inputError && <CustomAlert text={inputError} />}
 
@@ -106,22 +107,22 @@ const Page = () => {
                     style={[defaultStyles.inputField, { marginBottom: 10 }]}
                 />
                 <TouchableOpacity
-                    style={styles(theme).btnOutline}
+                    style={styles.btnOutline}
                     onPress={onSignUpPress}
                     disabled={loading}
                 >
-                    <Text style={styles(theme).btnOutlineText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
+                    <Text style={styles.btnOutlineText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
     );
 };
 
-const styles = (theme: any) => StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
-        backgroundColor: '#fff',
+        backgroundColor: theme.primary,
         padding: 26,
     },
 
@@ -137,7 +138,7 @@ const styles = (theme: any) => StyleSheet.create({
         fontSize: 16,
     },
     btnOutline: {
-        backgroundColor: '#fff',
+        backgroundColor: theme.primary,
         borderWidth: 1,
         borderColor: theme.grey,
         height: 50,

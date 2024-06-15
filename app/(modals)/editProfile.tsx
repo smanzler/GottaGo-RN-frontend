@@ -176,7 +176,7 @@ const Edit = () => {
     }
 
     return (
-        <ScrollView style={{ flex: 1, paddingTop: 100, padding: 26, backgroundColor: '#fff' }} automaticallyAdjustKeyboardInsets>
+        <ScrollView style={{ flex: 1, paddingTop: 100, padding: 26, backgroundColor: theme.primary }} automaticallyAdjustKeyboardInsets>
             <TouchableOpacity style={[defaultStyles.bubbles, styles.image]} onPress={showImagePickerOptions}>
                 {image ?
                     <Image
@@ -193,7 +193,7 @@ const Edit = () => {
 
             {userNameAlert && <Alert text={userNameAlert} />}
 
-            <Text style={{ fontFamily: 'mon-sb' }}>Username</Text>
+            <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Username</Text>
 
             <TextInput
                 autoCapitalize="none"
@@ -206,7 +206,7 @@ const Edit = () => {
 
             {fullNameAlert && <Alert text={fullNameAlert} />}
 
-            <Text style={{ fontFamily: 'mon-sb' }}>Full Name</Text>
+            <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Full Name</Text>
 
             <TextInput
                 autoCapitalize="none"

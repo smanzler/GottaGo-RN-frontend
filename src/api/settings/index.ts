@@ -8,7 +8,6 @@ export const useQuerySettings = () => {
     return useQuery({
         queryKey: ['settings'],
         queryFn: async () => {
-            console.log('getting settings')
             if (!profile) return null;
             const { data, error } = await supabase
                 .from('settings')

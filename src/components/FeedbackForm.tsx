@@ -1,11 +1,15 @@
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Feather } from '@expo/vector-icons';
 import { useSendFeedback } from '../api/comments';
+import { useSettings } from '../providers/SettingsProvider';
 
 const FeedbackForm = () => {
     const [feedback, setFeedback] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const { theme } = useSettings();
+    const styles = useMemo(() => createStyles(theme), [theme])
 
     const { mutateAsync } = useSendFeedback();
 
@@ -38,6 +42,7 @@ const FeedbackForm = () => {
                         <Feather
                             name='send'
                             size={24}
+                            color={theme.secondary}
                         />
                     </TouchableOpacity>}
             </View>
@@ -48,9 +53,9 @@ const FeedbackForm = () => {
 
 export default FeedbackForm
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     feedbackInput: {
-        backgroundColor: '#fff',
+        backgroundColor: theme.primary,
         justifyContent: 'center',
         paddingLeft: 20,
         borderRadius: 8,
@@ -59,7 +64,7 @@ const styles = StyleSheet.create({
         flex: 1,
 
         elevation: 2,
-        shadowColor: '#000',
+        shadowColor: theme.secondary,
         shadowOpacity: 0.2,
         shadowRadius: 6,
         shadowOffset: {
@@ -79,6 +84,7 @@ const styles = StyleSheet.create({
         maxWidth: 40,
     },
     text: {
+        color: theme.secondary,
         marginTop: 20,
         fontFamily: 'mon',
         fontSize: 18

@@ -1,10 +1,14 @@
 import { ScrollView, Settings, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import CheckBox from 'expo-checkbox';
 import { router } from 'expo-router';
+import { useSettings } from '@/src/providers/SettingsProvider';
 
 const eulaCheck = () => {
     const [agree, setAgree] = useState(false)
+    const { theme } = useSettings();
+
+    const styles: any = useMemo(() => createStyles(theme), [theme]);
 
     const onContinue = () => {
         Settings.set({ eulaCheck: true });
@@ -56,7 +60,7 @@ const eulaCheck = () => {
             <View style={styles.footer}>
                 <View style={{flexDirection: 'row', flex: 1, gap: 10}}>
                     <CheckBox value={agree} onValueChange={setAgree} />
-                    <Text style={{flex: 1}}>By checking this box you agree to the End User License Agreement (EULA). </Text>
+                    <Text style={{flex: 1, color: theme.secondary}}>By checking this box you agree to the End User License Agreement (EULA). </Text>
 
                 </View>
                 <TouchableOpacity style={[styles.btn, {backgroundColor: agree ? 'blue' : 'lightgrey'}]} disabled={!agree} onPress={onContinue}>
@@ -69,8 +73,9 @@ const eulaCheck = () => {
 
 export default eulaCheck
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     container: {
+        backgroundColor: theme.primary,
         flex: 1,
         padding: 20,
     },
@@ -119,7 +124,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#fff',
+        backgroundColor: theme.tint,
         padding: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',

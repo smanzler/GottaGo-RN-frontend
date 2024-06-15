@@ -9,9 +9,13 @@ const Layout = () => {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: theme.primary,
+        tabBarActiveTintColor: theme.accent,
         tabBarLabelStyle: {
           fontFamily: 'mon-sb'
+        },
+        tabBarStyle: {
+          backgroundColor: theme.tint,
+          borderTopWidth: 0,
         }
       }}
     >
@@ -19,8 +23,10 @@ const Layout = () => {
         name="index"
         options={{
           headerTitle: 'Find A Room',
-          headerTitleStyle: { fontFamily: 'mon-sb' },
+          headerTitleStyle: { fontFamily: 'mon-sb', color: theme.secondary },
+          headerStyle: { backgroundColor: theme.tint },
           tabBarLabel: 'Explore',
+          headerShadowVisible: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="search" color={color} size={size} />
           )
@@ -30,8 +36,10 @@ const Layout = () => {
         name="create"
         options={{
           headerTitle: 'Create New Room',
-          headerTitleStyle: { fontFamily: 'mon-sb' },
+          headerTitleStyle: { fontFamily: 'mon-sb', color: theme.secondary },
+          headerStyle: { backgroundColor: theme.tint },
           tabBarLabel: 'Create',
+          headerShadowVisible: false,
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="plussquareo" color={color} size={size} />
           )
@@ -41,8 +49,10 @@ const Layout = () => {
         name="profile"
         options={{
           headerTitle: 'Profile',
-          headerTitleStyle: { fontFamily: 'mon-sb' },
+          headerTitleStyle: { fontFamily: 'mon-sb', color: theme.secondary },
+          headerStyle: { backgroundColor: theme.tint },
           tabBarLabel: 'Profile',
+          headerShadowVisible: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-circle-outline" color={color} size={size} />
           )

@@ -1,17 +1,20 @@
 import { View } from "react-native";
-import Colors from "../constants/Colors";
 
-const Curve = () => (
+interface Props {
+    theme: any
+}
+
+const Curve = ({theme}: Props) => (
     <View style={{
         position: 'absolute',
-        backgroundColor: 'white',
+        backgroundColor: theme.primary,
         width: 20,
         height: 35,
         zIndex: -3
     }}>
         <View style={{
             position: 'absolute',
-            backgroundColor: 'white',
+            backgroundColor: theme.primary,
             height: 25,
             borderLeftWidth: 2,
             borderLeftColor: '#bbb',
@@ -22,7 +25,7 @@ const Curve = () => (
         }} />
         <View style={{
             position: 'absolute',
-            backgroundColor: 'white',
+            backgroundColor: theme.primary,
             width: 10,
             top: 0,
             bottom: 0,
@@ -30,7 +33,7 @@ const Curve = () => (
             zIndex: -1,
         }} />
         <View style={{
-            backgroundColor: 'white',
+            backgroundColor: theme.primary,
             position: 'absolute',
             aspectRatio: 1,
             borderRadius: 10,

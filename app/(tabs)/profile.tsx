@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, Switch } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, Switch, Settings } from 'react-native';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, router } from 'expo-router';
 import { useAuth } from '../../src/providers/AuthProvider';
 import { useDefaultStyles } from '@/src/constants/Styles';
@@ -10,17 +10,20 @@ import { useImage } from '@/src/api/rooms';
 import FeedbackForm from '@/src/components/FeedbackForm';
 import { useSettings } from '@/src/providers/SettingsProvider';
 
-const fallback = require('@/assets/images/fallback.png')
-
 const ProfilePage = () => {
     const { session, profile, fetchProfile } = useAuth();
     const { theme } = useSettings();
     const defaultStyles = useDefaultStyles(theme)
+    const styles: any = useMemo(() => createStyles(theme), [theme])
 
     const { refetch } = useImage(profile ? `${profile.id}.png` : null, profile);
 
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+
+    const unEulaCheck = () => {
+        Settings.set({ eulaCheck: false })
+    }
 
     const handleLogout = async () => {
         setLoading(true);
@@ -49,6 +52,9 @@ const ProfilePage = () => {
                 />}
             automaticallyAdjustKeyboardInsets
         >
+            <TouchableOpacity onPress={unEulaCheck}>
+                <Text style={{ color: theme.secondary }}>EULA</Text>
+            </TouchableOpacity>
 
             {!session || !profile ?
                 <>
@@ -102,11 +108,11 @@ const ProfilePage = () => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         padding: 26,
-        backgroundColor: '#fff'
+        backgroundColor: theme.primary
     },
     profilePicture: {
         width: 150,
@@ -117,11 +123,13 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     username: {
+        color: theme.secondary,
         fontFamily: 'mon-sb',
         fontSize: 24,
         marginBottom: 15,
     },
     full_name: {
+        color: theme.secondary,
         fontFamily: 'mon',
         fontSize: 17,
     },

@@ -67,7 +67,7 @@ function RootLayoutNav() {
       }
 
     }
-  }, [session, loading, settingsLoading, eulaCheck])
+  }, [session, loading, settingsLoading, eulaCheck, router])
    
 
   return (
@@ -79,11 +79,13 @@ function RootLayoutNav() {
           presentation: 'modal',
           title: 'Log in or sign up',
           headerTitleStyle: {
+            color: theme.secondary,
             fontFamily: 'mon-sb',
           },
+          headerStyle: { backgroundColor: theme.tint },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
+              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
             </TouchableOpacity>
           ),
         }}
@@ -94,11 +96,13 @@ function RootLayoutNav() {
           presentation: 'card',
           title: 'Sign up',
           headerTitleStyle: {
+            color: theme.secondary,
             fontFamily: 'mon-sb',
           },
+          headerStyle: { backgroundColor: theme.tint },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
+              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
             </TouchableOpacity>
           ),
         }}
@@ -109,11 +113,13 @@ function RootLayoutNav() {
           presentation: 'card',
           title: 'Settings',
           headerTitleStyle: {
+            color: theme.secondary,
             fontFamily: 'mon-sb',
           },
+          headerStyle: { backgroundColor: theme.tint },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
+              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
             </TouchableOpacity>
           ),
         }}
@@ -124,8 +130,10 @@ function RootLayoutNav() {
           presentation: 'containedModal',
           title: 'EULA Agreement',
           headerTitleStyle: {
+            color: theme.secondary,
             fontFamily: 'mon-sb',
-          }
+          },
+          headerStyle: { backgroundColor: theme.tint },
         }}
       />
       <Stack.Screen 
@@ -137,32 +145,10 @@ function RootLayoutNav() {
           presentation: 'modal',
           headerLeft: () => (
             <TouchableOpacity style={{width: 35, aspectRatio: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
+              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
             </TouchableOpacity>
           )
         }} 
-      />
-      <Stack.Screen
-        name="(modals)/booking"
-        options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
-          headerTransparent: true,
-          headerTitle: (props) => <ModalHeaderText />,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={{
-                backgroundColor: '#fff',
-                borderColor: theme.grey,
-                borderRadius: 20,
-                borderWidth: 1,
-                padding: 4,
-              }}>
-              <Ionicons name="close-outline" size={22} />
-            </TouchableOpacity>
-          ),
-        }}
       />
       <Stack.Screen
         name="(modals)/editProfile"
@@ -173,7 +159,7 @@ function RootLayoutNav() {
           headerTransparent: true,
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
+              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
             </TouchableOpacity>
           ),
         }}
