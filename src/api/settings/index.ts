@@ -31,17 +31,15 @@ export const useUpdateSettings = () => {
     return useMutation({
         async mutationFn(data: any) {
             if (!session) return null;
-            const { data: updatedSettings, error } = await supabase
+            console.log(data);
+            const updatedSettings = await supabase
                 .from('settings')
                 .update(data)
                 .eq('user_id', session.user.id)
-                .select('*');
 
-            if (error) throw new Error(error.message);
+            console.log(updatedSettings)
 
-            console.log(data)
-
-            return data;
+            return updatedSettings;
         }
     })
 }

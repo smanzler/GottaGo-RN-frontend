@@ -21,10 +21,6 @@ const ProfilePage = () => {
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
-    const unEulaCheck = () => {
-        Settings.set({ eulaCheck: false })
-    }
-
     const handleLogout = async () => {
         setLoading(true);
 
@@ -52,10 +48,6 @@ const ProfilePage = () => {
                 />}
             automaticallyAdjustKeyboardInsets
         >
-            <TouchableOpacity onPress={unEulaCheck}>
-                <Text style={{ color: theme.secondary }}>EULA</Text>
-            </TouchableOpacity>
-
             {!session || !profile ?
                 <>
                     <Text style={defaultStyles.h2}>In Order to see your profile, you need to Log in</Text>
@@ -67,7 +59,7 @@ const ProfilePage = () => {
                 <>
                     <View style={[defaultStyles.card]}>
                         <TouchableOpacity style={styles.editBtn} onPress={() => router.push('(modals)/editProfile')}>
-                            <MaterialCommunityIcons name='circle-edit-outline' size={24} />
+                            <MaterialCommunityIcons name='circle-edit-outline' size={24} color={theme.secondary}/>
                         </TouchableOpacity>
 
                         <View style={styles.profilePicture}>

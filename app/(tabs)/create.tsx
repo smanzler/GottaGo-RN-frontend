@@ -173,7 +173,7 @@ const CreatePage = () => {
 
                     <View style={styles.bubblesContainer}>
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={{ fontFamily: 'mon-sb' }}>Location</Text>
+                            <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Location</Text>
                             <TouchableOpacity style={defaultStyles.bubbles} onPress={openModal}>
                                 <MapView
                                     ref={mapViewRef}
@@ -188,7 +188,7 @@ const CreatePage = () => {
                         </View>
 
                         <View style={{ alignItems: 'center', }}>
-                            <Text style={{ fontFamily: 'mon-sb' }}>Photo</Text>
+                            <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Photo</Text>
                             <TouchableOpacity style={defaultStyles.bubbles} onPress={pickImage}>
                                 <Image style={{ flex: 1, aspectRatio: 1 }} source={image ? { uri: image } : fallback} />
                             </TouchableOpacity>

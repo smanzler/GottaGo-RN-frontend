@@ -13,7 +13,6 @@ interface Props {
 
 const RoomsBottomSheet = ({ rooms, category, refetch }: Props) => {
     const { theme } = useSettings();
-    const styles = useMemo(() => createStyles(theme), [theme])
 
     const snapPoints = useMemo(() => ['7%', '100%'], []);
 
@@ -23,7 +22,7 @@ const RoomsBottomSheet = ({ rooms, category, refetch }: Props) => {
             index={1}
             backgroundStyle={{backgroundColor: theme.primary}}
             handleIndicatorStyle={{backgroundColor: theme.secondary}}
-            style={styles.sheetContainer}
+            style={{ borderRadius: 10 }}
         >
             <View style={{ flex: 1, paddingTop: 20, backgroundColor: theme.primary }}>
                 <Rooms rooms={rooms} category={category} refetch={refetch} />
@@ -31,19 +30,5 @@ const RoomsBottomSheet = ({ rooms, category, refetch }: Props) => {
         </BottomSheet>
     )
 }
-
-const createStyles = (theme: any) => StyleSheet.create({
-    sheetContainer: {
-        borderRadius: 10,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-        shadowOffset: {
-            width: 2,
-            height: 2,
-        }
-    }
-})
 
 export default RoomsBottomSheet

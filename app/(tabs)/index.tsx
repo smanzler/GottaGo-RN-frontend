@@ -1,8 +1,6 @@
 import { View, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Stack, router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
-
-import ExploreHeader from '@/src/components/ExploreHeader';
 import Rooms from '@/src/components/Rooms';
 import RoomsMap from '@/src/components/RoomsMap';
 import { useQuery } from '@tanstack/react-query';

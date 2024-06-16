@@ -106,15 +106,6 @@ const createStyles = (theme: any) => StyleSheet.create({
         overflow: 'visible',
         backgroundColor: theme.tint,
         borderRadius: 20,
-        elevation: 4,
-
-        shadowColor: '#000',
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-        shadowOffset: {
-            width: 2,
-            height: 2,
-        }
     },
     rating: {
         position: 'absolute',

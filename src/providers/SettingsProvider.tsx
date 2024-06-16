@@ -27,10 +27,12 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
     const isDark = initialTheme === 'dark';
     
     const [filter, setFilter] = useState<boolean>(true);
-    const [theme, setTheme] = useState( !isDark ? { accent:'#ba5f22', grey: '#5e5d5e', primary: '#fff', secondary: '#1a1a1a', tint: '#878787' } : { accent: 'green', grey: '#5e5d5e', primary: '#1a1a1a', secondary: '#fff', tint: '#333333'});
+    const [theme, setTheme] = useState( !isDark ? { accent:'#ba5f22', grey: '#5e5d5e', primary: '#fff', secondary: '#1a1a1a', tint: '#878787', isDark: false } : { accent: 'green', grey: '#5e5d5e', primary: '#1a1a1a', secondary: '#fff', tint: '#333333', isDark: true});
 
     useEffect(() => {
         if (profile) {
+            console.log(profile);
+            console.log('refetching');
             refetch();
         }
     }, [profile]);
@@ -38,27 +40,25 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
     useEffect(() => {
         if (profile && data) {
             setTheme(
-                data.theme ? { 
+                !data.dark_mode ? { 
                     accent:'#ba5f22', 
                     grey: '#5e5d5e', 
                     primary: '#fff', 
                     secondary: '#1a1a1a', 
-                    tint: '#878787' 
+                    tint: '#f3f3f3',
+                    isDark: false,
                 } : { 
                     accent: 'green', 
                     grey: '#5e5d5e', 
                     primary: '#1a1a1a', 
                     secondary: '#fff', 
-                    tint: '#333333'
+                    tint: '#333333',
+                    isDark: true,
                 } 
             );
             setFilter(data.filter);
         }
     }, [profile, data]);
-
-    useEffect(() => {
-        console.log(theme)
-    }, [theme])
 
     const memoizedRefetch = useCallback(async() => {
         await refetch();

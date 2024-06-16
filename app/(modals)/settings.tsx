@@ -3,15 +3,17 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
-import { useUpdateSettings } from '@/src/api/settings';
+import { useQuerySettings, useUpdateSettings } from '@/src/api/settings';
 
 const Settings = () => {
-    const { filter: initialFilter, theme: initialTheme, refetch, loading } = useSettings();
+    const { filter: initialFilter, theme: initialTheme, loading } = useSettings();
+    const { refetch } = useQuerySettings();
+
     const { mutateAsync: updateSettings } = useUpdateSettings();
 
     const [filter, setFilter] = useState(initialFilter);
-    const [theme, setTheme] = useState(initialTheme);
-    const styles: any = useMemo(() => createStyles(theme), [theme]);
+    const [theme, setTheme] = useState(initialTheme.isDark);
+    const styles: any = useMemo(() => createStyles(initialTheme), [initialTheme]);
 
     const onSave = async () => {
         if (filter === initialFilter && theme === initialTheme) {
@@ -19,9 +21,12 @@ const Settings = () => {
             return;
         }
 
+        console.log('updating settings')
         await updateSettings({ filter, dark_mode: theme })
 
-        await refetch();
+        const data = await refetch();
+
+        console.log(data)
 
         router.back();
     }
@@ -40,30 +45,30 @@ const Settings = () => {
                 <View style={{ flexDirection: 'row', flex: 1 }}>
                     <AntDesign name='filter' size={24} color='blue' style={{ marginRight: 10 }} />
                     <View style={{ flex: 1 }}>
-                        <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Filter</Text>
-                        <Text style={{ fontFamily: 'mon', color: theme.secondary }}>
+                        <Text style={{ fontFamily: 'mon-sb', color: initialTheme.secondary }}>Filter</Text>
+                        <Text style={{ fontFamily: 'mon', color: initialTheme.secondary }}>
                             This allows you to block any explicit content on the application.
                         </Text>
                     </View>
                 </View>
                 <Switch
                     value={filter}
-                    onValueChange={() => setFilter(prev => !prev)}
+                    onValueChange={setFilter}
                 />
             </View>
             <View style={styles.row}>
                 <View style={{ flexDirection: 'row', flex: 1 }}>
                     <Feather name='moon' size={24} color='blue' style={{ marginRight: 10 }} />
                     <View style={{ flex: 1 }}>
-                        <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Dark Mode</Text>
-                        <Text style={{ fontFamily: 'mon', color: theme.secondary }}>
+                        <Text style={{ fontFamily: 'mon-sb', color: initialTheme.secondary }}>Dark Mode</Text>
+                        <Text style={{ fontFamily: 'mon', color: initialTheme.secondary }}>
                             Allows you to change the theme of the app. 
                         </Text>
                     </View>
                 </View>
                 <Switch
                     value={theme}
-                    onValueChange={() => setTheme((prev: any) => !prev)}
+                    onValueChange={setTheme}
                 />
             </View>
         </View>
