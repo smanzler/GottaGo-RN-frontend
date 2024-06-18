@@ -67,7 +67,7 @@ function RootLayoutNav() {
       }
 
     }
-  }, [session, loading, settingsLoading, eulaCheck, router])
+  }, [session, loading, settingsLoading, eulaCheck])
    
 
   return (

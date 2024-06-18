@@ -245,7 +245,7 @@ const CreatePage = () => {
                     >
                         <ExitButtom onPress={closeModal} style={{ position: 'absolute', top: 30, left: 20 }} />
                         <TouchableOpacity style={[defaultStyles.circleBtn, styles.locationBtn]} onPress={() => useLocation(modalMapViewRef, true)}>
-                            <FontAwesome6 name='location-arrow' size={24}></FontAwesome6>
+                            <FontAwesome6 name='location-arrow' size={24} color={theme.secondary}></FontAwesome6>
                         </TouchableOpacity>
                         <MapView
                             ref={modalMapViewRef}

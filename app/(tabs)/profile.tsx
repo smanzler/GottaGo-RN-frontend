@@ -88,7 +88,7 @@ const ProfilePage = () => {
                 style={{
                     flex: 1,
                     marginTop: 30,
-                    borderBottomColor: 'black',
+                    borderBottomColor: theme.secondary,
                     borderBottomWidth: StyleSheet.hairlineWidth,
                 }}
             />

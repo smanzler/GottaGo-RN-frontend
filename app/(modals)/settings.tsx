@@ -4,15 +4,19 @@ import { useSettings } from '@/src/providers/SettingsProvider';
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
 import { useQuerySettings, useUpdateSettings } from '@/src/api/settings';
+import { useAuth } from '@/src/providers/AuthProvider';
 
 const Settings = () => {
-    const { filter: initialFilter, theme: initialTheme, loading } = useSettings();
+    const { profile } = useAuth();
+    const { filter: initialFilter, theme: initialTheme, setFilter: setGlobalFilter, setTheme: setGlobalTheme } = useSettings();
     const { refetch } = useQuerySettings();
 
     const { mutateAsync: updateSettings } = useUpdateSettings();
 
     const [filter, setFilter] = useState(initialFilter);
     const [theme, setTheme] = useState(initialTheme.isDark);
+    const [loading, setLoading] = useState(false)
+
     const styles: any = useMemo(() => createStyles(initialTheme), [initialTheme]);
 
     const onSave = async () => {
@@ -20,15 +24,16 @@ const Settings = () => {
             router.back();
             return;
         }
+        setLoading(true)
 
-        console.log('updating settings')
-        await updateSettings({ filter, dark_mode: theme })
-
-        const data = await refetch();
-
-        console.log(data)
-
+        await updateSettings({ filter, dark_mode: theme });
+        await refetch();
+        setGlobalFilter(filter);
+        setGlobalTheme(theme);
+            
         router.back();
+
+        setLoading(false);
     }
     
     return (
@@ -37,7 +42,7 @@ const Settings = () => {
                 options={{
                     headerRight: () => 
                         <TouchableOpacity onPress={onSave}>
-                            <Text style={{color: 'blue'}}>Save</Text>
+                            <Text style={{color: 'blue'}}>{loading ? 'Saving...' : 'Save'}</Text>
                         </TouchableOpacity>,
                 }}
             />

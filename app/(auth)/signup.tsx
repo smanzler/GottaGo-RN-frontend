@@ -149,7 +149,7 @@ const createStyles = (theme: any) => StyleSheet.create({
         paddingHorizontal: 10,
     },
     btnOutlineText: {
-        color: '#000',
+        color: theme.secondary,
         fontSize: 16,
         fontFamily: 'mon-sb',
     },

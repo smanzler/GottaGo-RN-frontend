@@ -9,7 +9,9 @@ interface SettingsContextType {
     filter: boolean;
     theme: any;
     loading: boolean;
-    refetch: () => Promise<void>
+    refetch: () => Promise<void>;
+    setTheme: React.Dispatch<React.SetStateAction<any>>;
+    setFilter: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const SettingsContext = createContext<SettingsContextType>({
@@ -17,6 +19,8 @@ const SettingsContext = createContext<SettingsContextType>({
     theme: {},
     loading: true,
     refetch: async () => {},
+    setTheme: () => {},
+    setFilter: () => {},
 });
 
 export const SettingsProvider = ({ children }: PropsWithChildren) => {
@@ -24,14 +28,13 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
     const { profile } = useAuth();
 
     const initialTheme = useColorScheme()
-    const isDark = initialTheme === 'dark';
+    const [isDark, setIsDark] = useState(initialTheme === 'dark');
     
     const [filter, setFilter] = useState<boolean>(true);
-    const [theme, setTheme] = useState( !isDark ? { accent:'#ba5f22', grey: '#5e5d5e', primary: '#fff', secondary: '#1a1a1a', tint: '#878787', isDark: false } : { accent: 'green', grey: '#5e5d5e', primary: '#1a1a1a', secondary: '#fff', tint: '#333333', isDark: true});
+    const [theme, setTheme] = useState( !isDark ? { accent:'#ba5f22', grey: '#5e5d5e', primary: '#fff', secondary: '#1a1a1a', tint: '#878787', isDark: false } : { accent: '#ba5f22', grey: '#5e5d5e', primary: '#1a1a1a', secondary: '#fff', tint: '#333333', isDark: true});
 
     useEffect(() => {
         if (profile) {
-            console.log(profile);
             console.log('refetching');
             refetch();
         }
@@ -48,7 +51,7 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
                     tint: '#f3f3f3',
                     isDark: false,
                 } : { 
-                    accent: 'green', 
+                    accent: '#ba5f22', 
                     grey: '#5e5d5e', 
                     primary: '#1a1a1a', 
                     secondary: '#fff', 
@@ -60,12 +63,32 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
         }
     }, [profile, data]);
 
+    useEffect(() => {
+        setTheme(
+            !isDark ? { 
+                accent:'#ba5f22', 
+                grey: '#5e5d5e', 
+                primary: '#fff', 
+                secondary: '#1a1a1a', 
+                tint: '#f3f3f3',
+                isDark: false,
+            } : { 
+                accent: '#ba5f22', 
+                grey: '#5e5d5e', 
+                primary: '#1a1a1a', 
+                secondary: '#fff', 
+                tint: '#333333',
+                isDark: true,
+            } 
+        );
+    }, [isDark])
+
     const memoizedRefetch = useCallback(async() => {
         await refetch();
     }, [refetch]);
 
     return (
-        <SettingsContext.Provider value={{ filter, theme, loading, refetch: memoizedRefetch }}>
+        <SettingsContext.Provider value={{ filter, theme, loading, refetch: memoizedRefetch, setTheme: setIsDark, setFilter }}>
             {children}
         </SettingsContext.Provider>
     );
