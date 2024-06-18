@@ -7,6 +7,7 @@ interface AuthContextType {
   profile: any;
   loading: boolean;
   fetchProfile: () => Promise<void>;
+  signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -14,6 +15,7 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   loading: true,
   fetchProfile: async () => { },
+  signOut: () => { },
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -22,7 +24,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async () => {
-
     if (session) {
       const { data } = await supabase
         .from('profiles')
@@ -31,8 +32,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         .single();
 
       setProfile(data || null)
+    } else {
+      setProfile(null)
     }
-
   }
 
   useEffect(() => {
@@ -58,8 +60,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     })
   }, [])
 
+  const signOut = () => {
+    setSession(null);
+  }
+
   return (
-    <AuthContext.Provider value={{ session, profile, loading, fetchProfile }}>
+    <AuthContext.Provider value={{ session, profile, loading, fetchProfile, signOut }}>
       {children}
     </AuthContext.Provider>
   );
