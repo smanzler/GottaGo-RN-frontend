@@ -11,6 +11,8 @@ import { Entypo, Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import RatingModal from '@/src/components/RatingModal';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
+import ReportModal from '@/src/components/ReportModal';
+import { supabase } from '@/src/utils/supabase';
 
 type Room = {
     id: string,
@@ -50,10 +52,12 @@ const RoomPage = () => {
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
+    const [reportModalVisible, setReportModalVisible] = useState(false)
     const [reported, setReported] = useState(false);
 
     const [ratingLoading, setRatingLoading] = useState(false);
     const [commentLoading, setCommentLoading] = useState(false);
+    const [reportLoading, setReportLoading] = useState(false);
 
     const commentRef = useRef<TextInput>(null);
 
@@ -131,8 +135,34 @@ const RoomPage = () => {
         setRatingLoading(false)
     }
 
-    const onReport = () => {
+    const onReportPress = async () => {
+        if (!session) {
+            router.push('(auth)/login')
+            return;
+        }
+        
+        if (reported) {
+            setReportLoading(true)
 
+            const data = await supabase.rpc('unreport-room');
+            console.log(data);
+            setReported(false);
+
+            setReportLoading(false);
+        } else {
+            setReportModalVisible(true)
+        } 
+    }
+
+    const onReport = async () => {
+        setReportLoading(true);
+
+        const data = await supabase.rpc('report-room');
+        console.log(data);
+        setReported(true)
+        setReportModalVisible(false);
+
+        setReportLoading(false);
     }
 
     return (
@@ -180,8 +210,8 @@ const RoomPage = () => {
                                 </View>
                                 <Text style={styles.rating}>{`(${room.rating_count})`}</Text>
                             </View>
-                            <TouchableOpacity onPress={onReport}>
-                                <Entypo name='flag' size={30} color={theme.secondary}/>
+                            <TouchableOpacity onPress={onReportPress} disabled={reportLoading}>
+                                <Entypo name={reportLoading ? 'cycle' : 'flag'} size={30} color={reported ? 'red' : theme.secondary}/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -244,6 +274,13 @@ const RoomPage = () => {
                 setRating={setRating}
                 onAddRatingPress={onAddRatingPress}
                 ratingLoading={ratingLoading}
+            />
+
+            <ReportModal
+                modalVisible={reportModalVisible}
+                setModalVisible={setReportModalVisible}
+                onReport={onReport}
+                reportLoading={reportLoading}
             />
         </View>
     )
