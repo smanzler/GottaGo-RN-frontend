@@ -2,7 +2,7 @@
   "expo": {
     "name": "GottaGo | Find Toilets Nearby",
     "slug": "gottago",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -19,7 +19,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.sigh10.gottago",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "This app uses your location to show nearby bathrooms."
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to show nearby bathrooms.",
+        "NSCameraUsageDescription": "This app needs your location to take a photo"
       }
     },
     "android": {

@@ -1,4 +1,4 @@
-import { ActionSheetIOS, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActionSheetIOS, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/src/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,7 +10,7 @@ import { useAuth } from '@/src/providers/AuthProvider';
 import { ScrollView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import RemoteImage from '@/src/components/RemoteImage';
-import Alert from '@/src/components/Alert';
+import CustomAlert from '@/src/components/Alert';
 import { useImage } from '@/src/api/rooms';
 import { useUpdateProfile } from '@/src/api/profiles';
 import { useSettings } from '@/src/providers/SettingsProvider';
@@ -65,6 +65,13 @@ const Edit = () => {
     };
 
     const takePhoto = async () => {
+        let { status } = await ImagePicker.requestCameraPermissionsAsync();
+
+        if (status !== 'granted') {
+            Alert.alert("Camera", "To use the Camera to take a photo, you must allow camera permissions in settings");
+            return;
+        }
+
         const result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [1, 1],
@@ -191,7 +198,7 @@ const Edit = () => {
                     />}
             </TouchableOpacity>
 
-            {userNameAlert && <Alert text={userNameAlert} />}
+            {userNameAlert && <CustomAlert text={userNameAlert} />}
 
             <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Username</Text>
 
@@ -204,7 +211,7 @@ const Edit = () => {
                 style={[defaultStyles.inputField, { marginBottom: 10 }]}
             />
 
-            {fullNameAlert && <Alert text={fullNameAlert} />}
+            {fullNameAlert && <CustomAlert text={fullNameAlert} />}
 
             <Text style={{ fontFamily: 'mon-sb', color: theme.secondary }}>Full Name</Text>
 
