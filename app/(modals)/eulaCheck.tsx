@@ -40,6 +40,7 @@ const eulaCheck = () => {
                     You agree not to, and you will not permit others to:
                     {'\n'}a. License, sell, rent, lease, assign, distribute, transmit, host, outsource, disclose or otherwise commercially exploit the App.
                     {'\n'}b. Modify, make derivative works of, disassemble, decrypt, reverse compile or reverse engineer any part of the App.
+                    {'\n'}c. Post objectionable or abusive content. 
                 </Text>
 
                 <Text style={styles.h2}>5. Termination</Text>
