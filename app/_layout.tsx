@@ -1,25 +1,27 @@
-import { useFonts } from 'expo-font';
-import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
-import { useContext, useEffect, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
+import { useContext, useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
-import ModalHeaderText from '@/src/components/ModalHeaderText';
-import { Settings, TouchableOpacity } from 'react-native';
-import { AuthProvider, useAuth } from '../src/providers/AuthProvider';
-import QueryProvider from '../src/providers/QueryProvider';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import ExitButton from '@/src/components/ExitButton';
-import { SettingsProvider, useSettings } from '@/src/providers/SettingsProvider';
-
+import ModalHeaderText from "@/src/components/ModalHeaderText";
+import { Settings, TouchableOpacity } from "react-native";
+import { AuthProvider, useAuth } from "../src/providers/AuthProvider";
+import QueryProvider from "../src/providers/QueryProvider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ExitButton from "@/src/components/ExitButton";
+import {
+  SettingsProvider,
+  useSettings,
+} from "@/src/providers/SettingsProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    mon: require('../assets/fonts/Montserrat-Regular.ttf'),
-    'mon-sb': require('../assets/fonts/Montserrat-SemiBold.ttf'),
-    'mon-b': require('../assets/fonts/Montserrat-Bold.ttf'),
+    mon: require("../assets/fonts/Montserrat-Regular.ttf"),
+    "mon-sb": require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    "mon-b": require("../assets/fonts/Montserrat-Bold.ttf"),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -53,22 +55,20 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const router = useRouter();
   const { theme, loading: settingsLoading } = useSettings();
-  const eulaCheck = Settings.get('eulaCheck');
+  const eulaCheck = Settings.get("eulaCheck");
 
   const { session, loading } = useAuth();
 
   useEffect(() => {
     if (!loading && !settingsLoading) {
       if (!session) {
-        router.navigate('/(auth)/login');
+        router.navigate("/(auth)/login");
       }
       if (!eulaCheck) {
-        router.navigate('/(modals)/eulaCheck');
+        router.navigate("/(modals)/eulaCheck");
       }
-
     }
-  }, [session, loading, settingsLoading, eulaCheck])
-   
+  }, [session, loading, settingsLoading, eulaCheck]);
 
   return (
     <Stack>
@@ -76,16 +76,20 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(auth)/login"
         options={{
-          presentation: 'modal',
-          title: 'Log in or sign up',
+          presentation: "modal",
+          title: "Log in or sign up",
           headerTitleStyle: {
             color: theme.secondary,
-            fontFamily: 'mon-sb',
+            fontFamily: "mon-sb",
           },
           headerStyle: { backgroundColor: theme.tint },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
+              <Ionicons
+                name="close-outline"
+                size={28}
+                color={theme.secondary}
+              />
             </TouchableOpacity>
           ),
         }}
@@ -93,16 +97,20 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(auth)/signup"
         options={{
-          presentation: 'card',
-          title: 'Sign up',
+          presentation: "card",
+          title: "Sign up",
           headerTitleStyle: {
             color: theme.secondary,
-            fontFamily: 'mon-sb',
+            fontFamily: "mon-sb",
           },
           headerStyle: { backgroundColor: theme.tint },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
+              <Ionicons
+                name="close-outline"
+                size={28}
+                color={theme.secondary}
+              />
             </TouchableOpacity>
           ),
         }}
@@ -110,16 +118,20 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(modals)/settings"
         options={{
-          presentation: 'card',
-          title: 'Settings',
+          presentation: "card",
+          title: "Settings",
           headerTitleStyle: {
             color: theme.secondary,
-            fontFamily: 'mon-sb',
+            fontFamily: "mon-sb",
           },
           headerStyle: { backgroundColor: theme.tint },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
+              <Ionicons
+                name="close-outline"
+                size={28}
+                color={theme.secondary}
+              />
             </TouchableOpacity>
           ),
         }}
@@ -127,39 +139,55 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(modals)/eulaCheck"
         options={{
-          presentation: 'containedModal',
-          title: 'EULA Agreement',
+          presentation: "fullScreenModal",
+          title: "EULA Agreement",
           headerTitleStyle: {
             color: theme.secondary,
-            fontFamily: 'mon-sb',
+            fontFamily: "mon-sb",
           },
           headerStyle: { backgroundColor: theme.tint },
         }}
       />
-      <Stack.Screen 
-        name="room/index" 
-        options={{ 
-          headerBackTitleVisible: false, 
-          headerTitle: '', 
-          headerTransparent: true, 
-          presentation: 'modal',
+      <Stack.Screen
+        name="room/index"
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: "",
+          headerTransparent: true,
+          presentation: "modal",
           headerLeft: () => (
-            <TouchableOpacity style={{width: 35, aspectRatio: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
+            <TouchableOpacity
+              style={{
+                width: 35,
+                aspectRatio: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => router.back()}
+            >
+              <Ionicons
+                name="close-outline"
+                size={28}
+                color={theme.secondary}
+              />
             </TouchableOpacity>
-          )
-        }} 
+          ),
+        }}
       />
       <Stack.Screen
         name="(modals)/editProfile"
         options={{
-          headerTitle: 'Edit profile',
-          headerTitleStyle: { fontFamily: 'mon-sb' },
-          presentation: 'modal',
+          headerTitle: "Edit profile",
+          headerTitleStyle: { fontFamily: "mon-sb" },
+          presentation: "modal",
           headerTransparent: true,
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} color={theme.secondary}/>
+              <Ionicons
+                name="close-outline"
+                size={28}
+                color={theme.secondary}
+              />
             </TouchableOpacity>
           ),
         }}
